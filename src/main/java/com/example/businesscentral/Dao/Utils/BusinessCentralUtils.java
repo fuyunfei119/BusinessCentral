@@ -1,0 +1,207 @@
+package com.example.businesscentral.Dao.Utils;
+
+import com.example.businesscentral.Annotation.PK;
+import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class BusinessCentralUtils {
+
+    public static Field getPrimaryKeyField(Class<?> clazz) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(PK.class)) {
+                return field;
+            }
+        }
+
+        throw new RuntimeException("Primary key field not found in class " + clazz.getName());
+    }
+
+    public static String convertToSnakeCase(String input) {
+        if (StringUtils.isEmpty(input)) {
+            return "";
+        }
+        StringBuilder result = new StringBuilder();
+        result.append(Character.toLowerCase(input.charAt(0)));
+        for (int i = 1; i < input.length(); i++) {
+            char currentChar = input.charAt(i);
+            if (Character.isUpperCase(currentChar)) {
+                result.append("_");
+                result.append(Character.toLowerCase(currentChar));
+            } else {
+                result.append(currentChar);
+            }
+        }
+        return result.toString();
+    }
+
+    public static Integer CountPlaceHolders(String sqlExpression) {
+        int count = 0;
+
+        Matcher matcher = Pattern.compile("%\\d+").matcher(sqlExpression);
+        while (matcher.find()) {
+            count++;
+        }
+
+        return count;
+    }
+
+    public static void ParserSQLExpression(List<String> fitlers, String sqlExpression, String field, String... newValue) throws Exception {
+        List<String> placeHolders = new ArrayList<>(Arrays.asList(sqlExpression.split("(?=[|&])|(?<=[|&])")));
+        String Convert_Field_Name = convertToSnakeCase(field);
+        int lengthOfNewValue = 0;
+
+        String finalFilter = fitlers.contains(field) ? " AND ": "" ;
+
+        for (String placeHolder : placeHolders) {
+            String currentValue = newValue[lengthOfNewValue];
+
+            switch (placeHolder) {
+                case "|" -> finalFilter = " OR ";
+                case "&" -> finalFilter = " AND ";
+                default -> {
+                    if (placeHolder.startsWith("%") && (!placeHolder.contains("..")) && (!placeHolder.contains("*"))) {
+                        fitlers.add(finalFilter + Convert_Field_Name + " = " + currentValue);
+                    } else if (placeHolder.contains("..")) {
+                        fitlers.add(Convert_Field_Name + " BETWEEN " + currentValue + " AND " + newValue[lengthOfNewValue + 1]);
+                        lengthOfNewValue++;
+                    } else {
+                        String operator;
+                        if (placeHolder.contains(">=")) {
+                            operator = ">=";
+                        } else if (placeHolder.contains("<=")) {
+                            operator = "<=";
+                        } else if (placeHolder.contains("<>")) {
+                            operator = "<>";
+                        } else if (placeHolder.contains(">")) {
+                            operator = ">";
+                        } else if (placeHolder.contains("<")) {
+                            operator = "<";
+                        } else if (placeHolder.contains("*")) {
+
+                            int firstStar = placeHolder.indexOf("*");
+
+                            if (placeHolder.indexOf("*", firstStar + 1) == -1) {
+                                if (placeHolder.contains("%2")) {
+                                    fitlers.add(Convert_Field_Name + " LIKE '" + placeHolder
+                                            .replace("*", "%")
+                                            .replace("%1", currentValue)
+                                            .replace("%2", newValue[lengthOfNewValue + 1]) + "'"
+                                    );
+                                } else {
+                                    fitlers.add(Convert_Field_Name + " LIKE '" + placeHolder
+                                            .replace("*", "%")
+                                            .replace("%1", currentValue) + "'"
+                                    );
+                                }
+
+                            } else {
+                                fitlers.add(Convert_Field_Name + " LIKE '" + placeHolder
+                                        .replace("%1", currentValue)
+                                        .replace("*", "%") + "'"
+                                );
+                            }
+
+                            lengthOfNewValue++;
+                            break;
+
+                        } else {
+                            throw new Exception("IIlegalSQLExpression");
+                        }
+
+                        fitlers.add(finalFilter + Convert_Field_Name + " " + operator + " " + currentValue);
+                    }
+                    lengthOfNewValue++;
+                }
+            }
+        }
+    }
+
+    public static Map<String, Object> compareObjects(Object obj1, Object obj2) throws IllegalAccessException {
+        Class<?> objClass = obj1.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+
+        Map<String, Object> diffMap = new HashMap<>();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            Object obj1Value = field.get(obj1);
+            Object obj2Value = field.get(obj2);
+            if (!Objects.equals(obj1Value, obj2Value)) {
+                diffMap.put(convertToSnakeCase(field.getName()), obj2Value);
+            }
+        }
+
+        return diffMap;
+    }
+
+    public static List<String> getFieldNameList(Object object) {
+        List<String> fieldNameList = new ArrayList<>();
+        Field[] fields = object.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object fieldValue = field.get(object);
+                if (fieldValue != null && !"".equals(fieldValue)) {
+                    fieldNameList.add(convertToSnakeCase(field.getName()));
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return fieldNameList;
+    }
+
+    public static List<Object> getFieldValueList(Object object) {
+        List<Object> fieldValueList = new ArrayList<>();
+        Field[] fields = object.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object fieldValue = field.get(object);
+                if (fieldValue != null && !"".equals(fieldValue)) {
+                    fieldValueList.add(fieldValue);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return fieldValueList;
+    }
+
+    public static List<String> getFieldNameList(Object object,Boolean UseFullFields) {
+        if (!UseFullFields) {
+            return getFieldNameList(object);
+        }
+
+        List<String> fieldNameList = new ArrayList<>();
+        Field[] fields = object.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            fieldNameList.add(convertToSnakeCase(field.getName()));
+        }
+        return fieldNameList;
+    }
+
+    public static List<Object> getFieldValueList(Object object,Boolean UseFullFields) {
+        if (!UseFullFields) {
+            return getFieldValueList(object);
+        }
+
+        List<Object> fieldValueList = new ArrayList<>();
+        Field[] fields = object.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object fieldValue = field.get(object);
+                fieldValueList.add(fieldValue);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return fieldValueList;
+    }
+
+}
