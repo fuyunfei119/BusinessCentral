@@ -49,7 +49,7 @@ public class BusinessCentralUtils {
         return count;
     }
 
-    public static void ParserSQLExpression(List<String> fitlers, String sqlExpression, String field, String... newValue) throws Exception {
+    public static void ParserSQLExpression(List<String> fitlers, String sqlExpression, String field, Object[] newValue) throws Exception {
         List<String> placeHolders = new ArrayList<>(Arrays.asList(sqlExpression.split("(?=[|&])|(?<=[|&])")));
         String Convert_Field_Name = convertToSnakeCase(field);
         int lengthOfNewValue = 0;
@@ -57,7 +57,7 @@ public class BusinessCentralUtils {
         String finalFilter = fitlers.contains(field) ? " AND ": "" ;
 
         for (String placeHolder : placeHolders) {
-            String currentValue = newValue[lengthOfNewValue];
+            Object currentValue = newValue[lengthOfNewValue];
 
             switch (placeHolder) {
                 case "|" -> finalFilter = " OR ";
@@ -88,19 +88,19 @@ public class BusinessCentralUtils {
                                 if (placeHolder.contains("%2")) {
                                     fitlers.add(Convert_Field_Name + " LIKE '" + placeHolder
                                             .replace("*", "%")
-                                            .replace("%1", currentValue)
-                                            .replace("%2", newValue[lengthOfNewValue + 1]) + "'"
+                                            .replace("%1", currentValue.toString())
+                                            .replace("%2", newValue[lengthOfNewValue + 1].toString()) + "'"
                                     );
                                 } else {
                                     fitlers.add(Convert_Field_Name + " LIKE '" + placeHolder
                                             .replace("*", "%")
-                                            .replace("%1", currentValue) + "'"
+                                            .replace("%1", currentValue.toString()) + "'"
                                     );
                                 }
 
                             } else {
                                 fitlers.add(Convert_Field_Name + " LIKE '" + placeHolder
-                                        .replace("%1", currentValue)
+                                        .replace("%1", currentValue.toString())
                                         .replace("*", "%") + "'"
                                 );
                             }
@@ -114,7 +114,7 @@ public class BusinessCentralUtils {
 
                         fitlers.add(finalFilter + Convert_Field_Name + " " + operator + " " + currentValue);
                     }
-                    lengthOfNewValue++;
+                        lengthOfNewValue++;
                 }
             }
         }
@@ -203,5 +203,4 @@ public class BusinessCentralUtils {
         }
         return fieldValueList;
     }
-
 }

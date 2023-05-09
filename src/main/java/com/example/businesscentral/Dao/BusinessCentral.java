@@ -1,56 +1,54 @@
 package com.example.businesscentral.Dao;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public interface BusinessCentral<E extends Enum<E>> {
+public interface BusinessCentral<T,E extends Enum<E>> {
 
-    BusinessCentral<E> SetSource(Class<E> tClass) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException;
+    BusinessCentral<T,E> SetSource(Class<T> tClass) throws ClassNotFoundException;
 
-    BusinessCentral<E> SetRange(E entityFields, String newValue) throws Exception;
+    BusinessCentral<T,E> SetRange(E entityFields, Object newValue) throws Exception;
 
-    BusinessCentral<E> SetFilter(E entityFields, String sqlExpression, String... newValue) throws Exception;
+    BusinessCentral<T,E> SetFilter(E entityFields, String sqlExpression, Object... newValue) throws Exception;
 
-    BusinessCentral<E> SetLoadFields(E entityFields) throws Exception;
+    BusinessCentral<T,E> SetLoadFields(E entityFields) throws Exception;
 
-    BusinessCentral<E> SetLoadFields(E... entityFields) throws Exception;
+    BusinessCentral<T,E> SetLoadFields(E... entityFields) throws Exception;
 
     Boolean IsEmpty();
 
-    List<LinkedHashMap<String,Object>> FindSet(Boolean Prototype);
+    List<LinkedHashMap<String,Object>> FindSet(Boolean UpdateRequired,Boolean Prototype);
+    List<T> FindSet(Boolean UpdateRequired);
 
-    List<E> FindSet();
+    LinkedHashMap<String,Object> FindFirst(Boolean Prototype);
 
-    List<LinkedHashMap<String,Object>> FindFirst(Boolean Prototype);
+    List<T> FindFirst();
 
-    List<E> FindFirst();
+    LinkedHashMap<String, Object> FindLast(Boolean Prototype);
 
-    List<LinkedHashMap<String, Object>> FindLast(Boolean Prototype);
-
-    List<E> FindLast();
+    List<T> FindLast();
 
     List<LinkedHashMap<String, Object>> Find(Integer Count,Boolean Prototype);
 
-    List<E> Find(Integer Count);
+    List<T> Find(Integer Count);
 
-    List<LinkedHashMap<String, Object>> Get(Object ID, Boolean Prototype);
+    LinkedHashMap<String, Object> Get(Object ID, Boolean Prototype);
 
-    List<E> Get(Object ID);
+    T Get(Object ID);
 
     Integer Count() throws Exception;
 
-    BusinessCentral<E> Reset();
+    BusinessCentral<T,E> Reset();
 
-    BusinessCentral<E> Init();
+    BusinessCentral<T,E> Init();
 
-    E GetRecord();
+//    E GetRecord();
+//
+//    E GetX_Record();
 
-    E GetX_Record();
+    BusinessCentral<T,E> SetCurrentKey();
 
-    BusinessCentral<E> SetCurrentKey();
-
-    BusinessCentral<E> Validate(E entityFields, Object newValue, Boolean TriggerEvent) throws Exception;
+    BusinessCentral<T,E> Validate(E entityFields, Object newValue, Boolean TriggerEvent) throws Exception;
 
     Boolean Delete();
 

@@ -189,16 +189,16 @@ public interface BusinessCentralMapper {
     Integer IsEmpty(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
 
     @Select(FindFirst)
-    List<LinkedHashMap<String,Object>> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
 
     @Select(FindLast)
-    List<LinkedHashMap<String,Object>> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
 
     @Select(Find)
     List<LinkedHashMap<String,Object>> Find(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters,@Param("Count") Integer Count);
 
     @Select(Get)
-    List<LinkedHashMap<String,Object>> Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
 
     @Select(Count)
     Integer Count(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);

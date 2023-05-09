@@ -3,44 +3,45 @@ package com.example.businesscentral.Dao.Impl;
 import com.example.businesscentral.Dao.BusinessCentral;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @Repository
-public class BusinessCentralMySql<E extends Enum<E>> implements BusinessCentral<E> {
+@Scope("prototype")
+public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentral<T,E> {
 
     @Autowired
     private BusinessCentralMapper mapper;
-    private List<E> entityList;
-    private List<E> x_entityList;
-    private E entity;
-    private E x_entity;
+    private List<LinkedHashMap<String,Object>> entityList;
+    private List<LinkedHashMap<String,Object>> x_entityList;
+    private LinkedHashMap<String,Object> entity;
+    private LinkedHashMap<String,Object> x_entity;
     private final List<String> filters = new ArrayList<>();
     private final List<String> loadfilters = new ArrayList<>();
     private Field primaryKey;
-    private Class<E> aClass;
+    private List<T> classList;
+    private Class<?> aClass;
     private Object keyValue;
+    private Class fields;
+    private String finalfields;
+
+    public Class<?> getaClass() {
+        return aClass;
+    }
 
     @Override
-    public BusinessCentral<E> SetSource(Class<E> tClass) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-
+    public BusinessCentral<T,E> SetSource(Class<T> tClass) {
         this.aClass = tClass;
         this.primaryKey = BusinessCentralUtils.getPrimaryKeyField(this.aClass);
-
-        primaryKey.setAccessible(true);
-
-        this.entity = this.aClass.getDeclaredConstructor().newInstance();
-        this.x_entity = this.aClass.getDeclaredConstructor().newInstance();
         return this;
     }
 
     @Override
-    public BusinessCentral<E> SetRange(E entityFields, String newValue) throws Exception {
+    public BusinessCentral<T,E> SetRange(E entityFields, Object newValue) throws Exception {
 
         Field field = aClass.getDeclaredField(entityFields.name());
 
@@ -54,7 +55,7 @@ public class BusinessCentralMySql<E extends Enum<E>> implements BusinessCentral<
     }
 
     @Override
-    public BusinessCentral<E> SetFilter(E entityFields, String sqlExpression, String... newValue) throws Exception {
+    public BusinessCentral<T,E> SetFilter(E entityFields, String sqlExpression, Object... newValue) throws Exception {
 
         Field field = aClass.getDeclaredField(entityFields.name());
 
@@ -64,13 +65,13 @@ public class BusinessCentralMySql<E extends Enum<E>> implements BusinessCentral<
             filters.add(" AND ");
         }
 
-        BusinessCentralUtils.ParserSQLExpression(this.filters,sqlExpression,field.getName(), Arrays.toString(newValue));
+        BusinessCentralUtils.ParserSQLExpression(this.filters,sqlExpression,field.getName(), Arrays.stream(newValue).toArray(Object[]::new));
 
         return this;
     }
 
     @Override
-    public BusinessCentral<E> SetLoadFields(E entityFields) throws Exception {
+    public BusinessCentral<T,E> SetLoadFields(E entityFields) throws Exception {
         Field field = aClass.getDeclaredField(entityFields.name());
 
         this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(field.getName()));
@@ -79,7 +80,8 @@ public class BusinessCentralMySql<E extends Enum<E>> implements BusinessCentral<
     }
 
     @Override
-    public BusinessCentral<E> SetLoadFields(E... entityFields) throws Exception {
+    public BusinessCentral<T,E> SetLoadFields(E... entityFields) throws Exception {
+
         for (Enum<E> field : entityFields) {
             Field finalField = this.aClass.getDeclaredField(field.name());
 
@@ -95,48 +97,35 @@ public class BusinessCentralMySql<E extends Enum<E>> implements BusinessCentral<
     }
 
     @Override
-    public List<LinkedHashMap<String,Object>> FindSet(Boolean Prototype) {
-        if (Prototype){
-            return mapper.FindSet(String.join(", ", loadfilters), filters);
-        } else {
-            return  (List) mapper.FindSet(String.join(", ", loadfilters), filters);
-        }
+    public List<LinkedHashMap<String,Object>> FindSet(Boolean UpdateRequired,Boolean Prototype){
+        this.entityList = mapper.FindSet(String.join(", ", loadfilters), filters);
+        return entityList;
     }
 
     @Override
-    public List<E> FindSet() {
-
-        this.entityList = (List) mapper.FindSet(String.join(", ", loadfilters), filters);
-
-        return this.entityList;
+    public List<T> FindSet(Boolean UpdateRequired) {
+        this.classList = (List<T>) mapper.FindSet(String.join(", ", loadfilters), filters);
+        return this.classList;
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> FindFirst(Boolean Prototype) {
-        if (Prototype) {
-            return mapper.FindFirst(String.join(", ", loadfilters), filters);
-        } else {
-            return (List) mapper.FindFirst(String.join(", ", loadfilters), filters);
-        }
+    public LinkedHashMap<String, Object> FindFirst(Boolean Prototype) {
+        return mapper.FindFirst(String.join(", ", loadfilters), filters);
     }
 
     @Override
-    public List<E> FindFirst() {
+    public List<T> FindFirst() {
         List list = (List) mapper.FindFirst(String.join(", ", loadfilters), filters);
         return list;
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> FindLast(Boolean Prototype) {
-        if (Prototype) {
-            return mapper.FindLast(String.join(", ", loadfilters),filters);
-        }else {
-            return (List) mapper.FindLast(String.join(", ", loadfilters),filters);
-        }
+    public LinkedHashMap<String, Object> FindLast(Boolean Prototype) {
+        return mapper.FindLast(String.join(", ", loadfilters),filters);
     }
 
     @Override
-    public List<E> FindLast() {
+    public List<T> FindLast() {
         return (List) mapper.FindLast(String.join(", ", loadfilters),filters);
     }
 
@@ -146,25 +135,21 @@ public class BusinessCentralMySql<E extends Enum<E>> implements BusinessCentral<
     }
 
     @Override
-    public List<E> Find(Integer Count) {
-        return (List) mapper.Find(String.join(", ", loadfilters), filters, Count);
+    public List<T> Find(Integer Count) {
+        return (List<T>) mapper.Find(String.join(", ", loadfilters), filters, Count);
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> Get(Object ID, Boolean Prototype) {
-        if (Prototype) {
-            return mapper.Get(String.join(", ", loadfilters),filters);
-        } else {
-            return (List) mapper.Get(String.join(", ", loadfilters),filters);
-        }
+    public LinkedHashMap<String, Object> Get(Object ID, Boolean Prototype) {
+        return mapper.Get(String.join(", ", loadfilters),filters);
     }
 
     @Override
-    public List<E> Get(Object ID) {
+    public T Get(Object ID) {
         this.filters.clear();
         this.filters.add(BusinessCentralUtils.convertToSnakeCase(primaryKey.getName() + " = " + "'" + ID + "'"));
 
-        return (List) mapper.Get(String.join(", ", loadfilters),filters);
+        return (T) mapper.Get(String.join(", ", loadfilters),filters);
     }
 
     @Override
@@ -176,35 +161,34 @@ public class BusinessCentralMySql<E extends Enum<E>> implements BusinessCentral<
     }
 
     @Override
-    public BusinessCentral<E> Reset() {
+    public BusinessCentral<T,E> Reset() {
         this.filters.clear();
         this.loadfilters.clear();
-        BeanUtils.copyProperties(this.entity,this.x_entity);
         return this;
     }
 
     @Override
-    public BusinessCentral<E> Init() {
+    public BusinessCentral<T,E> Init() {
         return this;
     }
 
-    @Override
-    public E GetRecord() {
-        return this.entity;
-    }
+//    @Override
+//    public List<T> GetRecord() {
+//        return this.entity;
+//    }
+//
+//    @Override
+//    public List<T> GetX_Record() {
+//        return x_entity;
+//    }
 
     @Override
-    public E GetX_Record() {
-        return x_entity;
-    }
-
-    @Override
-    public BusinessCentral<E> SetCurrentKey() {
+    public BusinessCentral<T,E> SetCurrentKey() {
         return null;
     }
 
     @Override
-    public BusinessCentral<E> Validate(E entityFields, Object newValue, Boolean TriggerEvent) throws Exception {
+    public BusinessCentral<T,E> Validate(E entityFields, Object newValue, Boolean TriggerEvent) throws Exception {
         return this;
     }
 

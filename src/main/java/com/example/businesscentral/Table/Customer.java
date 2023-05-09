@@ -2,11 +2,13 @@ package com.example.businesscentral.Table;
 
 import com.example.businesscentral.Annotation.*;
 import com.example.businesscentral.System.*;
+import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants(asEnum = true)
 @TableNameConstants
 @Entity
+@Data
 @OnInit(InitTriggerType.OnInitEntity)
 @OnInsert(InsertTriggerType.OnCheckEntityResultOnBeforeInsert)
 @OnDelete(DeleteTriggerType.OnCheckEntityResultOnBeforeDelete)
