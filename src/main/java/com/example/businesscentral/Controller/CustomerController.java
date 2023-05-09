@@ -16,15 +16,11 @@ public class CustomerController {
 
     @GetMapping("/test123")
     public List<Customer> test1() throws Exception {
-        return service.test1();
+        return service.CheckIfHasOver_250_PointsCustomers();
     }
 
     @GetMapping("/test")
     public String test() {
-
-        service.test2(Customer.Fields.customerType);
-
         return "ok";
-
     }
 }

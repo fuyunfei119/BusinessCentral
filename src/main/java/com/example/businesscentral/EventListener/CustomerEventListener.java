@@ -11,4 +11,9 @@ public class CustomerEventListener {
         System.out.println(event.getSource());
         System.out.println(event.getHandled());
     }
+
+    @EventListener
+    public void OnBeforeCheckIfHasOver_250_PointCustomers(CustomerEvent.OnBeforeCheckIfHasOver_250_PointCustomers event) {
+
+    }
 }
