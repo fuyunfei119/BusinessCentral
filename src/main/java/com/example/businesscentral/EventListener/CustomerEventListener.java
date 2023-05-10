@@ -4,17 +4,15 @@ import com.example.businesscentral.Event.CustomerEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @Component
 public class CustomerEventListener {
     @EventListener
-    public void OnBeforeCheckIfCustomerHasOverDueBalance(CustomerEvent.OnBeforeCheckIfCustomerHasOverDueBalance event) {
-
-    }
+    public void OnBeforeCheckIfCustomerHasOverDueBalance(CustomerEvent.OnBeforeCheckIfCustomerHasOverDueBalance event) {}
 
     @EventListener
     public void OnBeforeCheckIfHasOver_250_PointCustomers(CustomerEvent.OnBeforeCheckIfHasOver_250_PointCustomers event) {
-        System.out.println("OnBeforeCheckIfHasOver_250_PointCustomers event Raised!!!");
-        event.setHandled(true);
-        System.out.println(event.getHandled());
+        event.setHandled(new AtomicBoolean(true));
     }
 }

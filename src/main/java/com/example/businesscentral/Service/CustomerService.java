@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class CustomerService {
@@ -19,10 +20,10 @@ public class CustomerService {
 
     public List<Customer> CheckIfHasOver_PointsCustomers() throws Exception {
 
-        Boolean IsHandled = false;
+        AtomicBoolean IsHandled = new AtomicBoolean(false);
         OnBeforeCheckIfHasOver_250_PointCustomers(IsHandled);
-        System.out.println("IsHandled result => " + IsHandled);
-        if (IsHandled) return null;
+        System.out.println("Result => "+IsHandled.get());
+        if (IsHandled.get()) return null;
 
         CUSTOMER.SetSource(Customer.class);
         CUSTOMER.SetLoadFields(Customer.Fields.firstName);
@@ -37,30 +38,30 @@ public class CustomerService {
         CUSTOMER.SetFilter(Customer.Fields.firstName,"%1*","J");
         List<Customer> customers = CUSTOMER.FindSet(true);
 
-        if (customers.isEmpty()) {
-            OnBeforeInsertNewCustomer(IsHandled);
-            if (IsHandled) return null;
-
-            CUSTOMER.Reset();
-            CUSTOMER.Init();
-            CUSTOMER.Validate(Customer.Fields.phoneNumber,"123456789",true);
-            CUSTOMER.Modify(true);
-            CUSTOMER.Insert(true,true);
-        }
-
-        OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
-        return !IsHandled ? customers : null;
+//        if (customers.isEmpty()) {
+//            OnBeforeInsertNewCustomer(IsHandled);
+//            if (IsHandled.get()) return null;
+//
+//            CUSTOMER.Reset();
+//            CUSTOMER.Init();
+//            CUSTOMER.Validate(Customer.Fields.phoneNumber,"123456789",true);
+//            CUSTOMER.Modify(true);
+//            CUSTOMER.Insert(true,true);
+//        }
+//
+//        OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
+        return !IsHandled.get() ? customers : null;
     }
 
-    private void OnBeforeCheckIfHasOver_250_PointCustomers(Boolean IsHandled) {
+    private void OnBeforeCheckIfHasOver_250_PointCustomers(AtomicBoolean IsHandled) {
         this.applicationEventPublisher.publishEvent(new CustomerEvent.OnBeforeCheckIfHasOver_250_PointCustomers(new Object(),IsHandled));
     }
 
-    private void OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(List<Customer> customers,Boolean IsHandled) {
+    private void OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(List<Customer> customers,AtomicBoolean IsHandled) {
         this.applicationEventPublisher.publishEvent(new CustomerEvent.OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled));
     }
 
-    private void OnBeforeInsertNewCustomer(Boolean IsHandled) {
+    private void OnBeforeInsertNewCustomer(AtomicBoolean IsHandled) {
         this.applicationEventPublisher.publishEvent(new CustomerEvent.OnBeforeInsertNewCustomer(new Object(),IsHandled));
     }
 

@@ -2,6 +2,8 @@ package com.example.businesscentral.Event;
 
 import org.springframework.context.ApplicationEvent;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class CustomerEvent extends ApplicationEvent {
 
     public CustomerEvent(Object source) {
@@ -9,63 +11,71 @@ public class CustomerEvent extends ApplicationEvent {
     }
 
     public static class OnBeforeCheckIfCustomerHasOverDueBalance extends CustomerEvent {
-        private Boolean IsHandled;
+        private AtomicBoolean IsHandled;
 
-        public OnBeforeCheckIfCustomerHasOverDueBalance(Object source, Boolean isHandled) {
+        public OnBeforeCheckIfCustomerHasOverDueBalance(Object source, AtomicBoolean IsHandled) {
             super(source);
-            this.IsHandled = isHandled;
+            this.IsHandled = IsHandled;
         }
 
-        public Boolean getHandled() {
+        public AtomicBoolean getHandled() {
             return IsHandled;
         }
 
-        public void setHandled(Boolean handled) {
-            IsHandled = handled;
+        public void setHandled(AtomicBoolean handled) {
+            IsHandled = IsHandled;
         }
     }
 
     public static class OnBeforeCheckIfHasOver_250_PointCustomers extends CustomerEvent {
-        private Boolean IsHandled;
+        private AtomicBoolean IsHandled;
 
 
-        public OnBeforeCheckIfHasOver_250_PointCustomers(Object source,Boolean isHandled) {
+        public OnBeforeCheckIfHasOver_250_PointCustomers(Object source,AtomicBoolean IsHandled) {
             super(source);
-            this.IsHandled = isHandled;
+            this.IsHandled = IsHandled;
         }
 
-        public Boolean getHandled() {
+        public AtomicBoolean getHandled() {
             return IsHandled;
         }
 
-        public void setHandled(Boolean handled) {
-            IsHandled = handled;
+        public void setHandled(AtomicBoolean IsHandled) {
+            this.IsHandled = IsHandled;
         }
     }
 
     public static class OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers extends CustomerEvent {
-        private Boolean IsHandled;
+        private AtomicBoolean IsHandled;
 
-        public OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(Object source, Boolean isHandled) {
+        public OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(Object source, AtomicBoolean IsHandled) {
             super(source);
-            IsHandled = isHandled;
+            IsHandled = IsHandled;
         }
 
-        public Boolean getHandled() {
+        public AtomicBoolean getHandled() {
             return IsHandled;
+        }
+
+        public void setHandled(AtomicBoolean handled) {
+            IsHandled = IsHandled;
         }
     }
 
     public static class OnBeforeInsertNewCustomer extends CustomerEvent {
-        private Boolean IsHandled;
+        private AtomicBoolean IsHandled;
 
-        public OnBeforeInsertNewCustomer(Object source, Boolean isHandled) {
+        public OnBeforeInsertNewCustomer(Object source, AtomicBoolean isHandled) {
             super(source);
             IsHandled = isHandled;
         }
 
-        public Boolean getHandled() {
+        public AtomicBoolean getHandled() {
             return IsHandled;
+        }
+
+        public void setHandled(AtomicBoolean handled) {
+            IsHandled = IsHandled;
         }
     }
 }
