@@ -8,12 +8,13 @@ import org.springframework.stereotype.Component;
 public class CustomerEventListener {
     @EventListener
     public void OnBeforeCheckIfCustomerHasOverDueBalance(CustomerEvent.OnBeforeCheckIfCustomerHasOverDueBalance event) {
-        System.out.println(event.getSource());
-        System.out.println(event.getHandled());
+
     }
 
     @EventListener
     public void OnBeforeCheckIfHasOver_250_PointCustomers(CustomerEvent.OnBeforeCheckIfHasOver_250_PointCustomers event) {
-
+        System.out.println("OnBeforeCheckIfHasOver_250_PointCustomers event Raised!!!");
+        event.setHandled(true);
+        System.out.println(event.getHandled());
     }
 }

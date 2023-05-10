@@ -16,7 +16,7 @@ public class CustomerController {
 
     @GetMapping("/test123")
     public List<Customer> test1() throws Exception {
-        return service.CheckIfHasOver_250_PointsCustomers();
+        return service.CheckIfHasOver_PointsCustomers();
     }
 
     @GetMapping("/test")

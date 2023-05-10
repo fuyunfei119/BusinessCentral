@@ -10,7 +10,7 @@ public class CustomerTrigger {
 
     @Trigger(RaisedFor = SystemTriggerType.Validate)
     public void CheckIfAddressIsIIegel() {
-        System.out.println("Check if this address is iiegel..............");
+        System.out.println("Validate Trigger Raised......");
     }
 
     public void doCheckIfAddressIsIIegel() {}

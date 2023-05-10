@@ -18,6 +18,7 @@ public interface BusinessCentral<T,E extends Enum<E>> {
     Boolean IsEmpty();
 
     List<LinkedHashMap<String,Object>> FindSet(Boolean UpdateRequired,Boolean Prototype);
+
     List<T> FindSet(Boolean UpdateRequired);
 
     LinkedHashMap<String,Object> FindFirst(Boolean Prototype);
@@ -41,6 +42,8 @@ public interface BusinessCentral<T,E extends Enum<E>> {
     BusinessCentral<T,E> Reset();
 
     BusinessCentral<T,E> Init();
+
+    BusinessCentral<T,E> Init(Boolean TriggerEvent);
 
 //    E GetRecord();
 //

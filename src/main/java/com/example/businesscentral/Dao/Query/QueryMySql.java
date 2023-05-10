@@ -33,7 +33,6 @@ public class QueryMySql<E extends Enum<E>> implements BusinessCentralQuery<E> {
     public List<String> GetJoinCondition() {
         this.Joins = this.Joins.stream().map(s -> tableName + "." + s).toList();
 
-        System.out.println("Join:"+this.Joins);
         return this.Joins;
     }
 
@@ -46,7 +45,6 @@ public class QueryMySql<E extends Enum<E>> implements BusinessCentralQuery<E> {
 
     @Override
     public List<String> GetDataItem() {
-        System.out.println("loadFields:"+this.loadFields);
         return this.loadFields;
     }
 

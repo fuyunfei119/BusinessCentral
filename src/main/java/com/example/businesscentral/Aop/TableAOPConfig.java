@@ -51,8 +51,6 @@ public class TableAOPConfig {
     @Around("OnTriggerTableEvent()")
     public Object OnDoTest(ProceedingJoinPoint pjp) throws Throwable {
 
-        System.out.println(Arrays.toString(pjp.getArgs()));
-
         if (!Objects.equals(pjp.getKind(), JoinPoint.METHOD_EXECUTION)) return pjp.proceed();
 
         Class<?> table = GetClass(pjp);

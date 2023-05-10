@@ -10,21 +10,21 @@ public class CustomerTableTrigger {
 
     @Trigger(RaisedFor = SystemTriggerType.Insert)
     public void OnCheckEntityResultOnBeforeInsert() {
-        System.out.println("this is an healthy entity ..............");
+        System.out.println("Insert Trigger Raised......");
     }
 
     @Trigger(RaisedFor = SystemTriggerType.Init)
     public void OnInitEntity() {
-        System.out.println("Initialization ..............");
+        System.out.println("Init Trigger Raised......");
     }
 
     @Trigger(RaisedFor = SystemTriggerType.Modify)
     public void OnModifyEntity() {
-        System.out.println("This Entity can be modify");
+        System.out.println("Modify Trigger Raised......");
     }
 
     @Trigger(RaisedFor = SystemTriggerType.Delete)
     public void OnCheckEntityResultOnBeforeDelete() {
-        System.out.println("delete entity ..............");
+        System.out.println("Delete Trigger Raised......");
     }
 }

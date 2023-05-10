@@ -172,6 +172,11 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
         return this;
     }
 
+    @Override
+    public BusinessCentral<T, E> Init(Boolean TriggerEvent) {
+        return null;
+    }
+
 //    @Override
 //    public List<T> GetRecord() {
 //        return this.entity;
@@ -200,29 +205,32 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     @Override
     public Boolean Modify(Boolean UseEvent) throws Exception {
 
-        Map<String, Object> diffMap = BusinessCentralUtils.compareObjects(entity, x_entity);
+//        Map<String, Object> diffMap = BusinessCentralUtils.compareObjects(entity, x_entity);
+//
+//        Field field = this.entity.getClass().getDeclaredField(primaryKey.getName());
+//        field.setAccessible(true);
+//        this.keyValue = field.get(this.entity);
+//
+//        return mapper.Modify(diffMap,BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),keyValue) != 0;
 
-        Field field = this.entity.getClass().getDeclaredField(primaryKey.getName());
-        field.setAccessible(true);
-        this.keyValue = field.get(this.entity);
-
-        return mapper.Modify(diffMap,BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),keyValue) != 0;
+        return true;
     }
 
     @Override
     public Boolean Insert(Boolean UseEvent, Boolean FullFields) {
 
-        List<String> fieldNameList = BusinessCentralUtils.getFieldNameList(this.entity,true);
-        List<Object> valueList = BusinessCentralUtils.getFieldValueList(this.entity,true);
-
-        Integer count;
-
-        if (FullFields) {
-            count = mapper.InsertWithFullField(fieldNameList,valueList);
-        }else {
-            count = mapper.Insert(fieldNameList,valueList);
-        }
-
-        return count != 0;
+//        List<String> fieldNameList = BusinessCentralUtils.getFieldNameList(this.entity,true);
+//        List<Object> valueList = BusinessCentralUtils.getFieldValueList(this.entity,true);
+//
+//        Integer count;
+//
+//        if (FullFields) {
+//            count = mapper.InsertWithFullField(fieldNameList,valueList);
+//        }else {
+//            count = mapper.Insert(fieldNameList,valueList);
+//        }
+//
+//        return count != 0;
+        return true;
     }
 }
