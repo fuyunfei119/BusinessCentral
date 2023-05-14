@@ -19,8 +19,8 @@ public class CustomerController {
         return service.CheckIfHasOver_PointsCustomers();
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "ok";
+    @GetMapping("/testnewcustomer")
+    public List<Customer> test() throws Exception {
+        return service.InsertNewCustomer();
     }
 }

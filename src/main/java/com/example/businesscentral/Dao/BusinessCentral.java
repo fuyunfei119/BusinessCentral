@@ -1,11 +1,12 @@
 package com.example.businesscentral.Dao;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface BusinessCentral<T,E extends Enum<E>> {
 
-    BusinessCentral<T,E> SetSource(Class<T> tClass) throws ClassNotFoundException;
+    BusinessCentral<T,E> SetSource(Class<T> tClass) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     BusinessCentral<T,E> SetRange(E entityFields, Object newValue) throws Exception;
 
@@ -21,7 +22,7 @@ public interface BusinessCentral<T,E extends Enum<E>> {
 
     List<T> FindSet(Boolean UpdateRequired);
 
-    LinkedHashMap<String,Object> FindFirst(Boolean Prototype);
+    List<LinkedHashMap<String,Object>> FindFirst(Boolean Prototype);
 
     List<T> FindFirst();
 
@@ -42,12 +43,6 @@ public interface BusinessCentral<T,E extends Enum<E>> {
     BusinessCentral<T,E> Reset();
 
     BusinessCentral<T,E> Init();
-
-    BusinessCentral<T,E> Init(Boolean TriggerEvent);
-
-//    E GetRecord();
-//
-//    E GetX_Record();
 
     BusinessCentral<T,E> SetCurrentKey();
 

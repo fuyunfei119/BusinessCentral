@@ -3,6 +3,10 @@ package com.example.businesscentral.Table;
 import com.example.businesscentral.Annotation.*;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
+import org.springframework.util.StringUtils;
+
+import java.sql.Date;
+import java.util.UUID;
 
 @FieldNameConstants(asEnum = true)
 @TableNameConstants
@@ -59,23 +63,36 @@ public class Customer {
     @ApplicationArea(All = true)
     private String customerType;
 
+    @Trigger
+    private Customer OnInitTriggerMethod() {
+        this.userId = UUID.randomUUID().toString();
+        this.accountStatus = "Active";
+        this.accountCreationDate = new Date(System.currentTimeMillis());
+        return this;
+    }
 
-    private void OnInitTriggerMethod() { System.out.println("Init Trigger Raised..."); }
-
+    @Trigger
     private void OnInsertTriggerMethod() {
         System.out.println("Insert Trigger Raised...");
     }
 
+    @Trigger
     private void OnModifyTriggerMethod() {
         System.out.println("Modify Trigger Raised...");
     }
 
+    @Trigger
     private void OnDeleteTriggerMethod() {
         System.out.println("Delete Trigger Raised...");
     }
 
-    private void OnValidatePhoneNumberTriggerMethod() {
-        System.out.println("Validate Trigger Raised...");
+    @Trigger
+    private Customer OnValidatePhoneNumberTriggerMethod(Object newValue) {
+        if (StringUtils.hasLength(newValue.toString())) {
+            this.phoneNumber = newValue.toString();
+        }
+
+        return this;
     }
 
 }

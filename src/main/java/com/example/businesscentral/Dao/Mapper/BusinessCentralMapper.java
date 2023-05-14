@@ -189,7 +189,7 @@ public interface BusinessCentralMapper {
     Integer IsEmpty(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
 
     @Select(FindFirst)
-    LinkedHashMap<String,Object> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    List<LinkedHashMap<String,Object>> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
 
     @Select(FindLast)
     LinkedHashMap<String,Object> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);

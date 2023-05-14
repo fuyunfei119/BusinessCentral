@@ -1,13 +1,19 @@
 package com.example.businesscentral.Dao.Impl;
 
+import com.example.businesscentral.Annotation.OnInit;
+import com.example.businesscentral.Annotation.OnValidate;
 import com.example.businesscentral.Dao.BusinessCentral;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 @Repository
@@ -16,15 +22,18 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
     @Autowired
     private BusinessCentralMapper mapper;
+    @Autowired
+    private ApplicationContext applicationContext;
     private List<LinkedHashMap<String,Object>> entityList;
     private List<LinkedHashMap<String,Object>> x_entityList;
-    private LinkedHashMap<String,Object> entity;
-    private LinkedHashMap<String,Object> x_entity;
+//    private LinkedHashMap<String,Object> entity;
+//    private LinkedHashMap<String,Object> x_entity;
     private final List<String> filters = new ArrayList<>();
     private final List<String> loadfilters = new ArrayList<>();
     private Field primaryKey;
     private List<T> classList;
-    private Class<?> aClass;
+    private T entity;
+    private Class<T> aClass;
     private Object keyValue;
     private Class fields;
     private String finalfields;
@@ -34,9 +43,10 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     }
 
     @Override
-    public BusinessCentral<T,E> SetSource(Class<T> tClass) {
+    public BusinessCentral<T,E> SetSource(Class<T> tClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.aClass = tClass;
         this.primaryKey = BusinessCentralUtils.getPrimaryKeyField(this.aClass);
+        this.entity = this.aClass.getDeclaredConstructor().newInstance();
         return this;
     }
 
@@ -109,13 +119,13 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     }
 
     @Override
-    public LinkedHashMap<String, Object> FindFirst(Boolean Prototype) {
+    public List<LinkedHashMap<String, Object>> FindFirst(Boolean Prototype) {
         return mapper.FindFirst(String.join(", ", loadfilters), filters);
     }
 
     @Override
     public List<T> FindFirst() {
-        List list = (List) mapper.FindFirst(String.join(", ", loadfilters), filters);
+        List<T> list = (List<T>) mapper.FindFirst(String.join(", ", loadfilters), filters);
         return list;
     }
 
@@ -169,23 +179,28 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
     @Override
     public BusinessCentral<T,E> Init() {
+
+        if (!this.aClass.isAnnotationPresent(OnInit.class)) return this;
+
+        OnInit onInit = Objects.requireNonNull(this.aClass.getDeclaredAnnotation(OnInit.class));
+
+        if (onInit.value().isBlank()) return this;
+
+        String methodName = onInit.value();
+
+        Method method = ReflectionUtils.findMethod(this.aClass, methodName);
+
+        if (method != null) {
+
+            method.setAccessible(true);
+
+            Object bean = applicationContext.getBean(this.aClass);
+
+            this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
+        }
         return this;
     }
 
-    @Override
-    public BusinessCentral<T, E> Init(Boolean TriggerEvent) {
-        return null;
-    }
-
-//    @Override
-//    public List<T> GetRecord() {
-//        return this.entity;
-//    }
-//
-//    @Override
-//    public List<T> GetX_Record() {
-//        return x_entity;
-//    }
 
     @Override
     public BusinessCentral<T,E> SetCurrentKey() {
@@ -194,6 +209,41 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
     @Override
     public BusinessCentral<T,E> Validate(E entityFields, Object newValue, Boolean TriggerEvent) throws Exception {
+
+        Field field = this.aClass.getDeclaredField(entityFields.name());
+
+        if (!TriggerEvent) {
+
+            field.setAccessible(true);
+
+            field.set(entity,newValue);
+        }
+
+        if (TriggerEvent) {
+
+            if (!field.isAnnotationPresent(OnValidate.class)) return this;
+
+            OnValidate onValidate = Objects.requireNonNull(field.getAnnotation(OnValidate.class));
+
+            if (onValidate.value().isBlank()) return this;
+
+            String methodName = onValidate.value();
+
+            Method method = ReflectionUtils.findMethod(this.aClass, methodName, Object.class);
+
+            if (method != null) {
+
+                method.setAccessible(true);
+
+                Object bean = applicationContext.getBean(this.aClass);
+
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean,newValue);
+            }
+
+        }
+
+        System.out.println(this.entity);
+
         return this;
     }
 
@@ -219,18 +269,17 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     @Override
     public Boolean Insert(Boolean UseEvent, Boolean FullFields) {
 
-//        List<String> fieldNameList = BusinessCentralUtils.getFieldNameList(this.entity,true);
-//        List<Object> valueList = BusinessCentralUtils.getFieldValueList(this.entity,true);
-//
-//        Integer count;
-//
-//        if (FullFields) {
-//            count = mapper.InsertWithFullField(fieldNameList,valueList);
-//        }else {
-//            count = mapper.Insert(fieldNameList,valueList);
-//        }
-//
-//        return count != 0;
-        return true;
+        List<String> fieldNameList = BusinessCentralUtils.getFieldNameList(this.entity,true);
+        List<Object> valueList = BusinessCentralUtils.getFieldValueList(this.entity,true);
+
+        Integer count;
+
+        if (FullFields) {
+            count = mapper.InsertWithFullField(fieldNameList,valueList);
+        }else {
+            count = mapper.Insert(fieldNameList,valueList);
+        }
+
+        return count != 0;
     }
 }

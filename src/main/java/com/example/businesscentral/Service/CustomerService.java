@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,7 +17,31 @@ public class CustomerService {
     @Autowired
     private BusinessCentral<Customer,Customer.Fields> CUSTOMER;
     @Autowired
+    private BusinessCentral<Customer,Customer.Fields> NEWCUSTOMER;
+    @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
+
+    public List<Customer> InsertNewCustomer() throws Exception {
+
+        List<Customer> customers = new ArrayList<>();
+
+        NEWCUSTOMER.SetSource(Customer.class);
+        NEWCUSTOMER.Init();
+        NEWCUSTOMER.Validate(Customer.Fields.firstName,"YUNFEI",false);
+        NEWCUSTOMER.Validate(Customer.Fields.lastName,"FU",false);
+        NEWCUSTOMER.Validate(Customer.Fields.phoneNumber,"123456789",true);
+        Boolean inserted = NEWCUSTOMER.Insert(true, true);
+
+        if (inserted) {
+            NEWCUSTOMER.Reset();
+            NEWCUSTOMER.SetSource(Customer.class);
+            NEWCUSTOMER.SetRange(Customer.Fields.firstName,"YUNFEI");
+            NEWCUSTOMER.SetRange(Customer.Fields.lastName,"FU");
+            customers = NEWCUSTOMER.FindFirst();
+        }
+
+        return customers;
+    }
 
     public List<Customer> CheckIfHasOver_PointsCustomers() throws Exception {
 
