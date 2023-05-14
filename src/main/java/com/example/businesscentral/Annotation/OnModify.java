@@ -1,6 +1,5 @@
 package com.example.businesscentral.Annotation;
 
-import com.example.businesscentral.System.ModifyTriggerType;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
@@ -10,5 +9,5 @@ import java.lang.annotation.*;
 @Documented
 @Component
 public @interface OnModify {
-    ModifyTriggerType value();
+    String value() default "";
 }

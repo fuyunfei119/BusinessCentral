@@ -22,34 +22,32 @@ public class CustomerService {
 
         AtomicBoolean IsHandled = new AtomicBoolean(false);
         OnBeforeCheckIfHasOver_250_PointCustomers(IsHandled);
-        System.out.println("Result => "+IsHandled.get());
         if (IsHandled.get()) return null;
 
         CUSTOMER.SetSource(Customer.class);
         CUSTOMER.SetLoadFields(Customer.Fields.firstName);
         CUSTOMER.SetLoadFields(Customer.Fields.emailAddress);
         CUSTOMER.SetLoadFields(Customer.Fields.accountStatus);
-        CUSTOMER.SetLoadFields(Customer.Fields.firstName);
         CUSTOMER.SetLoadFields(Customer.Fields.billingAddress);
         CUSTOMER.SetLoadFields(Customer.Fields.Points);
         CUSTOMER.SetLoadFields(Customer.Fields.emailAddress);
-        CUSTOMER.SetFilter(Customer.Fields.Points,">%1&<%2",300,500);
+        CUSTOMER.SetFilter(Customer.Fields.Points,">%1&<%2",50,500);
         CUSTOMER.SetRange(Customer.Fields.accountStatus,"Active");
         CUSTOMER.SetFilter(Customer.Fields.firstName,"%1*","J");
         List<Customer> customers = CUSTOMER.FindSet(true);
 
-//        if (customers.isEmpty()) {
-//            OnBeforeInsertNewCustomer(IsHandled);
-//            if (IsHandled.get()) return null;
-//
-//            CUSTOMER.Reset();
-//            CUSTOMER.Init();
-//            CUSTOMER.Validate(Customer.Fields.phoneNumber,"123456789",true);
-//            CUSTOMER.Modify(true);
-//            CUSTOMER.Insert(true,true);
-//        }
-//
-//        OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
+        if (!customers.isEmpty()) {
+            OnBeforeInsertNewCustomer(IsHandled);
+            if (IsHandled.get()) return null;
+
+            CUSTOMER.Reset();
+            CUSTOMER.Init();
+            CUSTOMER.Validate(Customer.Fields.phoneNumber,"123456789",true);
+            CUSTOMER.Modify(true);
+            CUSTOMER.Insert(true,true);
+        }
+
+        OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
         return !IsHandled.get() ? customers : null;
     }
 

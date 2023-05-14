@@ -1,25 +1,26 @@
 package com.example.businesscentral.Aop;
 
 import com.example.businesscentral.Annotation.*;
-import com.example.businesscentral.Config.TableTriggerScan;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.*;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 
 
 @Component
 @Aspect
 public class TableAOPConfig {
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     /**
      * <p>
@@ -92,11 +93,22 @@ public class TableAOPConfig {
 
         OnInsert OnInsert = Objects.requireNonNull(table.getDeclaredAnnotation(OnInsert.class));
 
-        if (OnInsert.value().name().isBlank()) return;
+        if (OnInsert.value().isBlank()) return;
 
-        String methodName = OnInsert.value().name();
+        String methodName = OnInsert.value();
 
-        InvokeTriggerMethod(methodName,table);
+        Method method = ReflectionUtils.findMethod(table, methodName);
+
+        if (method != null) {
+
+            method.setAccessible(true);
+
+            Object bean = applicationContext.getBean(table);
+
+            ReflectionUtils.invokeMethod(method,bean);
+        }
+
+//        InvokeTriggerMethod(methodName,table);
 
     }
 
@@ -106,11 +118,22 @@ public class TableAOPConfig {
 
         OnModify onModify = Objects.requireNonNull(table.getDeclaredAnnotation(OnModify.class));
 
-        if (onModify.value().name().isBlank()) return;
+        if (onModify.value().isBlank()) return;
 
-        String methodName = onModify.value().name();
+        String methodName = onModify.value();
 
-        InvokeTriggerMethod(methodName,table);
+        Method method = ReflectionUtils.findMethod(table, methodName);
+
+        if (method != null) {
+
+            method.setAccessible(true);
+
+            Object bean = applicationContext.getBean(table);
+
+            ReflectionUtils.invokeMethod(method,bean);
+        }
+
+//        InvokeTriggerMethod(methodName,table);
 
     }
 
@@ -120,11 +143,22 @@ public class TableAOPConfig {
 
         OnDelete OnDelete = Objects.requireNonNull(table.getDeclaredAnnotation(OnDelete.class));
 
-        if (OnDelete.value().name().isBlank()) return;
+        if (OnDelete.value().isBlank()) return;
 
-        String methodName = OnDelete.value().name();
+        String methodName = OnDelete.value();
 
-        InvokeTriggerMethod(methodName,table);
+        Method method = ReflectionUtils.findMethod(table, methodName);
+
+        if (method != null) {
+
+            method.setAccessible(true);
+
+            Object bean = applicationContext.getBean(table);
+
+            ReflectionUtils.invokeMethod(method,bean);
+        }
+
+//        InvokeTriggerMethod(methodName,table);
     }
 
     private void HandleInitTrigger(Class<?> table) {
@@ -133,22 +167,33 @@ public class TableAOPConfig {
 
         OnInit OnInit = Objects.requireNonNull(table.getDeclaredAnnotation(OnInit.class));
 
-        if (OnInit.value().name().isBlank()) return;
+        if (OnInit.value().isBlank()) return;
 
-        String methodName = OnInit.value().name();
+        String methodName = OnInit.value();
 
-        InvokeTriggerMethod(methodName,table);
+        Method method = ReflectionUtils.findMethod(table, methodName);
+
+        if (method != null) {
+
+            method.setAccessible(true);
+
+            Object bean = applicationContext.getBean(table);
+
+            ReflectionUtils.invokeMethod(method,bean);
+        }
+
+//        InvokeTriggerMethod(methodName,table);
 
     }
 
-    private void InvokeTriggerMethod(String methodName,Class<?> table) {
-
-        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(TableTriggerScan.class);
-
-        Collection<Object> beans = applicationContext.getBeansWithAnnotation(TableTrigger.class).values();
-
-        TriggerUtils.InvokeTableMethod(methodName,beans,table);
-
-    }
+//    private void InvokeTriggerMethod(String methodName,Class<?> table) {
+//
+//        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(TableTriggerScan.class);
+//
+//        Collection<Object> beans = applicationContext.getBeansWithAnnotation(TableTrigger.class).values();
+//
+//        TriggerUtils.InvokeTableMethod(methodName,beans,table);
+//
+//    }
 
 }

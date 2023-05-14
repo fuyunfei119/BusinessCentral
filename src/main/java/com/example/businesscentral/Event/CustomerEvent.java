@@ -3,6 +3,7 @@ package com.example.businesscentral.Event;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class CustomerEvent extends ApplicationEvent {
 
@@ -30,7 +31,6 @@ public class CustomerEvent extends ApplicationEvent {
     public static class OnBeforeCheckIfHasOver_250_PointCustomers extends CustomerEvent {
         private AtomicBoolean IsHandled;
 
-
         public OnBeforeCheckIfHasOver_250_PointCustomers(Object source,AtomicBoolean IsHandled) {
             super(source);
             this.IsHandled = IsHandled;
@@ -40,8 +40,8 @@ public class CustomerEvent extends ApplicationEvent {
             return IsHandled;
         }
 
-        public void setHandled(AtomicBoolean IsHandled) {
-            this.IsHandled = IsHandled;
+        public void setHandled(boolean IsHandled) {
+            this.IsHandled.set(IsHandled);
         }
     }
 

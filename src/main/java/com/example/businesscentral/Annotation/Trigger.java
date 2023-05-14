@@ -1,6 +1,5 @@
 package com.example.businesscentral.Annotation;
 
-import com.example.businesscentral.System.SystemTriggerType;
 
 import java.lang.annotation.*;
 
@@ -11,5 +10,4 @@ public @interface Trigger {
 
     String MethodName() default "";
 
-    SystemTriggerType RaisedFor();
 }

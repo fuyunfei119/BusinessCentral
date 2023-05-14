@@ -1,24 +1,27 @@
 package com.example.businesscentral.Aop;
 
-import com.example.businesscentral.Annotation.FieldTrigger;
 import com.example.businesscentral.Annotation.OnValidate;
-import com.example.businesscentral.Config.FieldTriggerScan;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 @Component
 @Aspect
 public class FieldAOPConfig {
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Pointcut("execution(* com.example.businesscentral.Dao.BusinessCentral.Validate(..))")
     public void OnValidate() {}
@@ -46,21 +49,25 @@ public class FieldAOPConfig {
         return Class.forName(classpath);
     }
 
-    private void HandleValidateTrigger(Field field,Class<?> table) {
+    private void HandleValidateTrigger(Field field,Class<?> table) throws InvocationTargetException, IllegalAccessException {
 
         if (!field.isAnnotationPresent(OnValidate.class)) return;
 
         OnValidate onValidate = Objects.requireNonNull(field.getAnnotation(OnValidate.class));
 
-        if (onValidate.value().name().isBlank()) return;
+        if (onValidate.value().isBlank()) return;
 
-        String methodName = onValidate.value().name();
+        String methodName = onValidate.value();
 
-        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(FieldTriggerScan.class);
+        Method method = ReflectionUtils.findMethod(table, methodName);
 
-        Collection<Object> beans = applicationContext.getBeansWithAnnotation(FieldTrigger.class).values();
+        if (method != null) {
 
-        TriggerUtils.InvokeFieldMethod(methodName,beans,table);
+            method.setAccessible(true);
 
+            Object bean = applicationContext.getBean(table);
+
+            ReflectionUtils.invokeMethod(method,bean);
+        }
     }
 }

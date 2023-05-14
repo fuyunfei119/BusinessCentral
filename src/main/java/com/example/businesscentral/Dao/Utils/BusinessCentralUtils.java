@@ -54,7 +54,7 @@ public class BusinessCentralUtils {
         String Convert_Field_Name = convertToSnakeCase(field);
         int lengthOfNewValue = 0;
 
-        String finalFilter = fitlers.contains(field) ? " AND ": "" ;
+        String finalFilter = fitlers.contains(field) ? " AND " : "";
 
         for (String placeHolder : placeHolders) {
             Object currentValue = newValue[lengthOfNewValue];
@@ -114,7 +114,7 @@ public class BusinessCentralUtils {
 
                         fitlers.add(finalFilter + Convert_Field_Name + " " + operator + " " + currentValue);
                     }
-                        lengthOfNewValue++;
+                    lengthOfNewValue++;
                 }
             }
         }
@@ -171,7 +171,7 @@ public class BusinessCentralUtils {
         return fieldValueList;
     }
 
-    public static List<String> getFieldNameList(Object object,Boolean UseFullFields) {
+    public static List<String> getFieldNameList(Object object, Boolean UseFullFields) {
         if (!UseFullFields) {
             return getFieldNameList(object);
         }
@@ -185,7 +185,7 @@ public class BusinessCentralUtils {
         return fieldNameList;
     }
 
-    public static List<Object> getFieldValueList(Object object,Boolean UseFullFields) {
+    public static List<Object> getFieldValueList(Object object, Boolean UseFullFields) {
         if (!UseFullFields) {
             return getFieldValueList(object);
         }

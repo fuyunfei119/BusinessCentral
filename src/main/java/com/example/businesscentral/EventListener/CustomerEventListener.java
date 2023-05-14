@@ -13,6 +13,6 @@ public class CustomerEventListener {
 
     @EventListener
     public void OnBeforeCheckIfHasOver_250_PointCustomers(CustomerEvent.OnBeforeCheckIfHasOver_250_PointCustomers event) {
-        event.setHandled(new AtomicBoolean(true));
+//        event.setHandled(true);
     }
 }

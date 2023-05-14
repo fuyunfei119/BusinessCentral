@@ -1,7 +1,6 @@
 package com.example.businesscentral.Table;
 
 import com.example.businesscentral.Annotation.*;
-import com.example.businesscentral.System.*;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
@@ -9,10 +8,10 @@ import lombok.experimental.FieldNameConstants;
 @TableNameConstants
 @Entity
 @Data
-@OnInit(InitTriggerType.OnInitEntity)
-@OnInsert(InsertTriggerType.OnCheckEntityResultOnBeforeInsert)
-@OnDelete(DeleteTriggerType.OnCheckEntityResultOnBeforeDelete)
-@OnModify(ModifyTriggerType.OnModifyEntity)
+@OnInit("OnInitTriggerMethod")
+@OnInsert("OnInsertTriggerMethod")
+@OnDelete("OnDeleteTriggerMethod")
+@OnModify("OnModifyTriggerMethod")
 public class Customer {
     @PK
     private String userId;
@@ -28,7 +27,7 @@ public class Customer {
     @ApplicationArea(All = true)
     private String emailAddress;
 
-    @OnValidate(ValidateTriggerType.CheckIfAddressIsIIegel)
+    @OnValidate("OnValidatePhoneNumberTriggerMethod")
     @ApplicationArea(All = true)
     private String phoneNumber;
 
@@ -59,5 +58,24 @@ public class Customer {
 
     @ApplicationArea(All = true)
     private String customerType;
+
+
+    private void OnInitTriggerMethod() { System.out.println("Init Trigger Raised..."); }
+
+    private void OnInsertTriggerMethod() {
+        System.out.println("Insert Trigger Raised...");
+    }
+
+    private void OnModifyTriggerMethod() {
+        System.out.println("Modify Trigger Raised...");
+    }
+
+    private void OnDeleteTriggerMethod() {
+        System.out.println("Delete Trigger Raised...");
+    }
+
+    private void OnValidatePhoneNumberTriggerMethod() {
+        System.out.println("Validate Trigger Raised...");
+    }
 
 }
