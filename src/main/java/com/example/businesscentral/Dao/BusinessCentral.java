@@ -52,7 +52,7 @@ public interface BusinessCentral<T,E extends Enum<E>> {
 
     BusinessCentral<T,E> Validate(E entityFields, Object newValue, Boolean TriggerEvent) throws Exception;
 
-    Boolean Delete();
+    Boolean Delete() throws NoSuchFieldException, IllegalAccessException;
 
     Boolean Modify(Boolean UseEvent) throws Exception;
 

@@ -285,19 +285,25 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     }
 
     @Override
-    public Boolean Delete() {
-        return null;
+    public Boolean Delete() throws NoSuchFieldException, IllegalAccessException {
+
+        System.out.println("OnBeforeDelete => " + this.entity);
+
+        Field field = this.entity.getClass().getDeclaredField(primaryKey.getName());
+
+        field.setAccessible(true);
+
+        this.keyValue = field.get(this.entity);
+
+        System.out.println(this.keyValue);
+
+        return mapper.Delete(BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),this.keyValue) != 0;
     }
 
     @Override
     public Boolean Modify(Boolean UseEvent) throws Exception {
 
-//        System.out.println("current Record => "+this.entity);
-//        System.out.println("last Record => "+this.x_entity);
-
         Map<String, Object> diffMap = BusinessCentralUtils.compareObjects(entity, x_entity);
-
-        System.out.println(diffMap);
 
         Field field = this.entity.getClass().getDeclaredField(primaryKey.getName());
 

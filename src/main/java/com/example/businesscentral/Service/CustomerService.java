@@ -19,6 +19,8 @@ public class CustomerService {
     @Autowired
     private BusinessCentral<Customer,Customer.Fields> NEWCUSTOMER;
     @Autowired
+    private BusinessCentral<Customer,Customer.Fields> NEWCUSTOMER2;
+    @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
     public List<Customer> InsertNewCustomer() throws Exception {
@@ -43,6 +45,8 @@ public class CustomerService {
         NEWCUSTOMER.Modify(true);
         Customer customer = NEWCUSTOMER.GetRecord();
         customers.add(customer);
+
+        System.out.println("Result => " + NEWCUSTOMER.Delete());
 
         return customers;
     }

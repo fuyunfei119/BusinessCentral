@@ -169,7 +169,7 @@ public interface BusinessCentralMapper {
                     End;
 
     final String Delete =
-            "DELETE FROM Customer WHERE User_ID = #{Entity.userId}";
+            "DELETE FROM Customer WHERE ${PK_Field} = #{PK_Value}";
 
     final String Modify =
             Begin+
@@ -210,7 +210,7 @@ public interface BusinessCentralMapper {
     Integer InsertWithFullField(@Param("Fields") List<String> Fields,@Param("FullValues") List<Object> FullValues);
 
     @Delete(Delete)
-    Integer Delete(@Param("Entity") Object Entity);
+    Integer Delete(@Param("PK_Field") String PrimaryKey,@Param("PK_Value") Object PrimaryKeyValue);
 
     @Update(Modify)
     Integer Modify(@Param("DiffMap") Map<String, Object> DiffMap, @Param("PK_Field") String Field, @Param("PK_Value") Object Value);

@@ -4,8 +4,6 @@ import com.example.businesscentral.Event.CustomerEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 @Component
 public class CustomerEventListener {
     @EventListener
