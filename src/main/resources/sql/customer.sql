@@ -13,7 +13,8 @@ CREATE TABLE Customer (
     Payment_Information VARCHAR(255),
     Order_History TEXT,
     Points INT DEFAULT 0,
-    Customer_Type ENUM('Retail', 'Wholesale')
+    Customer_Type ENUM('Retail', 'Wholesale'),
+    Last_Updated_Time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO Customer (User_ID,First_Name, Last_Name, Email_Address, Phone_Number, Billing_Address, Shipping_Address, Account_Creation_Date, Last_Login_Date, Account_Status, Payment_Information, Order_History, Points, Customer_Type) VALUES

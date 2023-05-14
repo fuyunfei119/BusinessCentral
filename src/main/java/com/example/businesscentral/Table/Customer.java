@@ -48,6 +48,9 @@ public class Customer {
     private java.sql.Date lastLoginDate;
 
     @ApplicationArea(All = true)
+    private Date lastUpdatedTime;
+
+    @ApplicationArea(All = true)
     private String accountStatus;
 
     @FlowField

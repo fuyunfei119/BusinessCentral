@@ -121,6 +121,7 @@ public class BusinessCentralUtils {
     }
 
     public static Map<String, Object> compareObjects(Object obj1, Object obj2) throws IllegalAccessException {
+
         Class<?> objClass = obj1.getClass();
         Field[] fields = objClass.getDeclaredFields();
 
@@ -130,7 +131,9 @@ public class BusinessCentralUtils {
             Object obj1Value = field.get(obj1);
             Object obj2Value = field.get(obj2);
             if (!Objects.equals(obj1Value, obj2Value)) {
-                diffMap.put(convertToSnakeCase(field.getName()), obj2Value);
+                System.out.println(obj1Value);
+                System.out.println(obj2Value);
+                diffMap.put(convertToSnakeCase(field.getName()), obj1Value);
             }
         }
 

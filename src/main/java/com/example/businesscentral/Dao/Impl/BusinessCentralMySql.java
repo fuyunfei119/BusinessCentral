@@ -5,10 +5,15 @@ import com.example.businesscentral.Annotation.OnValidate;
 import com.example.businesscentral.Dao.BusinessCentral;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -26,13 +31,12 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     private ApplicationContext applicationContext;
     private List<LinkedHashMap<String,Object>> entityList;
     private List<LinkedHashMap<String,Object>> x_entityList;
-//    private LinkedHashMap<String,Object> entity;
-//    private LinkedHashMap<String,Object> x_entity;
     private final List<String> filters = new ArrayList<>();
     private final List<String> loadfilters = new ArrayList<>();
     private Field primaryKey;
     private List<T> classList;
     private T entity;
+    private T x_entity;
     private Class<T> aClass;
     private Object keyValue;
     private Class fields;
@@ -47,6 +51,7 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
         this.aClass = tClass;
         this.primaryKey = BusinessCentralUtils.getPrimaryKeyField(this.aClass);
         this.entity = this.aClass.getDeclaredConstructor().newInstance();
+        this.x_entity = this.aClass.getDeclaredConstructor().newInstance();
         return this;
     }
 
@@ -124,9 +129,37 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     }
 
     @Override
-    public List<T> FindFirst() {
-        List<T> list = (List<T>) mapper.FindFirst(String.join(", ", loadfilters), filters);
-        return list;
+    public List<T> FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
+
+//        System.out.println("this entity => "+this.entity);
+
+        List<LinkedHashMap<String, Object>> linkedHashMaps = mapper.FindFirst(String.join(", ", loadfilters), filters);
+
+        for (Field field : this.entity.getClass().getDeclaredFields()) {
+
+            for (Map.Entry<String, Object> stringObjectEntry : linkedHashMaps.get(0).entrySet()) {
+
+                if (field.getName().equals(stringObjectEntry.getKey())) {
+
+                    if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
+
+                        field.setAccessible(true);
+
+                        field.set(this.entity,stringObjectEntry.getValue());
+                    }
+                }
+            }
+        }
+
+
+        System.out.println("After FindFirst => " + this.entity);
+
+        BeanUtils.copyProperties(this.entity,this.x_entity);
+
+//        List<T> list = (List<T>) mapper.FindFirst(String.join(", ", loadfilters), filters);
+//        this.entity = list.get(0);
+//        BeanUtils.copyProperties(this.entity,this.x_entity);
+        return null;
     }
 
     @Override
@@ -168,6 +201,11 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
         if (loadfilters.size() > 1) throw new Exception("There are more than one fields within Count expression!");
 
         return mapper.Count(String.join(", ", loadfilters),filters);
+    }
+
+    @Override
+    public T GetRecord() {
+        return this.entity;
     }
 
     @Override
@@ -214,6 +252,8 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
         if (!TriggerEvent) {
 
+//            System.out.println("Validate => "+ this.entity);
+
             field.setAccessible(true);
 
             field.set(entity,newValue);
@@ -239,10 +279,7 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
                 this.entity = (T) ReflectionUtils.invokeMethod(method, bean,newValue);
             }
-
         }
-
-        System.out.println(this.entity);
 
         return this;
     }
@@ -255,15 +292,20 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     @Override
     public Boolean Modify(Boolean UseEvent) throws Exception {
 
-//        Map<String, Object> diffMap = BusinessCentralUtils.compareObjects(entity, x_entity);
-//
-//        Field field = this.entity.getClass().getDeclaredField(primaryKey.getName());
-//        field.setAccessible(true);
-//        this.keyValue = field.get(this.entity);
-//
-//        return mapper.Modify(diffMap,BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),keyValue) != 0;
+//        System.out.println("current Record => "+this.entity);
+//        System.out.println("last Record => "+this.x_entity);
 
-        return true;
+        Map<String, Object> diffMap = BusinessCentralUtils.compareObjects(entity, x_entity);
+
+        System.out.println(diffMap);
+
+        Field field = this.entity.getClass().getDeclaredField(primaryKey.getName());
+
+        field.setAccessible(true);
+
+        this.keyValue = field.get(this.entity);
+
+        return mapper.Modify(diffMap,BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),keyValue) != 0;
     }
 
     @Override
@@ -279,6 +321,8 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
         }else {
             count = mapper.Insert(fieldNameList,valueList);
         }
+
+//        System.out.println("After Insert => "+this.entity);
 
         return count != 0;
     }

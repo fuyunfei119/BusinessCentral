@@ -34,11 +34,15 @@ public class CustomerService {
 
         if (inserted) {
             NEWCUSTOMER.Reset();
-            NEWCUSTOMER.SetSource(Customer.class);
             NEWCUSTOMER.SetRange(Customer.Fields.firstName,"YUNFEI");
             NEWCUSTOMER.SetRange(Customer.Fields.lastName,"FU");
-            customers = NEWCUSTOMER.FindFirst();
+            NEWCUSTOMER.FindFirst();
         }
+
+        NEWCUSTOMER.Validate(Customer.Fields.emailAddress,"fuyunfei119@gmail.com",false);
+        NEWCUSTOMER.Modify(true);
+        Customer customer = NEWCUSTOMER.GetRecord();
+        customers.add(customer);
 
         return customers;
     }
@@ -60,17 +64,6 @@ public class CustomerService {
         CUSTOMER.SetRange(Customer.Fields.accountStatus,"Active");
         CUSTOMER.SetFilter(Customer.Fields.firstName,"%1*","J");
         List<Customer> customers = CUSTOMER.FindSet(true);
-
-        if (!customers.isEmpty()) {
-            OnBeforeInsertNewCustomer(IsHandled);
-            if (IsHandled.get()) return null;
-
-            CUSTOMER.Reset();
-            CUSTOMER.Init();
-            CUSTOMER.Validate(Customer.Fields.phoneNumber,"123456789",true);
-            CUSTOMER.Modify(true);
-            CUSTOMER.Insert(true,true);
-        }
 
         OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
         return !IsHandled.get() ? customers : null;

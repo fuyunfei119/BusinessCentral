@@ -1,5 +1,7 @@
 package com.example.businesscentral.Dao;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,7 +26,7 @@ public interface BusinessCentral<T,E extends Enum<E>> {
 
     List<LinkedHashMap<String,Object>> FindFirst(Boolean Prototype);
 
-    List<T> FindFirst();
+    List<T> FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException;
 
     LinkedHashMap<String, Object> FindLast(Boolean Prototype);
 
@@ -39,6 +41,8 @@ public interface BusinessCentral<T,E extends Enum<E>> {
     T Get(Object ID);
 
     Integer Count() throws Exception;
+
+    T GetRecord();
 
     BusinessCentral<T,E> Reset();
 
