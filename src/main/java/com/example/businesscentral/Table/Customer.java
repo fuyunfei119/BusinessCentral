@@ -9,13 +9,12 @@ import java.sql.Date;
 import java.util.UUID;
 
 @FieldNameConstants(asEnum = true)
-@TableNameConstants
-@Entity
 @Data
 @OnInit("OnInitTriggerMethod")
 @OnInsert("OnInsertTriggerMethod")
 @OnDelete("OnDeleteTriggerMethod")
 @OnModify("OnModifyTriggerMethod")
+@Table
 public class Customer {
     @PK
     private String userId;

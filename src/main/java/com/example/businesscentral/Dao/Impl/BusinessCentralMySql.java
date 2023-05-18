@@ -131,7 +131,7 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     @Override
     public List<T> FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
 
-//        System.out.println("this entity => "+this.entity);
+        List<T> list = new ArrayList<>();
 
         List<LinkedHashMap<String, Object>> linkedHashMaps = mapper.FindFirst(String.join(", ", loadfilters), filters);
 
@@ -156,10 +156,9 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
         BeanUtils.copyProperties(this.entity,this.x_entity);
 
-//        List<T> list = (List<T>) mapper.FindFirst(String.join(", ", loadfilters), filters);
-//        this.entity = list.get(0);
-//        BeanUtils.copyProperties(this.entity,this.x_entity);
-        return null;
+        list.add(this.entity);
+
+        return list;
     }
 
     @Override
@@ -252,8 +251,6 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
         if (!TriggerEvent) {
 
-//            System.out.println("Validate => "+ this.entity);
-
             field.setAccessible(true);
 
             field.set(entity,newValue);
@@ -287,17 +284,13 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     @Override
     public Boolean Delete() throws NoSuchFieldException, IllegalAccessException {
 
-        System.out.println("OnBeforeDelete => " + this.entity);
-
         Field field = this.entity.getClass().getDeclaredField(primaryKey.getName());
 
         field.setAccessible(true);
 
         this.keyValue = field.get(this.entity);
 
-        System.out.println(this.keyValue);
-
-        return mapper.Delete(BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),this.keyValue) != 0;
+        return mapper.Delete(BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),this.keyValue.toString()) != 0;
     }
 
     @Override

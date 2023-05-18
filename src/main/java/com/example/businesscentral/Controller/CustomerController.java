@@ -1,10 +1,11 @@
 package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.Service.CustomerService;
-import com.example.businesscentral.Service.ProtoTypeService;
+import com.example.businesscentral.Page.ProtoTypeService;
 import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
@@ -19,17 +20,14 @@ public class CustomerController {
     private ProtoTypeService protoTypeService;
 
     @GetMapping("/test123")
-    public List<Customer> test1() throws Exception {
-        return service.CheckIfHasOver_PointsCustomers();
-    }
+    public List<Customer> test1() throws Exception { return service.CheckIfHasOver_PointsCustomers(); }
 
     @GetMapping("/testnewcustomer")
-    public List<Customer> test() throws Exception {
-        return service.InsertNewCustomer();
-    }
+    public List<Customer> test() throws Exception { return service.InsertNewCustomer(); }
 
     @GetMapping("/FindSet")
-    public List<LinkedHashMap<String,Object>> test2() {
-        return protoTypeService.FindSetProtoType();
-    }
+    public List<LinkedHashMap<String,Object>> test2() throws Exception { return protoTypeService.FindSetProtoType(); }
+
+    @GetMapping("/")
+    public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return protoTypeService.FindSetByTableName(tableName); }
 }
