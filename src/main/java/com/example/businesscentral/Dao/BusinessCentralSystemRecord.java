@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 @Scope("prototype")
-public interface BusinessCentralProtoTypeQuery {
-
+public interface BusinessCentralSystemRecord {
     List<LinkedHashMap<String,Object>> FindSetByTableName(String TableName) throws ClassNotFoundException;
 }

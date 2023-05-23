@@ -1,6 +1,6 @@
-package com.example.businesscentral.Config;
+package com.example.businesscentral.Dao.Config;
 
-import com.example.businesscentral.Annotation.Table;
+import com.example.businesscentral.Dao.Annotation.Table;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 

@@ -1,25 +1,25 @@
-package com.example.businesscentral.Service;
+package com.example.businesscentral.CodeUnits;
 
-import com.example.businesscentral.Dao.BusinessCentral;
+import com.example.businesscentral.Dao.Annotation.CodeUnit;
+import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Event.CustomerEvent;
 import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Service
-public class CustomerService {
+@CodeUnit
+public class CustomerManagement {
 
     @Autowired
-    private BusinessCentral<Customer,Customer.Fields> CUSTOMER;
+    private BusinessCentralRecord<Customer,Customer.Fields> CUSTOMER;
     @Autowired
-    private BusinessCentral<Customer,Customer.Fields> NEWCUSTOMER;
+    private BusinessCentralRecord<Customer,Customer.Fields> NEWCUSTOMER;
     @Autowired
-    private BusinessCentral<Customer,Customer.Fields> NEWCUSTOMER2;
+    private BusinessCentralRecord<Customer,Customer.Fields> NEWCUSTOMER2;
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -57,6 +57,7 @@ public class CustomerService {
         OnBeforeCheckIfHasOver_250_PointCustomers(IsHandled);
         if (IsHandled.get()) return null;
 
+        CUSTOMER.Reset();
         CUSTOMER.SetSource(Customer.class);
         CUSTOMER.SetLoadFields(Customer.Fields.firstName);
         CUSTOMER.SetLoadFields(Customer.Fields.emailAddress);
@@ -67,9 +68,11 @@ public class CustomerService {
         CUSTOMER.SetFilter(Customer.Fields.Points,">%1&<%2",50,500);
         CUSTOMER.SetRange(Customer.Fields.accountStatus,"Active");
         CUSTOMER.SetFilter(Customer.Fields.firstName,"%1*","J");
-        List<Customer> customers = CUSTOMER.FindSet(true);
+        List<Customer> customers = CUSTOMER.FindSet();
 
-        OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
+        System.out.println(customers);
+
+//        OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
         return !IsHandled.get() ? customers : null;
     }
 

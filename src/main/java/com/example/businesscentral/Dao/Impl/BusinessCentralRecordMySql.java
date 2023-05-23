@@ -1,13 +1,12 @@
 package com.example.businesscentral.Dao.Impl;
 
-import com.example.businesscentral.Annotation.OnInit;
-import com.example.businesscentral.Annotation.OnValidate;
-import com.example.businesscentral.Dao.BusinessCentral;
+import com.example.businesscentral.Dao.Annotation.OnInit;
+import com.example.businesscentral.Dao.Annotation.TableField;
+import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralMapper;
+import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -23,31 +22,25 @@ import java.util.*;
 
 @Repository
 @Scope("prototype")
-public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentral<T,E> {
+public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements BusinessCentralRecord<T,E> {
 
     @Autowired
-    private BusinessCentralMapper mapper;
+    private BusinessCentralMapper<T> mapper;
+    @Autowired
+    private BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper;
     @Autowired
     private ApplicationContext applicationContext;
-    private List<LinkedHashMap<String,Object>> entityList;
-    private List<LinkedHashMap<String,Object>> x_entityList;
     private final List<String> filters = new ArrayList<>();
-    private final List<String> loadfilters = new ArrayList<>();
+    private final List<String> loadfields = new ArrayList<>();
     private Field primaryKey;
+    private Object keyValue;
     private List<T> classList;
     private T entity;
     private T x_entity;
     private Class<T> aClass;
-    private Object keyValue;
-    private Class fields;
-    private String finalfields;
-
-    public Class<?> getaClass() {
-        return aClass;
-    }
 
     @Override
-    public BusinessCentral<T,E> SetSource(Class<T> tClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public BusinessCentralRecord<T,E> SetSource(Class<T> tClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.aClass = tClass;
         this.primaryKey = BusinessCentralUtils.getPrimaryKeyField(this.aClass);
         this.entity = this.aClass.getDeclaredConstructor().newInstance();
@@ -56,7 +49,7 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     }
 
     @Override
-    public BusinessCentral<T,E> SetRange(E entityFields, Object newValue) throws Exception {
+    public BusinessCentralRecord<T,E> SetRange(E entityFields, Object newValue) throws Exception {
 
         Field field = aClass.getDeclaredField(entityFields.name());
 
@@ -70,7 +63,7 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     }
 
     @Override
-    public BusinessCentral<T,E> SetFilter(E entityFields, String sqlExpression, Object... newValue) throws Exception {
+    public BusinessCentralRecord<T,E> SetFilter(E entityFields, String sqlExpression, Object... newValue) throws Exception {
 
         Field field = aClass.getDeclaredField(entityFields.name());
 
@@ -86,120 +79,70 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     }
 
     @Override
-    public BusinessCentral<T,E> SetLoadFields(E entityFields) throws Exception {
+    public BusinessCentralRecord<T,E> SetLoadFields(E entityFields) throws Exception {
         Field field = aClass.getDeclaredField(entityFields.name());
 
-        this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(field.getName()));
+        this.loadfields.add(BusinessCentralUtils.convertToSnakeCase(field.getName()));
 
         return this;
     }
 
     @Override
-    public BusinessCentral<T,E> SetLoadFields(E... entityFields) throws Exception {
+    public BusinessCentralRecord<T,E> SetLoadFields(E... entityFields) throws Exception {
 
         for (Enum<E> field : entityFields) {
             Field finalField = this.aClass.getDeclaredField(field.name());
 
-            this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(finalField.getName()));
+            this.loadfields.add(BusinessCentralUtils.convertToSnakeCase(finalField.getName()));
         }
         return this;
     }
 
     @Override
     public Boolean IsEmpty() {
-        return mapper.IsEmpty(
-                String.join(", ", loadfilters),filters) != 0;
+        return mapper.IsEmpty(String.join(", ", loadfields),filters) != 0;
     }
 
-    @Override
-    public List<LinkedHashMap<String,Object>> FindSet(Boolean UpdateRequired,Boolean Prototype){
-        this.entityList = mapper.FindSet(String.join(", ", loadfilters), filters);
-        return entityList;
-    }
 
     @Override
-    public List<T> FindSet(Boolean UpdateRequired) {
-        this.classList = (List<T>) mapper.FindSet(String.join(", ", loadfilters), filters);
+    public List<T> FindSet() {
+        System.out.println("Result => " + mapper.FindSet(String.join(", ", loadfields), filters));
+
         return this.classList;
     }
 
+
     @Override
-    public List<LinkedHashMap<String, Object>> FindFirst(Boolean Prototype) {
-        return mapper.FindFirst(String.join(", ", loadfilters), filters);
+    public T FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
+
+        return mapper.FindFirst(String.join(", ", loadfields), filters);
     }
 
     @Override
-    public List<T> FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
-
-        List<T> list = new ArrayList<>();
-
-        List<LinkedHashMap<String, Object>> linkedHashMaps = mapper.FindFirst(String.join(", ", loadfilters), filters);
-
-        for (Field field : this.entity.getClass().getDeclaredFields()) {
-
-            for (Map.Entry<String, Object> stringObjectEntry : linkedHashMaps.get(0).entrySet()) {
-
-                if (field.getName().equals(stringObjectEntry.getKey())) {
-
-                    if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
-
-                        field.setAccessible(true);
-
-                        field.set(this.entity,stringObjectEntry.getValue());
-                    }
-                }
-            }
-        }
-
-
-        System.out.println("After FindFirst => " + this.entity);
-
-        BeanUtils.copyProperties(this.entity,this.x_entity);
-
-        list.add(this.entity);
-
-        return list;
-    }
-
-    @Override
-    public LinkedHashMap<String, Object> FindLast(Boolean Prototype) {
-        return mapper.FindLast(String.join(", ", loadfilters),filters);
-    }
-
-    @Override
-    public List<T> FindLast() {
-        return (List) mapper.FindLast(String.join(", ", loadfilters),filters);
-    }
-
-    @Override
-    public List<LinkedHashMap<String, Object>> Find(Integer Count,Boolean Prototype) {
-        return mapper.Find(String.join(", ", loadfilters), filters, Count);
+    public T FindLast() {
+        return mapper.FindLast(String.join(", ", loadfields),filters);
     }
 
     @Override
     public List<T> Find(Integer Count) {
-        return (List<T>) mapper.Find(String.join(", ", loadfilters), filters, Count);
+        return mapper.Find(String.join(", ", loadfields), filters, Count);
     }
 
-    @Override
-    public LinkedHashMap<String, Object> Get(Object ID, Boolean Prototype) {
-        return mapper.Get(String.join(", ", loadfilters),filters);
-    }
 
     @Override
     public T Get(Object ID) {
         this.filters.clear();
         this.filters.add(BusinessCentralUtils.convertToSnakeCase(primaryKey.getName() + " = " + "'" + ID + "'"));
 
-        return (T) mapper.Get(String.join(", ", loadfilters),filters);
+        return mapper.Get(String.join(", ", loadfields),filters);
     }
 
     @Override
     public Integer Count() throws Exception {
 
-        if (loadfilters.size() > 1) throw new Exception("There are more than one fields within Count expression!");
+        if (loadfields.size() > 1) throw new Exception("There are more than one fields within Count expression!");
 
-        return mapper.Count(String.join(", ", loadfilters),filters);
+        return mapper.Count(String.join(", ", loadfields),filters);
     }
 
     @Override
@@ -208,14 +151,14 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
     }
 
     @Override
-    public BusinessCentral<T,E> Reset() {
+    public BusinessCentralRecord<T,E> Reset() {
         this.filters.clear();
-        this.loadfilters.clear();
+        this.loadfields.clear();
         return this;
     }
 
     @Override
-    public BusinessCentral<T,E> Init() {
+    public BusinessCentralRecord<T,E> Init() {
 
         if (!this.aClass.isAnnotationPresent(OnInit.class)) return this;
 
@@ -240,12 +183,12 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
 
     @Override
-    public BusinessCentral<T,E> SetCurrentKey() {
+    public BusinessCentralRecord<T,E> SetCurrentKey() {
         return null;
     }
 
     @Override
-    public BusinessCentral<T,E> Validate(E entityFields, Object newValue, Boolean TriggerEvent) throws Exception {
+    public BusinessCentralRecord<T,E> Validate(E entityFields, Object newValue, Boolean TriggerEvent) throws Exception {
 
         Field field = this.aClass.getDeclaredField(entityFields.name());
 
@@ -258,15 +201,13 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 
         if (TriggerEvent) {
 
-            if (!field.isAnnotationPresent(OnValidate.class)) return this;
+            if (!field.isAnnotationPresent(TableField.class)) return this;
 
-            OnValidate onValidate = Objects.requireNonNull(field.getAnnotation(OnValidate.class));
+            String onValidate = Objects.requireNonNull(field.getAnnotation(TableField.class)).ON_VALIDATE();
 
-            if (onValidate.value().isBlank()) return this;
+            if (onValidate.isBlank()) return this;
 
-            String methodName = onValidate.value();
-
-            Method method = ReflectionUtils.findMethod(this.aClass, methodName, Object.class);
+            Method method = ReflectionUtils.findMethod(this.aClass, onValidate, Object.class);
 
             if (method != null) {
 
@@ -324,5 +265,35 @@ public class BusinessCentralMySql<T,E extends Enum<E>> implements BusinessCentra
 //        System.out.println("After Insert => "+this.entity);
 
         return count != 0;
+    }
+
+    private List<T> ConvertToObject(List<LinkedHashMap<String, Object>> properties) throws IllegalAccessException {
+
+        List<T> list = new ArrayList<>();
+
+        for (Field field : this.entity.getClass().getDeclaredFields()) {
+
+            for (Map.Entry<String, Object> stringObjectEntry : properties.get(0).entrySet()) {
+
+                if (field.getName().equals(stringObjectEntry.getKey())) {
+
+                    if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
+
+                        field.setAccessible(true);
+
+                        field.set(this.entity,stringObjectEntry.getValue());
+                    }
+                }
+            }
+        }
+
+        System.out.println("After FindFirst => " + this.entity);
+
+        BeanUtils.copyProperties(this.entity,this.x_entity);
+
+        list.add(this.entity);
+
+        return list;
+
     }
 }

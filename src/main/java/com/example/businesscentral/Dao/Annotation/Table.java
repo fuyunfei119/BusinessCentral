@@ -1,5 +1,7 @@
-package com.example.businesscentral.Annotation;
+package com.example.businesscentral.Dao.Annotation;
 
+import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
@@ -7,6 +9,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface OnInsert {
+@Component
+public @interface Table {
     String value() default "";
 }

@@ -1,13 +1,12 @@
-package com.example.businesscentral.Annotation;
+package com.example.businesscentral.Dao.Annotation;
 
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Component
-public @interface Table {
+public @interface OnInsert {
     String value() default "";
 }

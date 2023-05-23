@@ -1,7 +1,7 @@
 package com.example.businesscentral.Controller;
 
-import com.example.businesscentral.Service.CustomerService;
-import com.example.businesscentral.Page.ProtoTypeService;
+import com.example.businesscentral.CodeUnits.CustomerManagement;
+import com.example.businesscentral.Page.CustomerPage;
 import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,19 +15,19 @@ import java.util.List;
 public class CustomerController {
 
     @Autowired
-    private CustomerService service;
+    private CustomerManagement customerManagement;
     @Autowired
-    private ProtoTypeService protoTypeService;
+    private CustomerPage customerPage;
 
     @GetMapping("/test123")
-    public List<Customer> test1() throws Exception { return service.CheckIfHasOver_PointsCustomers(); }
+    public List<Customer> test1() throws Exception { return customerManagement.CheckIfHasOver_PointsCustomers(); }
 
     @GetMapping("/testnewcustomer")
-    public List<Customer> test() throws Exception { return service.InsertNewCustomer(); }
+    public List<Customer> test() throws Exception { return customerManagement.InsertNewCustomer(); }
 
     @GetMapping("/FindSet")
-    public List<LinkedHashMap<String,Object>> test2() throws Exception { return protoTypeService.FindSetProtoType(); }
+    public List<LinkedHashMap<String,Object>> test2() throws Exception { return customerPage.FindSetProtoType(); }
 
     @GetMapping("/")
-    public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return protoTypeService.FindSetByTableName(tableName); }
+    public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return customerPage.FindSetByTableName(tableName); }
 }

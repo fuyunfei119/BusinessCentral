@@ -1,6 +1,6 @@
 package com.example.businesscentral.Dao.Utils;
 
-import com.example.businesscentral.Annotation.PK;
+import com.example.businesscentral.Dao.Annotation.Keys;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -12,7 +12,7 @@ public class BusinessCentralUtils {
 
     public static Field getPrimaryKeyField(Class<?> clazz) {
         for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(PK.class)) {
+            if (field.isAnnotationPresent(Keys.class)) {
                 return field;
             }
         }

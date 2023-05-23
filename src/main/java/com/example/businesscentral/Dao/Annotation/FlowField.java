@@ -1,10 +1,9 @@
-package com.example.businesscentral.Annotation;
+package com.example.businesscentral.Dao.Annotation;
 
 import java.lang.annotation.*;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ToolTip {
-    String value();
+public @interface FlowField {
 }

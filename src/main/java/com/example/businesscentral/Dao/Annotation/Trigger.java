@@ -1,4 +1,4 @@
-package com.example.businesscentral.Annotation;
+package com.example.businesscentral.Dao.Annotation;
 
 
 import java.lang.annotation.*;

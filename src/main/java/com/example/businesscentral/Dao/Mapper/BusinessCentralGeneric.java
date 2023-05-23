@@ -7,7 +7,6 @@ import java.util.List;
 
 @Mapper
 public interface BusinessCentralGeneric<T> {
-
     @Select("SELECT * FROM Customer")
     List<T> FindSet();
 }

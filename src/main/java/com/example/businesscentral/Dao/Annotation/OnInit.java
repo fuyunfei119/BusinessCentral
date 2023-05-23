@@ -1,4 +1,4 @@
-package com.example.businesscentral.Annotation;
+package com.example.businesscentral.Dao.Annotation;
 
 import com.sun.jdi.Method;
 import org.apache.ibatis.javassist.bytecode.MethodInfo;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.lang.annotation.*;
 import java.lang.invoke.MethodType;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface OnInit {

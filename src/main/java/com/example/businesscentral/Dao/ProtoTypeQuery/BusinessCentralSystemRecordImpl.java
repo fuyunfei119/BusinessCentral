@@ -1,8 +1,8 @@
 package com.example.businesscentral.Dao.ProtoTypeQuery;
 
-import com.example.businesscentral.Annotation.Table;
-import com.example.businesscentral.Config.TableScan;
-import com.example.businesscentral.Dao.BusinessCentralProtoTypeQuery;
+import com.example.businesscentral.Dao.Annotation.Table;
+import com.example.businesscentral.Dao.Config.TableScan;
+import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeQueryMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import java.util.*;
 
 @Repository
 @Scope("prototype")
-public class BusinessCentralProtoTypeQueryImpl implements BusinessCentralProtoTypeQuery {
+public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRecord {
 
     @Autowired
     private BusinessCentralProtoTypeQueryMapper businessCentralProtoTypeQueryMapper;

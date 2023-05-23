@@ -27,7 +27,135 @@ public interface BusinessCentralProtoTypeMapper {
                             "</if>" +
                     "</script>";
 
+    final String IsEmpty =
+                "<script>" +
+                    "SELECT EXISTS("+
+                        "SELECT" +
+                            "<if test='LoadFields.isEmpty()'> * </if>" +
+                            "<if test='!(LoadFields.isEmpty())'>" +
+                                "${LoadFields} "+
+                            "</if>" +
+                        "FROM Customer" +
+                            "<if test='Filters.isEmpty()'></if>" +
+                            "<if test='!(Filters.isEmpty())'>" +
+                        "WHERE" +
+                            "<foreach collection='Filters' item='Filter'>" +
+                                "${Filter}" +
+                            "</foreach>" +
+                            "</if>" +
+                        "LIMIT 1" +
+                    ")"+ "</script>";
+
+    final String FindFirst =
+            "<script>" +
+                    "SELECT" +
+                        "<if test='LoadFields.isEmpty()'> * </if>" +
+                        "<if test='!(LoadFields.isEmpty())'>" +
+                            "${LoadFields} "+
+                        "</if>" +
+                    "FROM Customer" +
+                        "<if test='Filters.isEmpty()'></if>" +
+                        "<if test='!(Filters.isEmpty())'>" +
+                    "WHERE" +
+                        "<foreach collection='Filters' item='Filter'>" +
+                            "${Filter}" +
+                        "</foreach>" +
+                        "</if>" +
+                    "LIMIT 1"+
+                    "</script>";
+
+    final String FindLast =
+            "<script>" +
+                    "SELECT" +
+                        "<if test='LoadFields.isEmpty()'> * </if>" +
+                        "<if test='!(LoadFields.isEmpty())'>" +
+                            "${LoadFields} "+
+                        "</if>" +
+                    "FROM Customer" +
+                        "<if test='Filters.isEmpty()'></if>" +
+                        "<if test='!(Filters.isEmpty())'>" +
+                    "WHERE" +
+                        "<foreach collection='Filters' item='Filter'>" +
+                            "${Filter}" +
+                        "</foreach>" +
+                        "</if>" +
+                    "ORDER BY User_ID DESC "+
+                    "LIMIT 1"+
+                    "</script>";
+
+    final String Find =
+            "<script>" +
+                    "SELECT" +
+                        "<if test='LoadFields.isEmpty()'> * </if>" +
+                        "<if test='!(LoadFields.isEmpty())'>" +
+                            "${LoadFields} "+
+                        "</if>" +
+                    "FROM Customer" +
+                        "<if test='Filters.isEmpty()'></if>" +
+                        "<if test='!(Filters.isEmpty())'>" +
+                    "WHERE" +
+                        "<foreach collection='Filters' item='Filter'>" +
+                            "${Filter}" +
+                        "</foreach>" +
+                        "</if>" +
+                    "ORDER BY User_ID DESC "+
+                    "LIMIT ${Count}"+
+                    "</script>";
+
+    final String Get =
+            "<script>" +
+                    "SELECT" +
+                        "<if test='LoadFields.isEmpty()'> * </if>" +
+                        "<if test='!(LoadFields.isEmpty())'>" +
+                            "${LoadFields} "+
+                        "</if>" +
+                    "FROM Customer" +
+                        "<if test='Filters.isEmpty()'></if>" +
+                        "<if test='!(Filters.isEmpty())'>" +
+                    "WHERE" +
+                        "<foreach collection='Filters' item='Filter'>" +
+                            "${Filter}" +
+                        "</foreach>" +
+                        "</if>" +
+                    "LIMIT 1"+
+                    "</script>";
+
+    final String Count =
+            "<script>" +
+                    "SELECT" +
+                        "<if test='LoadFields.isEmpty()'> Count(*) </if>" +
+                        "<if test='!(LoadFields.isEmpty())'>" +
+                            " Count(${LoadFields}) "+
+                        "</if>" +
+                    "FROM Customer" +
+                        "<if test='Filters.isEmpty()'></if>" +
+                        "<if test='!(Filters.isEmpty())'>" +
+                    "WHERE" +
+                        "<foreach collection='Filters' item='Filter'>" +
+                            "${Filter}" +
+                        "</foreach>" +
+                        "</if>" +
+                    "</script>";
+
 
     @Select(FindSet)
     List<LinkedHashMap<String,Object>> FindSet(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
+
+    @Select(IsEmpty)
+    Integer IsEmpty(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
+
+    @Select(FindFirst)
+    List<LinkedHashMap<String,Object>> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+
+    @Select(FindLast)
+    LinkedHashMap<String,Object> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+
+    @Select(Find)
+    List<LinkedHashMap<String,Object>> Find(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters,@Param("Count") Integer Count);
+
+    @Select(Get)
+    LinkedHashMap<String,Object> Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+
+    @Select(Count)
+    Integer Count(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
 }

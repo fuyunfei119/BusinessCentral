@@ -1,4 +1,4 @@
-package com.example.businesscentral.Config;
+package com.example.businesscentral.Dao.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 @SpringBootTest
-class BusinessCentralApplicationTests {
+class BusinessCentralRecordApplicationTests {
 
     @Autowired
     private BusinessCentralGeneric<Customer> businessCentralGeneric;

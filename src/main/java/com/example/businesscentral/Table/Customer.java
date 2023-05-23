@@ -1,6 +1,7 @@
 package com.example.businesscentral.Table;
 
-import com.example.businesscentral.Annotation.*;
+import com.example.businesscentral.Dao.Annotation.*;
+import com.example.businesscentral.Dao.BusinessCentralBase;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.util.StringUtils;
@@ -8,64 +9,54 @@ import org.springframework.util.StringUtils;
 import java.sql.Date;
 import java.util.UUID;
 
-@FieldNameConstants(asEnum = true)
-@Data
-@OnInit("OnInitTriggerMethod")
-@OnInsert("OnInsertTriggerMethod")
-@OnDelete("OnDeleteTriggerMethod")
-@OnModify("OnModifyTriggerMethod")
 @Table
-public class Customer {
-    @PK
+@Data
+@FieldNameConstants(asEnum = true)
+public class Customer extends BusinessCentralBase {
+
+    @TableField(
+            INIT_VALUE = "",
+            NOT_BLANK = false,
+            KEYS = @Keys(PK = true, AUTO_INCREMENT = false)
+    )
     private String userId;
 
-    @FieldCaption(caption = "First Name")
-    @ToolTip(value = "Specifies the first name of this customer!")
-    @ApplicationArea(All = true)
+    @TableField(
+                ON_VALIDATE = "",
+                FLOW_FIELD = @FlowField()
+    )
     private String firstName;
 
-    @ApplicationArea(All = true)
     private String lastName;
 
-    @ApplicationArea(All = true)
     private String emailAddress;
 
-    @OnValidate("OnValidatePhoneNumberTriggerMethod")
-    @ApplicationArea(All = true)
+    @TableField(
+            ON_VALIDATE = "OnValidatePhoneNumberTriggerMethod"
+    )
     private String phoneNumber;
 
-    @ApplicationArea(All = true)
     private String billingAddress;
 
-    @ApplicationArea(All = true)
     private String shippingAddress;
 
-    @ApplicationArea(All = true)
     private java.sql.Date accountCreationDate;
-
-    @ApplicationArea(All = true)
+    
     private java.sql.Date lastLoginDate;
 
-    @ApplicationArea(All = true)
     private Date lastUpdatedTime;
-
-    @ApplicationArea(All = true)
+    
     private String accountStatus;
 
-    @FlowField
-    @ApplicationArea(All = true)
     private String paymentInformation;
 
-    @ApplicationArea(All = true)
     private String orderHistory;
 
-    @ApplicationArea(All = true)
     private Integer Points;
 
-    @ApplicationArea(All = true)
     private String customerType;
 
-    @Trigger
+    @OnInit
     private Customer OnInitTriggerMethod() {
         this.userId = UUID.randomUUID().toString();
         this.accountStatus = "Active";
@@ -73,22 +64,21 @@ public class Customer {
         return this;
     }
 
-    @Trigger
+    @OnInsert
     private void OnInsertTriggerMethod() {
         System.out.println("Insert Trigger Raised...");
     }
 
-    @Trigger
+    @OnModify
     private void OnModifyTriggerMethod() {
         System.out.println("Modify Trigger Raised...");
     }
 
-    @Trigger
+    @OnDelete
     private void OnDeleteTriggerMethod() {
         System.out.println("Delete Trigger Raised...");
     }
 
-    @Trigger
     private Customer OnValidatePhoneNumberTriggerMethod(Object newValue) {
         if (StringUtils.hasLength(newValue.toString())) {
             this.phoneNumber = newValue.toString();
