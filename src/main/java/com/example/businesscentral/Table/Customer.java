@@ -17,7 +17,7 @@ public class Customer extends BusinessCentralBase {
     @TableField(
             INIT_VALUE = "",
             NOT_BLANK = false,
-            KEYS = @Keys(PK = true, AUTO_INCREMENT = false)
+            KEYS = @Keys(PRIMARY_KEY = true, AUTO_INCREMENT = false)
     )
     private String userId;
 

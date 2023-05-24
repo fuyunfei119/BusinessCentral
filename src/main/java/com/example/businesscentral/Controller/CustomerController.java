@@ -25,9 +25,14 @@ public class CustomerController {
     @GetMapping("/testnewcustomer")
     public List<Customer> test() throws Exception { return customerManagement.InsertNewCustomer(); }
 
-    @GetMapping("/FindSet")
-    public List<LinkedHashMap<String,Object>> test2() throws Exception { return customerPage.FindSetProtoType(); }
+//    @GetMapping("/FindSet")
+//    public List<LinkedHashMap<String,Object>> test2() throws Exception { return customerPage.FindSetProtoType(); }
 
     @GetMapping("/")
     public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return customerPage.FindSetByTableName(tableName); }
+
+    @GetMapping("/test")
+    public String testhelloworld() {
+        return "Hello World";
+    }
 }

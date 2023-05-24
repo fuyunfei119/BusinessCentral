@@ -12,18 +12,18 @@ import java.util.List;
 @Page
 public class CustomerPage {
 
-    @Autowired
-    private CustomerPageData CUSTOMER;
+//    @Autowired
+//    private CustomerPageData customerPageData;
     @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
-    public List<LinkedHashMap<String, Object>> FindSetProtoType() throws Exception {
-        CUSTOMER.SetPrimaryKey(Customer.Fields.userId);
-        CUSTOMER.SetLoadFields(Customer.Fields.userId);
-        CUSTOMER.SetLoadFields(Customer.Fields.firstName);
-        CUSTOMER.SetLoadFields(Customer.Fields.lastName);
-         return CUSTOMER.FindSet();
-    }
+//    public List<LinkedHashMap<String, Object>> FindSetProtoType() throws Exception {
+//        customerPageData.SetPrimaryKey(Customer.Fields.userId);
+//        customerPageData.SetLoadFields(Customer.Fields.userId);
+//        customerPageData.SetLoadFields(Customer.Fields.firstName);
+//        customerPageData.SetLoadFields(Customer.Fields.lastName);
+//         return customerPageData.FindSet();
+//    }
 
     public List<LinkedHashMap<String, Object>> FindSetByTableName(String TableName) throws ClassNotFoundException {
         return businessCentralSystemRecord.FindSetByTableName(TableName);
