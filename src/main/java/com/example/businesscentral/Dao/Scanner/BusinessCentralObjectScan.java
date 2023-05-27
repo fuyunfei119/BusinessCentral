@@ -1,4 +1,4 @@
-package com.example.businesscentral.Dao.Config;
+package com.example.businesscentral.Dao.Scanner;
 
 import com.example.businesscentral.Dao.Annotation.Table;
 import org.springframework.context.annotation.ComponentScan;

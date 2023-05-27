@@ -3,6 +3,7 @@ package com.example.businesscentral.Dao.Config;
 import com.example.businesscentral.Dao.BusinessCentralPage;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
+import com.example.businesscentral.Dao.Mapper.BusinessCentralMapper;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeMapper;
 import com.example.businesscentral.Dao.ProtoType.PageMySql;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,16 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 @Component
-public class BusinessCentralProxy implements InvocationHandler {
+public class BusinessCentralBeanProxy implements InvocationHandler {
 
     @Autowired
     private PageMySql pageMySql;
     @Autowired
+    private BusinessCentralRecordMySql businessCentralRecordMySql;
+    @Autowired
     private ApplicationContext applicationContext;
 
-    public BusinessCentralProxy(ApplicationContext applicationContext) {
+    public BusinessCentralBeanProxy(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
@@ -29,7 +32,11 @@ public class BusinessCentralProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         if (method.getDeclaringClass().equals(BusinessCentralRecord.class)) {
-            return method.invoke(new BusinessCentralRecordMySql<>(), args);
+            if (ObjectUtils.isEmpty(businessCentralRecordMySql)) {
+                businessCentralRecordMySql = new BusinessCentralRecordMySql<>();
+            }
+
+            return method.invoke(businessCentralRecordMySql, args);
         }
 
         if (method.getDeclaringClass().equals(BusinessCentralPage.class)) {

@@ -17,7 +17,7 @@ public class CustomBeanDefinitionPostRegister implements BeanDefinitionRegistryP
 
         scanner.addIncludeFilter(new AssignableTypeFilter(Repository.class));
 
-        scanner.scan("com/example/businesscentral/Dao/PageData");
+        scanner.scan("com/example/businesscentral/Dao/PageData","com/example/businesscentral/Dao/RecordData");
     }
 
     @Override

@@ -19,11 +19,11 @@ public class CustomerController {
     @Autowired
     private CustomerPage customerPage;
 
-//    @GetMapping("/test123")
-//    public List<Customer> test1() throws Exception { return customerManagement.CheckIfHasOver_PointsCustomers(); }
-//
-//    @GetMapping("/testnewcustomer")
-//    public List<Customer> test() throws Exception { return customerManagement.InsertNewCustomer(); }
+    @GetMapping("/test123")
+    public List<Customer> test1() throws Exception { return customerManagement.CheckIfHasOver_PointsCustomers(); }
+
+    @GetMapping("/testnewcustomer")
+    public List<Customer> test() throws Exception { return customerManagement.InsertNewCustomer(); }
 
     @GetMapping("/FindSet")
     public List<LinkedHashMap<String,Object>> test2() throws Exception { return customerPage.FindSetProtoType(); }

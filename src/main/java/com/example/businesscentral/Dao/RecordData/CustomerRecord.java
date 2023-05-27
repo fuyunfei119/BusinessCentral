@@ -5,6 +5,6 @@ import com.example.businesscentral.Table.Customer;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Component
+@Repository
 public interface CustomerRecord extends BusinessCentralRecord<Customer,Customer.Fields> {
 }

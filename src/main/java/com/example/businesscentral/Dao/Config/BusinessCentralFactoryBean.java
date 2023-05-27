@@ -35,7 +35,7 @@ public class BusinessCentralFactoryBean implements FactoryBean {
         return Proxy.newProxyInstance(
                 repositryInterface.getClassLoader(),
                 new Class<?>[]{repositryInterface},
-                new BusinessCentralProxy(applicationContext)
+                new BusinessCentralBeanProxy(applicationContext)
         );
     }
 
