@@ -3,11 +3,13 @@ package com.example.businesscentral.Dao.Mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
 @Mapper
+@Component
 public interface BusinessCentralProtoTypeMapper {
 
     final String FindSet =

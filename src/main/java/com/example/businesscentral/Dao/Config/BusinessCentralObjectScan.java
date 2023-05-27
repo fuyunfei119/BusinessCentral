@@ -7,9 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @ComponentScan(value = "com.example.businesscentral.Table",
                 includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION,value = Table.class)})
-//@ComponentScan(value = "com.example.businesscentral.Dao.RecordData",
-//                includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION,value = Repository.class)})
-//@ComponentScan(value = "com.example.businesscentral.Dao.PageData",
-//                includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION,value = Repository.class)})
 public class BusinessCentralObjectScan {
 }

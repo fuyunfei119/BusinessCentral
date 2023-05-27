@@ -22,30 +22,17 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
     private BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper;
     private final List<String> filters = new ArrayList<>();
     private final List<String> loadfilters = new ArrayList<>();
-    private Class<?> aClass;
 
-    @Override
-    public BusinessCentralPage<T,E> SetPrimaryKey(E field) throws Exception {
-
-        String classPath = field.getClass().getName().replaceAll("\\$Fields$", "");
-
-        if (ObjectUtils.isEmpty(classPath)) throw new Exception("IIegal Class Type.");
-
-        Class<?> className = Class.forName(classPath);
-
-        if (className.getDeclaredField(field.name()).isAnnotationPresent(Keys.class)) {
-            this.aClass = className;
-        }
-
-        return this;
+    public PageMySql(BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper) {
+        this.businessCentralProtoTypeMapper = businessCentralProtoTypeMapper;
     }
 
     @Override
     public BusinessCentralPage<T,E> SetLoadFields(E field) throws NoSuchFieldException {
 
-        Field declaredField = aClass.getDeclaredField(field.name());
+//        Field declaredField = aClass.getDeclaredField(field.name());
 
-        this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()));
+        this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(field.name()));
 
         return this;
     }
@@ -53,13 +40,13 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
     @Override
     public BusinessCentralPage<T,E> SetRange(E field, Object Value) throws NoSuchFieldException {
 
-        Field declaredField = aClass.getDeclaredField(field.name());
+//        Field declaredField = aClass.getDeclaredField(field.name());
 
         if (!this.filters.isEmpty()) {
             filters.add(" AND ");
         }
 
-        filters.add(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()) + " = " + "'" +Value + "'");
+        filters.add(BusinessCentralUtils.convertToSnakeCase(field.name()) + " = " + "'" +Value + "'");
 
         return this;
     }
