@@ -13,6 +13,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class BusinessCentralBeanProxy implements InvocationHandler {
@@ -23,9 +25,14 @@ public class BusinessCentralBeanProxy implements InvocationHandler {
     private BusinessCentralRecordMySql businessCentralRecordMySql;
     @Autowired
     private ApplicationContext applicationContext;
+    private Class<?> entityClass;
 
-    public BusinessCentralBeanProxy(ApplicationContext applicationContext) {
+
+    public BusinessCentralBeanProxy(ApplicationContext applicationContext, List<Class<?>> classes) {
+        if (ObjectUtils.isEmpty(classes)) return;
+
         this.applicationContext = applicationContext;
+        this.entityClass = classes.get(0);
     }
 
     @Override
@@ -33,7 +40,10 @@ public class BusinessCentralBeanProxy implements InvocationHandler {
 
         if (method.getDeclaringClass().equals(BusinessCentralRecord.class)) {
             if (ObjectUtils.isEmpty(businessCentralRecordMySql)) {
-                businessCentralRecordMySql = new BusinessCentralRecordMySql<>();
+
+                List<Class<?>> classes = new ArrayList<>();
+                classes.add(this.entityClass);
+                businessCentralRecordMySql = new BusinessCentralRecordMySql<>(applicationContext,classes);
             }
 
             return method.invoke(businessCentralRecordMySql, args);

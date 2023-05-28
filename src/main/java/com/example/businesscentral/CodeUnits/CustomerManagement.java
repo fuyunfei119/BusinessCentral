@@ -1,7 +1,6 @@
 package com.example.businesscentral.CodeUnits;
 
 import com.example.businesscentral.Dao.Annotation.CodeUnit;
-import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Event.CustomerEvent;
 import com.example.businesscentral.Table.Customer;
@@ -24,7 +23,6 @@ public class CustomerManagement {
 
         List<Customer> customers = new ArrayList<>();
 
-        customerRecord.SetSource(Customer.class);
         customerRecord.Init();
         customerRecord.Validate(Customer.Fields.firstName,"YUNFEI",false);
         customerRecord.Validate(Customer.Fields.lastName,"FU",false);
@@ -55,13 +53,13 @@ public class CustomerManagement {
         if (IsHandled.get()) return null;
 
         customerRecord.Reset();
-        customerRecord.SetSource(Customer.class);
         customerRecord.SetLoadFields(Customer.Fields.firstName);
         customerRecord.SetLoadFields(Customer.Fields.emailAddress);
         customerRecord.SetLoadFields(Customer.Fields.accountStatus);
         customerRecord.SetLoadFields(Customer.Fields.billingAddress);
         customerRecord.SetLoadFields(Customer.Fields.Points);
         customerRecord.SetLoadFields(Customer.Fields.emailAddress);
+        customerRecord.SetLoadFields(Customer.Fields.accountCreationDate);
         customerRecord.SetFilter(Customer.Fields.Points,">%1&<%2",50,500);
         customerRecord.SetRange(Customer.Fields.accountStatus,"Active");
         customerRecord.SetFilter(Customer.Fields.firstName,"%1*","J");
@@ -69,7 +67,7 @@ public class CustomerManagement {
 
         System.out.println(customers);
 
-//        OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
+        OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
         return !IsHandled.get() ? customers : null;
     }
 

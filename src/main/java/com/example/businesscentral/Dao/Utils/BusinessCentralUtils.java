@@ -4,6 +4,7 @@ import com.example.businesscentral.Dao.Annotation.Keys;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.security.Key;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +14,10 @@ public class BusinessCentralUtils {
     public static Field getPrimaryKeyField(Class<?> clazz) {
         for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(Keys.class)) {
-                return field;
+                Keys keys = field.getAnnotation(Keys.class);
+                if (keys.PRIMARY_KEY()) {
+                    return field;
+                }
             }
         }
 
@@ -131,8 +135,6 @@ public class BusinessCentralUtils {
             Object obj1Value = field.get(obj1);
             Object obj2Value = field.get(obj2);
             if (!Objects.equals(obj1Value, obj2Value)) {
-                System.out.println(obj1Value);
-                System.out.println(obj2Value);
                 diffMap.put(convertToSnakeCase(field.getName()), obj1Value);
             }
         }

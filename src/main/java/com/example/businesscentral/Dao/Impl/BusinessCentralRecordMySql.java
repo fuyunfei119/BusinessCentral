@@ -1,10 +1,8 @@
 package com.example.businesscentral.Dao.Impl;
 
-import com.example.businesscentral.Dao.Annotation.OnInit;
-import com.example.businesscentral.Dao.Annotation.TableField;
+import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralMapper;
-import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,27 +24,28 @@ import java.util.*;
 public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements BusinessCentralRecord<T,E> {
 
     @Autowired
-    private BusinessCentralMapper<T> mapper;
-    @Autowired
-    private BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper;
+    private BusinessCentralMapper mapper;
     @Autowired
     private ApplicationContext applicationContext;
     private final List<String> filters = new ArrayList<>();
     private final List<String> loadfields = new ArrayList<>();
     private Field primaryKey;
     private Object keyValue;
-    private List<T> classList;
+    private List<T> entityList;
     private T entity;
     private T x_entity;
     private Class<T> aClass;
 
-    @Override
-    public BusinessCentralRecord<T,E> SetSource(Class<T> tClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        this.aClass = tClass;
+    @Autowired
+    public BusinessCentralRecordMySql(ApplicationContext applicationContext,List<Class<?>> entityClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        if (ObjectUtils.isEmpty(entityClass)) return;
+
+        this.applicationContext = applicationContext;
+        this.mapper = applicationContext.getBean(BusinessCentralMapper.class);
+        this.aClass = (Class<T>) entityClass.get(0);
         this.primaryKey = BusinessCentralUtils.getPrimaryKeyField(this.aClass);
-        this.entity = this.aClass.getDeclaredConstructor().newInstance();
-        this.x_entity = this.aClass.getDeclaredConstructor().newInstance();
-        return this;
+        this.entity = (T) this.aClass.getDeclaredConstructor().newInstance();
+        this.x_entity = (T) this.aClass.getDeclaredConstructor().newInstance();
     }
 
     @Override
@@ -80,6 +80,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
     @Override
     public BusinessCentralRecord<T,E> SetLoadFields(E entityFields) throws Exception {
+
         Field field = aClass.getDeclaredField(entityFields.name());
 
         this.loadfields.add(BusinessCentralUtils.convertToSnakeCase(field.getName()));
@@ -91,6 +92,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     public BusinessCentralRecord<T,E> SetLoadFields(E... entityFields) throws Exception {
 
         for (Enum<E> field : entityFields) {
+
             Field finalField = this.aClass.getDeclaredField(field.name());
 
             this.loadfields.add(BusinessCentralUtils.convertToSnakeCase(finalField.getName()));
@@ -105,22 +107,34 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
 
     @Override
-    public List<T> FindSet() {
-        System.out.println("Result => " + mapper.FindSet(String.join(", ", loadfields), filters));
+    public List<T> FindSet() throws IllegalAccessException {
 
-        return this.classList;
+        List<LinkedHashMap<String, Object>> resultLists = mapper.FindSet(String.join(", ", loadfields), filters);
+
+        this.entityList = ConvertToObject(resultLists);
+
+        return this.entityList;
     }
 
 
     @Override
     public T FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
 
-        return mapper.FindFirst(String.join(", ", loadfields), filters);
+        LinkedHashMap result = mapper.FindFirst(String.join(", ", loadfields), filters);
+
+        ConvertToObject(result);
+
+        return this.entity;
     }
 
     @Override
-    public T FindLast() {
-        return mapper.FindLast(String.join(", ", loadfields),filters);
+    public T FindLast() throws IllegalAccessException {
+
+        LinkedHashMap result = mapper.FindLast(String.join(", ", loadfields), filters);
+
+        ConvertToObject(result);
+
+        return this.entity;
     }
 
     @Override
@@ -130,11 +144,15 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
 
     @Override
-    public T Get(Object ID) {
+    public T Get(Object ID) throws IllegalAccessException {
         this.filters.clear();
         this.filters.add(BusinessCentralUtils.convertToSnakeCase(primaryKey.getName() + " = " + "'" + ID + "'"));
 
-        return mapper.Get(String.join(", ", loadfields),filters);
+        LinkedHashMap result = mapper.Get(String.join(", ", loadfields), filters);
+
+        ConvertToObject(result);
+
+        return this.entity;
     }
 
     @Override
@@ -160,24 +178,21 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public BusinessCentralRecord<T,E> Init() {
 
-        if (!this.aClass.isAnnotationPresent(OnInit.class)) return this;
+        Method[] methods = this.aClass.getDeclaredMethods();
 
-        OnInit onInit = Objects.requireNonNull(this.aClass.getDeclaredAnnotation(OnInit.class));
+        for (Method method : methods) {
 
-        if (onInit.value().isBlank()) return this;
+            if (method.isAnnotationPresent(OnInit.class)) {
 
-        String methodName = onInit.value();
+                method.setAccessible(true);
 
-        Method method = ReflectionUtils.findMethod(this.aClass, methodName);
+                Object bean = applicationContext.getBean(this.aClass);
 
-        if (method != null) {
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
 
-            method.setAccessible(true);
-
-            Object bean = applicationContext.getBean(this.aClass);
-
-            this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
+            }
         }
+
         return this;
     }
 
@@ -225,6 +240,21 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public Boolean Delete() throws NoSuchFieldException, IllegalAccessException {
 
+        Method[] methods = this.aClass.getDeclaredMethods();
+
+        for (Method method : methods) {
+
+            if (method.isAnnotationPresent(OnDelete.class)) {
+
+                method.setAccessible(true);
+
+                Object bean = applicationContext.getBean(this.aClass);
+
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
+
+            }
+        }
+
         Field field = this.entity.getClass().getDeclaredField(primaryKey.getName());
 
         field.setAccessible(true);
@@ -236,6 +266,22 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
     @Override
     public Boolean Modify(Boolean UseEvent) throws Exception {
+
+        Method[] methods = this.aClass.getDeclaredMethods();
+
+        for (Method method : methods) {
+
+            if (method.isAnnotationPresent(OnModify.class)) {
+
+                method.setAccessible(true);
+
+                Object bean = applicationContext.getBean(this.aClass);
+
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
+
+            }
+        }
+
 
         Map<String, Object> diffMap = BusinessCentralUtils.compareObjects(entity, x_entity);
 
@@ -251,6 +297,21 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public Boolean Insert(Boolean UseEvent, Boolean FullFields) {
 
+        Method[] methods = this.aClass.getDeclaredMethods();
+
+        for (Method method : methods) {
+
+            if (method.isAnnotationPresent(OnInsert.class)) {
+
+                method.setAccessible(true);
+
+                Object bean = applicationContext.getBean(this.aClass);
+
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
+
+            }
+        }
+
         List<String> fieldNameList = BusinessCentralUtils.getFieldNameList(this.entity,true);
         List<Object> valueList = BusinessCentralUtils.getFieldValueList(this.entity,true);
 
@@ -261,8 +322,6 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         }else {
             count = mapper.Insert(fieldNameList,valueList);
         }
-
-//        System.out.println("After Insert => "+this.entity);
 
         return count != 0;
     }
@@ -275,7 +334,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
             for (Map.Entry<String, Object> stringObjectEntry : properties.get(0).entrySet()) {
 
-                if (field.getName().equals(stringObjectEntry.getKey())) {
+                if (BusinessCentralUtils.convertToSnakeCase(field.getName()).equals(stringObjectEntry.getKey())) {
 
                     if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
 
@@ -287,13 +346,32 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
             }
         }
 
-        System.out.println("After FindFirst => " + this.entity);
-
         BeanUtils.copyProperties(this.entity,this.x_entity);
 
         list.add(this.entity);
 
         return list;
 
+    }
+
+    private void ConvertToObject(LinkedHashMap<String, Object> properties) throws IllegalAccessException {
+
+        for (Field field : this.entity.getClass().getDeclaredFields()) {
+
+            for (Map.Entry<String, Object> stringObjectEntry : properties.entrySet()) {
+
+                if (BusinessCentralUtils.convertToSnakeCase(field.getName()).equals(stringObjectEntry.getKey())) {
+
+                    if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
+
+                        field.setAccessible(true);
+
+                        field.set(this.entity,stringObjectEntry.getValue());
+                    }
+                }
+            }
+        }
+
+        BeanUtils.copyProperties(this.entity,this.x_entity);
     }
 }

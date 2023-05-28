@@ -14,10 +14,10 @@ import java.util.UUID;
 @FieldNameConstants(asEnum = true)
 public class Customer extends BusinessCentralBase {
 
+    @Keys(PRIMARY_KEY = true,AUTO_INCREMENT = true)
     @TableField(
             INIT_VALUE = "",
-            NOT_BLANK = false,
-            KEYS = @Keys(PRIMARY_KEY = true, AUTO_INCREMENT = false)
+            NOT_BLANK = false
     )
     private String userId;
 
@@ -58,6 +58,8 @@ public class Customer extends BusinessCentralBase {
 
     @OnInit
     private Customer OnInitTriggerMethod() {
+        System.out.println("Init Trigger Raised...");
+
         this.userId = UUID.randomUUID().toString();
         this.accountStatus = "Active";
         this.accountCreationDate = new Date(System.currentTimeMillis());
@@ -65,21 +67,26 @@ public class Customer extends BusinessCentralBase {
     }
 
     @OnInsert
-    private void OnInsertTriggerMethod() {
+    private Customer OnInsertTriggerMethod() {
         System.out.println("Insert Trigger Raised...");
+        return this;
     }
 
     @OnModify
-    private void OnModifyTriggerMethod() {
+    private Customer OnModifyTriggerMethod() {
         System.out.println("Modify Trigger Raised...");
+        return this;
     }
 
     @OnDelete
-    private void OnDeleteTriggerMethod() {
+    private Customer OnDeleteTriggerMethod() {
         System.out.println("Delete Trigger Raised...");
+        return this;
     }
 
     private Customer OnValidatePhoneNumberTriggerMethod(Object newValue) {
+        System.out.println("Validate Trigger Raised...");
+
         if (StringUtils.hasLength(newValue.toString())) {
             this.phoneNumber = newValue.toString();
         }

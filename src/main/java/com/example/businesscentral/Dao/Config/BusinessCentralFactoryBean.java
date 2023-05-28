@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -23,8 +24,6 @@ public class BusinessCentralFactoryBean implements FactoryBean {
     public BusinessCentralFactoryBean(List<Class<?>> classes) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         if (classes.isEmpty()) return;
 
-        System.out.println(classes);
-
         this.repositryInterface = classes.get(0);
         this.entityInterface = classes.get(1);
         this.fieldInterface = classes.get(2);
@@ -32,10 +31,13 @@ public class BusinessCentralFactoryBean implements FactoryBean {
 
     @Override
     public Object getObject() throws Exception {
+        List<Class<?>> classes = new ArrayList<>();
+        classes.add(this.entityInterface);
+
         return Proxy.newProxyInstance(
                 repositryInterface.getClassLoader(),
                 new Class<?>[]{repositryInterface},
-                new BusinessCentralBeanProxy(applicationContext)
+                new BusinessCentralBeanProxy(applicationContext,classes)
         );
     }
 

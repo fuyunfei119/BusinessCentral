@@ -10,5 +10,4 @@ public @interface TableField {
     String ON_VALIDATE() default "";
     boolean NOT_BLANK() default false;
     FlowField FLOW_FIELD() default @FlowField();
-    Keys KEYS() default @Keys();
 }

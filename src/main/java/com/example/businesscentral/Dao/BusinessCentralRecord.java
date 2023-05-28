@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface BusinessCentralRecord<T,E extends Enum<E>> {
 
-    BusinessCentralRecord<T,E> SetSource(Class<T> tClass) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
-
     BusinessCentralRecord<T,E> SetRange(E entityFields, Object newValue) throws Exception;
 
     BusinessCentralRecord<T,E> SetFilter(E entityFields, String sqlExpression, Object... newValue) throws Exception;
@@ -19,15 +17,15 @@ public interface BusinessCentralRecord<T,E extends Enum<E>> {
 
     Boolean IsEmpty();
 
-    List<T> FindSet();
+    List<T> FindSet() throws IllegalAccessException;
 
     T FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException;
 
-    T FindLast();
+    T FindLast() throws IllegalAccessException;
 
     List<T> Find(Integer Count);
 
-    T Get(Object ID);
+    T Get(Object ID) throws IllegalAccessException;
 
     Integer Count() throws Exception;
 

@@ -9,6 +9,7 @@ import java.util.Map;
 @Mapper
 public interface BusinessCentralMapper<T> {
 
+
     final String FindSet =
             "<script>" +
                     "SELECT" +
@@ -177,22 +178,22 @@ public interface BusinessCentralMapper<T> {
 
 
     @Select(FindSet)
-    List<T> FindSet(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
+    List<LinkedHashMap<String,Object>> FindSet(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
 
     @Select(IsEmpty)
     Integer IsEmpty(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
 
     @Select(FindFirst)
-    T FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
 
     @Select(FindLast)
-    T FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
 
     @Select(Find)
-    List<T> Find(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters,@Param("Count") Integer Count);
+    List<LinkedHashMap<String,Object>> Find(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters,@Param("Count") Integer Count);
 
     @Select(Get)
-    T Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
 
     @Select(Count)
     Integer Count(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
