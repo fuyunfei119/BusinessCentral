@@ -291,6 +291,8 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         this.keyValue = field.get(this.entity);
 
+        if (diffMap.isEmpty()) return true;
+
         return mapper.Modify(diffMap,BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),keyValue) != 0;
     }
 
