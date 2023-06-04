@@ -6,7 +6,6 @@ import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +30,13 @@ public class CustomerController {
     @GetMapping("/")
     public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return customerPage.FindSetByTableName(tableName); }
 
+    @PostMapping("/FindSetByFilters")
+    public List<LinkedHashMap<String, Object>> FindSetByFilters(@RequestBody Map<String,Object> filters) {
+        return customerPage.FindSetByFilters(filters);
+    }
+
     @PostMapping("/getfilterOptions")
-    public List<Object> handleRequest(@RequestBody Map<String,Object> filters) { return customerPage.FindSetByFilters(filters); }
+    public List<Object> handleRequest(@RequestBody Map<String,Object> filters) { return customerPage.FindSetByFields(filters); }
 
     @PostMapping("/getfilterGroups")
     public List<String> getFilterGroup(@RequestBody Map<String,Object> filter) {

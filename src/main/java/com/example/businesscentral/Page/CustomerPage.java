@@ -35,8 +35,8 @@ public class CustomerPage {
         return businessCentralSystemRecord.FindSetByTableName(TableName);
     }
 
-    public List<Object> FindSetByFilters(Map<String,Object> filters) {
-        List<LinkedHashMap<String, Object>> linkedHashMaps = businessCentralSystemRecord.FindSetByFilter(filters);
+    public List<Object> FindSetByFields(Map<String,Object> filters) {
+        List<LinkedHashMap<String, Object>> linkedHashMaps = businessCentralSystemRecord.FindSetByFields(filters);
 
         List<Object> convertedList = new ArrayList<>();
 
@@ -64,4 +64,7 @@ public class CustomerPage {
     }
 
 
+    public List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) {
+        return businessCentralSystemRecord.FindSetByFilters(filters);
+    }
 }

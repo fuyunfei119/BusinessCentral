@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -43,9 +42,28 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> FindSetByFilter(Map<String,Object> filters) {
+    public List<LinkedHashMap<String, Object>> FindSetByFields(Map<String,Object> filters) {
         Object table = filters.get("table");
         Object filterName = filters.get("filterName");
-        return businessCentralProtoTypeQueryMapper.FindSetByFilter(table,filterName);
+        return businessCentralProtoTypeQueryMapper.FindSetByFields(table,filterName);
+    }
+
+    @Override
+    public List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) {
+        StringBuilder finalConditions = new StringBuilder();
+
+        Object table = filters.get("table");
+        Map<String,Object> conditions = (Map<String, Object>) filters.get("filters");
+        for (String key : conditions.keySet()) {
+            if (finalConditions.toString() != "") {
+                finalConditions.append(" AND ").append(key).append(" = '").append(conditions.get(key)).append("'");
+            }else {
+                finalConditions.append(" WHERE ").append(key).append(" = '").append(conditions.get(key)).append("'");
+            }
+        }
+
+        System.out.println(finalConditions.toString());
+
+        return businessCentralProtoTypeQueryMapper.FindSetByFilters(table,finalConditions.toString());
     }
 }

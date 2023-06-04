@@ -12,5 +12,7 @@ import java.util.Map;
 public interface BusinessCentralSystemRecord {
     List<LinkedHashMap<String,Object>> FindSetByTableName(String TableName) throws ClassNotFoundException;
 
-    List<LinkedHashMap<String, Object>> FindSetByFilter(Map<String,Object> filters);
+    List<LinkedHashMap<String, Object>> FindSetByFields(Map<String,Object> filters);
+
+    List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters);
 }
