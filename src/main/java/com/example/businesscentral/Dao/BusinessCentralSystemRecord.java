@@ -5,9 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Scope("prototype")
 public interface BusinessCentralSystemRecord {
     List<LinkedHashMap<String,Object>> FindSetByTableName(String TableName) throws ClassNotFoundException;
+
+    List<LinkedHashMap<String, Object>> FindSetByFilter(Map<String,Object> filters);
 }

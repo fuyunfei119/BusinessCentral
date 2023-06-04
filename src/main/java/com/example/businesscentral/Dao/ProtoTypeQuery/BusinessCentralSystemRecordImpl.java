@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -39,5 +40,12 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 .toList();
 
         return businessCentralProtoTypeQueryMapper.FindSetByTableName(String.join(",",list),TableName);
+    }
+
+    @Override
+    public List<LinkedHashMap<String, Object>> FindSetByFilter(Map<String,Object> filters) {
+        Object table = filters.get("table");
+        Object filterName = filters.get("filterName");
+        return businessCentralProtoTypeQueryMapper.FindSetByFilter(table,filterName);
     }
 }

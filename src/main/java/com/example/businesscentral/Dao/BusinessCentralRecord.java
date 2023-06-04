@@ -2,7 +2,6 @@ package com.example.businesscentral.Dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public interface BusinessCentralRecord<T,E extends Enum<E>> {

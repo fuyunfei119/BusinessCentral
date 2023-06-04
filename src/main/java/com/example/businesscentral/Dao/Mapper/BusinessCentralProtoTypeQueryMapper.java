@@ -11,7 +11,11 @@ import java.util.List;
 public interface BusinessCentralProtoTypeQueryMapper {
 
     final String Query = "SELECT ${fields} FROM ${tableName}";
+    final String QueryByFilter = "SELECT ${field} FROM ${table}";
 
     @Select(Query)
     List<LinkedHashMap<String,Object>> FindSetByTableName(@Param("fields") String fields,@Param("tableName") String tableName);
+
+    @Select(QueryByFilter)
+    List<LinkedHashMap<String,Object>> FindSetByFilter(@Param("table") Object table,@Param("field") Object field);
 }

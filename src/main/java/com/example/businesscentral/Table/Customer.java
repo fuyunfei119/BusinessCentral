@@ -29,6 +29,12 @@ public class Customer extends BusinessCentralBase {
 
     private String lastName;
 
+    @TableField(
+            ON_VALIDATE = "Hello",
+            INIT_VALUE = "OK",
+            FLOW_FIELD = @FlowField(),
+            NOT_BLANK = true
+    )
     private String emailAddress;
 
     @TableField(
@@ -92,6 +98,10 @@ public class Customer extends BusinessCentralBase {
         }
 
         return this;
+    }
+
+    private void Hello() {
+
     }
 
 }
