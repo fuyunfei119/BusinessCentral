@@ -49,7 +49,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) {
+    public List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) throws Exception {
 
         List<String> finalfilters = new ArrayList<>();
         StringBuilder finalConditions = new StringBuilder();
@@ -86,14 +86,18 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 }
 
                 System.out.println("Placeholder" + placeHolders);
-                System.out.println("newValues" + filterValues);
+                System.out.println(String.join("",placeHolders));
+                for (Object filterValue : filterValues) {
+                    System.out.println("Value => " + filterValue);
+                }
 
+                BusinessCentralUtils.ParserSQLExpression(finalfilters,String.join("",placeHolders),key,filterValues.toArray());
+
+                System.out.println("final => " + finalfilters);
 
                 finalConditions.append(" WHERE ").append(key).append(" = '").append(conditions.get(key)).append("'");
             }
         }
-
-//        BusinessCentralUtils.ParserSQLExpression(finalfilters,);
 
 //        System.out.println(finalConditions.toString());
 

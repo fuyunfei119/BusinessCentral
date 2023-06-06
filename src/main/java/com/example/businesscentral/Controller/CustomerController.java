@@ -31,7 +31,7 @@ public class CustomerController {
     public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return customerPage.FindSetByTableName(tableName); }
 
     @PostMapping("/FindSetByFilters")
-    public List<LinkedHashMap<String, Object>> FindSetByFilters(@RequestBody Map<String,Object> filters) {
+    public List<LinkedHashMap<String, Object>> FindSetByFilters(@RequestBody Map<String,Object> filters) throws Exception {
         return customerPage.FindSetByFilters(filters);
     }
 

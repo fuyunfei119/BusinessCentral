@@ -64,7 +64,7 @@ public class CustomerPage {
     }
 
 
-    public List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) {
+    public List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) throws Exception {
         return businessCentralSystemRecord.FindSetByFilters(filters);
     }
 }
