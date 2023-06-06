@@ -50,20 +50,54 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
     @Override
     public List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) {
+
+        List<String> finalfilters = new ArrayList<>();
         StringBuilder finalConditions = new StringBuilder();
 
         Object table = filters.get("table");
         Map<String,Object> conditions = (Map<String, Object>) filters.get("filters");
         for (String key : conditions.keySet()) {
-            if (finalConditions.toString() != "") {
+            if (!finalConditions.toString().equals("")) {
                 finalConditions.append(" AND ").append(key).append(" = '").append(conditions.get(key)).append("'");
             }else {
+                String value = conditions.get(key).toString();
+                List<String> placeHolders = new ArrayList<>(Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])")));
+                List<Object> filterValues = new ArrayList<>();
+                int index = 0;
+
+                for (String placeHolder : placeHolders) {
+                    if (!placeHolder.equals("&")
+                            && !placeHolder.equals("..")
+                            && !placeHolder.equals("|")
+                            && !placeHolder.equals("**")
+                            && !placeHolder.equals("*")
+                            && !placeHolder.equals(">")
+                            && !placeHolder.equals(">=")
+                            && !placeHolder.equals("<")
+                            && !placeHolder.equals("<=")
+                            && !placeHolder.equals("<>")
+                            && !placeHolder.equals("=")
+                    ) {
+                        filterValues.add(placeHolders.get(index));
+                        placeHolders.set(index,"%"+index);
+                    }
+
+                    index++;
+                }
+
+                System.out.println("Placeholder" + placeHolders);
+                System.out.println("newValues" + filterValues);
+
+
                 finalConditions.append(" WHERE ").append(key).append(" = '").append(conditions.get(key)).append("'");
             }
         }
 
-        System.out.println(finalConditions.toString());
+//        BusinessCentralUtils.ParserSQLExpression(finalfilters,);
 
-        return businessCentralProtoTypeQueryMapper.FindSetByFilters(table,finalConditions.toString());
+//        System.out.println(finalConditions.toString());
+
+//        return businessCentralProtoTypeQueryMapper.FindSetByFilters(table,finalConditions.toString());
+        return null;
     }
 }

@@ -5,6 +5,7 @@ import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Event.CustomerEvent;
 import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class CustomerManagement {
     private CustomerRecord customerRecord;
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     public List<Customer> InsertNewCustomer() throws Exception {
 
