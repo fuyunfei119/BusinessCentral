@@ -62,9 +62,9 @@ public class BusinessCentralUtils {
 
         for (String placeHolder : placeHolders) {
             Object currentValue = newValue[lengthOfNewValue];
-//            if (currentValue.getClass().equals(String.class)) {
-//                currentValue = "'" + currentValue + "'";
-//            }
+            if (currentValue.getClass().equals(String.class)) {
+                currentValue = "'" + currentValue + "'";
+            }
             switch (placeHolder) {
                 case "|" -> finalFilter = " OR ";
                 case "&" -> finalFilter = " AND ";

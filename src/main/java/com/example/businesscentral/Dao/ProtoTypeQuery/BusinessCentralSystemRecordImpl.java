@@ -61,29 +61,65 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             if (!finalConditions.toString().equals("")) {
                 finalConditions.append(" AND ").append(key).append(" = '").append(conditions.get(key)).append("'");
             }else {
-                String value = conditions.get(key).toString();
+
                 List<Object> placeHolders = new ArrayList<>(Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])")));
                 List<Object> filterValues = new ArrayList<>();
                 int index = 0;
 
                 for (Object placeHolder : placeHolders) {
-                    if (!placeHolder.equals("&")
-                            && !placeHolder.equals("..")
-                            && !placeHolder.equals("|")
-                            && !placeHolder.equals("**")
-                            && !placeHolder.equals("*")
-                            && !placeHolder.equals(">")
-                            && !placeHolder.equals(">=")
-                            && !placeHolder.equals("<")
-                            && !placeHolder.equals("<=")
-                            && !placeHolder.equals("<>")
-                            && !placeHolder.equals("=")
-                    ) {
+                    if (!placeHolder.equals("&") && !placeHolder.equals("|")) {
+                        if (placeHolder.toString().contains("..")) {
+                            String expression = placeHolder.toString();
+                            String left = expression.substring(0, expression.indexOf(".."));
+                            String right = expression.substring(expression.indexOf("..")+2, expression.length());
+                            filterValues.add(left);
+                            filterValues.add(right);
+                            placeHolder = placeHolder.toString().replace(left,"%1");
+                            placeHolder = placeHolder.toString().replace(right,"%2");
+                        } else if (placeHolder.toString().contains("*")) {
+                            String expression = placeHolder.toString();
+                            String value = expression.substring(expression.indexOf("<>")+1, expression.length());
+                            placeHolder = placeHolder.toString().replace(value,"%1");
+                            filterValues.add(value);
 
-                        filterValues.add(placeHolders.get(index));
-                        placeHolders.set(index,"%"+index);
+                        }else if (placeHolder.toString().contains(">")) {
+                            System.out.println(placeHolder);
+                            String expression = placeHolder.toString();
+                            String value = expression.substring(expression.indexOf(">")+1, expression.length());
+                            placeHolder = placeHolder.toString().replace(value,"%1");
+                            filterValues.add(value);
+                        }else if (placeHolder.toString().contains(">=")) {
+                            System.out.println(placeHolder);
+                            String expression = placeHolder.toString();
+                            String value = expression.substring(expression.indexOf(">=")+1, expression.length());
+                            placeHolder = placeHolder.toString().replace(value,"%1");
+                            filterValues.add(value);
+                        }else if (placeHolder.toString().contains("<")) {
+                            System.out.println(placeHolder);
+                            String expression = placeHolder.toString();
+                            String value = expression.substring(expression.indexOf("<")+1, expression.length());
+                            placeHolder = placeHolder.toString().replace(value,"%1");
+                            filterValues.add(value);
+                        }else if (placeHolder.toString().contains("<=")) {
+                            System.out.println(placeHolder);
+                            String expression = placeHolder.toString();
+                            String value = expression.substring(expression.indexOf("<=")+1, expression.length());
+                            placeHolder = placeHolder.toString().replace(value,"%1");
+                            filterValues.add(value);
+
+                        }else if (placeHolder.toString().contains("<>")) {
+                            System.out.println(placeHolder);
+                            String expression = placeHolder.toString();
+                            String value = expression.substring(expression.indexOf("<>")+1, expression.length());
+                            placeHolder = placeHolder.toString().replace(value,"%1");
+                            filterValues.add(value);
+
+                        }
+                        else {
+                            filterValues.add(placeHolders.get(index));
+                            placeHolders.set(index,"%"+index);
+                        }
                     }
-
                     index++;
                 }
 
@@ -91,8 +127,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 for (Object placeHolder : placeHolders) {
                     stringBuilder.append(placeHolder);
                 }
-                System.out.println(filterValues);
-                System.out.println(stringBuilder.toString());
+
                 BusinessCentralUtils.ParserSQLExpression(finalfilters,stringBuilder.toString(),key,filterValues.toArray());
 
                 System.out.println(finalfilters);
