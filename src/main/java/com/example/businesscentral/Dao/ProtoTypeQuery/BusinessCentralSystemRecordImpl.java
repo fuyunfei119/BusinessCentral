@@ -56,16 +56,17 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
         Object table = filters.get("table");
         Map<String,Object> conditions = (Map<String, Object>) filters.get("filters");
+
         for (String key : conditions.keySet()) {
             if (!finalConditions.toString().equals("")) {
                 finalConditions.append(" AND ").append(key).append(" = '").append(conditions.get(key)).append("'");
             }else {
                 String value = conditions.get(key).toString();
-                List<String> placeHolders = new ArrayList<>(Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])")));
+                List<Object> placeHolders = new ArrayList<>(Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])")));
                 List<Object> filterValues = new ArrayList<>();
                 int index = 0;
 
-                for (String placeHolder : placeHolders) {
+                for (Object placeHolder : placeHolders) {
                     if (!placeHolder.equals("&")
                             && !placeHolder.equals("..")
                             && !placeHolder.equals("|")
@@ -78,6 +79,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                             && !placeHolder.equals("<>")
                             && !placeHolder.equals("=")
                     ) {
+
                         filterValues.add(placeHolders.get(index));
                         placeHolders.set(index,"%"+index);
                     }
@@ -85,23 +87,18 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                     index++;
                 }
 
-                System.out.println("Placeholder" + placeHolders);
-                System.out.println(String.join("",placeHolders));
-                for (Object filterValue : filterValues) {
-                    System.out.println("Value => " + filterValue);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (Object placeHolder : placeHolders) {
+                    stringBuilder.append(placeHolder);
                 }
+                System.out.println(filterValues);
+                System.out.println(stringBuilder.toString());
+                BusinessCentralUtils.ParserSQLExpression(finalfilters,stringBuilder.toString(),key,filterValues.toArray());
 
-                BusinessCentralUtils.ParserSQLExpression(finalfilters,String.join("",placeHolders),key,filterValues.toArray());
-
-                System.out.println("final => " + finalfilters);
-
-                finalConditions.append(" WHERE ").append(key).append(" = '").append(conditions.get(key)).append("'");
+                System.out.println(finalfilters);
             }
         }
 
-//        System.out.println(finalConditions.toString());
-
-//        return businessCentralProtoTypeQueryMapper.FindSetByFilters(table,finalConditions.toString());
-        return null;
+        return businessCentralProtoTypeQueryMapper.FindSetByFilters(table,"",finalfilters);
     }
 }
