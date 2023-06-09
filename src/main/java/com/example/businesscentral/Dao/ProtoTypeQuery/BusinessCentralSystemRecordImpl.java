@@ -133,9 +133,11 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                     finalfilters.add(" AND ");
                 }
 
+                finalfilters.add("(");
+
                 BusinessCentralUtils.ParserSQLExpression(finalfilters,stringBuilder.toString(),key,filterValues.toArray());
 
-
+                finalfilters.add(")");
         }
 
         System.out.println(finalfilters);
