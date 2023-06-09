@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -52,15 +53,11 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     public List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) throws Exception {
 
         List<String> finalfilters = new ArrayList<>();
-        StringBuilder finalConditions = new StringBuilder();
 
         Object table = filters.get("table");
         Map<String,Object> conditions = (Map<String, Object>) filters.get("filters");
 
         for (String key : conditions.keySet()) {
-            if (!finalConditions.toString().equals("")) {
-                finalConditions.append(" AND ").append(key).append(" = '").append(conditions.get(key)).append("'");
-            }else {
 
                 List<Object> placeHolders = new ArrayList<>(Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])")));
                 List<Object> filterValues = new ArrayList<>();
@@ -76,6 +73,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                             filterValues.add(right);
                             placeHolder = placeHolder.toString().replace(left,"%1");
                             placeHolder = placeHolder.toString().replace(right,"%2");
+
                         } else if (placeHolder.toString().contains("*")) {
                             String expression = placeHolder.toString();
                             String value = expression.substring(expression.indexOf("<>")+1, expression.length());
@@ -88,18 +86,21 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                             String value = expression.substring(expression.indexOf(">")+1, expression.length());
                             placeHolder = placeHolder.toString().replace(value,"%1");
                             filterValues.add(value);
+
                         }else if (placeHolder.toString().contains(">=")) {
                             System.out.println(placeHolder);
                             String expression = placeHolder.toString();
                             String value = expression.substring(expression.indexOf(">=")+1, expression.length());
                             placeHolder = placeHolder.toString().replace(value,"%1");
                             filterValues.add(value);
+
                         }else if (placeHolder.toString().contains("<")) {
                             System.out.println(placeHolder);
                             String expression = placeHolder.toString();
                             String value = expression.substring(expression.indexOf("<")+1, expression.length());
                             placeHolder = placeHolder.toString().replace(value,"%1");
                             filterValues.add(value);
+
                         }else if (placeHolder.toString().contains("<=")) {
                             System.out.println(placeHolder);
                             String expression = placeHolder.toString();
@@ -128,11 +129,16 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                     stringBuilder.append(placeHolder);
                 }
 
+                if (!finalfilters.isEmpty()) {
+                    finalfilters.add(" AND ");
+                }
+
                 BusinessCentralUtils.ParserSQLExpression(finalfilters,stringBuilder.toString(),key,filterValues.toArray());
 
-                System.out.println(finalfilters);
-            }
+
         }
+
+        System.out.println(finalfilters);
 
         return businessCentralProtoTypeQueryMapper.FindSetByFilters(table,"",finalfilters);
     }
