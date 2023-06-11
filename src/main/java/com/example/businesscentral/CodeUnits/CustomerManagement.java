@@ -60,10 +60,10 @@ public class CustomerManagement {
         customerRecord.SetLoadFields(Customer.Fields.emailAddress);
         customerRecord.SetLoadFields(Customer.Fields.accountStatus);
         customerRecord.SetLoadFields(Customer.Fields.billingAddress);
-        customerRecord.SetLoadFields(Customer.Fields.Points);
+        customerRecord.SetLoadFields(Customer.Fields.points);
         customerRecord.SetLoadFields(Customer.Fields.emailAddress);
         customerRecord.SetLoadFields(Customer.Fields.accountCreationDate);
-        customerRecord.SetFilter(Customer.Fields.Points,">%1&<%2",50,500);
+        customerRecord.SetFilter(Customer.Fields.points,">%1&<%2",50,500);
         customerRecord.SetRange(Customer.Fields.accountStatus,"Active");
         customerRecord.SetFilter(Customer.Fields.firstName,"%1*","J");
         List<Customer> customers = customerRecord.FindSet();

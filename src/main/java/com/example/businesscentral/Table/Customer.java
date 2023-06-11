@@ -58,7 +58,7 @@ public class Customer extends BusinessCentralBase {
 
     private String orderHistory;
 
-    private Integer Points;
+    private Integer points;
 
     private String customerType;
 

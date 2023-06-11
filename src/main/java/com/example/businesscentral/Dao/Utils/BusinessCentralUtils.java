@@ -42,6 +42,28 @@ public class BusinessCentralUtils {
         return result.toString();
     }
 
+    public static String convertToCamelCase(String input) {
+        if (StringUtils.isEmpty(input)) {
+            return "";
+        }
+        StringBuilder result = new StringBuilder();
+        boolean capitalizeNext = false;
+        for (int i = 0; i < input.length(); i++) {
+            char currentChar = input.charAt(i);
+            if (currentChar == '_') {
+                capitalizeNext = true;
+            } else {
+                if (capitalizeNext) {
+                    result.append(Character.toUpperCase(currentChar));
+                    capitalizeNext = false;
+                } else {
+                    result.append(currentChar);
+                }
+            }
+        }
+        return result.toString();
+    }
+
     public static Integer CountPlaceHolders(String sqlExpression) {
         int count = 0;
 
@@ -54,10 +76,6 @@ public class BusinessCentralUtils {
     }
 
     public static void ParserSQLExpression(List<String> fitlers, String sqlExpression, String field, Object[] newValue) throws Exception {
-        for (Object o : newValue) {
-//            System.out.println("OnEnter => "+o.getClass());
-        }
-
 
         List<String> placeHolders = new ArrayList<>(Arrays.asList(sqlExpression.split("(?=[|&])|(?<=[|&])")));
         String Convert_Field_Name = convertToSnakeCase(field);

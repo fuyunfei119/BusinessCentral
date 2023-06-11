@@ -25,7 +25,7 @@ public class CustomerPage {
         customerPageData.SetLoadFields(Customer.Fields.firstName);
         customerPageData.SetLoadFields(Customer.Fields.lastName);
         customerPageData.SetLoadFields(Customer.Fields.customerType);
-        customerPageData.SetLoadFields(Customer.Fields.Points);
+        customerPageData.SetLoadFields(Customer.Fields.points);
         customerPageData.SetLoadFields(Customer.Fields.phoneNumber);
         customerPageData.SetLoadFields(Customer.Fields.accountStatus);
          return customerPageData.FindSet();
