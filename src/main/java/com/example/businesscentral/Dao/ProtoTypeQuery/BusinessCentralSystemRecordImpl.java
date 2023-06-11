@@ -161,6 +161,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         if (content.contains("*")) {
             if (content.startsWith("*") && content.endsWith("*")) {
                 for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                    content = content.replace("*","");
                     finalFilters
                             .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
                             .append(" LIKE ")
@@ -171,6 +172,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 }
             } else if (content.startsWith("*")) {
                 for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                    content = content.replace("*","");
                     finalFilters
                             .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
                             .append(" LIKE ")
@@ -180,6 +182,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 }
             } else if (content.endsWith("*")) {
                 for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                    content = content.replace("*","");
                     finalFilters
                             .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
                             .append(" LIKE '")
@@ -190,7 +193,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
             }
 
-            System.out.println(finalFilters);
+            finalFilters.delete(finalFilters.lastIndexOf(" OR "),finalFilters.length());
 
             return businessCentralProtoTypeQueryMapper.FindSetBySearch(table, "", finalFilters.toString());
         }else {
@@ -204,9 +207,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                         .append(" OR ");
             }
 
-            System.out.println(finalFilters.lastIndexOf(" OR "));
             finalFilters.delete(finalFilters.lastIndexOf(" OR "),finalFilters.length());
-            System.out.println(finalFilters);
 
             return businessCentralProtoTypeQueryMapper.FindSetBySearch(table, "", finalFilters.toString());
         }
