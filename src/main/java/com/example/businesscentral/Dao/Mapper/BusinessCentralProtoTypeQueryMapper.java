@@ -13,7 +13,6 @@ public interface BusinessCentralProtoTypeQueryMapper {
 
     final String Query = "SELECT ${fields} FROM ${tableName}";
     final String QueryByFields = "SELECT ${field} FROM ${table}";
-//    final String QueryByFilter = "SELECT * FROM ${table} ${filters}";
     final String QueryByFilter =
     "<script>" +
             "SELECT" +
@@ -30,6 +29,20 @@ public interface BusinessCentralProtoTypeQueryMapper {
             "</foreach>" +
             "</if>" +
             "</script>";
+    final String QueryBySearch =
+            "<script>" +
+                    "SELECT" +
+                    "<if test='LoadFields.isEmpty()'> * </if>" +
+                    "<if test='!(LoadFields.isEmpty())'>" +
+                    "${LoadFields} "+
+                    "</if>" +
+                    "FROM Customer" +
+                    "<if test='Filters.isEmpty()'></if>" +
+                    "<if test='!(Filters.isEmpty())'>" +
+                    "WHERE " +
+                    "${Filters}" +
+                    "</if>" +
+                    "</script>";
 
     @Select(Query)
     List<LinkedHashMap<String,Object>> FindSetByTableName(@Param("fields") String fields,@Param("tableName") String tableName);
@@ -39,4 +52,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
 
     @Select(QueryByFilter)
     List<LinkedHashMap<String,Object>> FindSetByFilters(@Param("table") Object table,@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
+
+    @Select(QueryBySearch)
+    List<LinkedHashMap<String,Object>> FindSetBySearch(@Param("table") Object table,@Param("LoadFields") String LoadFields, @Param("Filters") String Filters);
 }

@@ -42,6 +42,11 @@ public class CustomerController {
         return customerPage.GetFilterGroups(filter);
     }
 
+    @PostMapping("/FetchSearchQuery")
+    public List<LinkedHashMap<String, Object>> FetchSearchQuery(@RequestBody Map<String,Object> filters) {
+        return customerPage.QueryContent(filters);
+    }
+
     @GetMapping("/test")
     public String testhelloworld() {
         return "Hello World";

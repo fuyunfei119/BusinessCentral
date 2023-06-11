@@ -15,4 +15,6 @@ public interface BusinessCentralSystemRecord {
     List<LinkedHashMap<String, Object>> FindSetByFields(Map<String,Object> filters);
 
     List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) throws Exception;
+
+    List<LinkedHashMap<String, Object>> QueryContent(Map<String,Object> filters);
 }

@@ -42,14 +42,14 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 .map(field -> BusinessCentralUtils.convertToSnakeCase(field.getName()))
                 .toList();
 
-        return businessCentralProtoTypeQueryMapper.FindSetByTableName(String.join(",",list),TableName);
+        return businessCentralProtoTypeQueryMapper.FindSetByTableName(String.join(",", list), TableName);
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> FindSetByFields(Map<String,Object> filters) {
+    public List<LinkedHashMap<String, Object>> FindSetByFields(Map<String, Object> filters) {
         Object table = filters.get("table");
         Object filterName = filters.get("filterName");
-        return businessCentralProtoTypeQueryMapper.FindSetByFields(table,filterName);
+        return businessCentralProtoTypeQueryMapper.FindSetByFields(table, filterName);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         Object table = filters.get("table");
         Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
 
-        Map<String,Object> conditions = (Map<String, Object>) filters.get("filters");
+        Map<String, Object> conditions = (Map<String, Object>) filters.get("filters");
 
         for (String key : conditions.keySet()) {
 
@@ -69,60 +69,59 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             int index = 0;
 
             for (Object placeHolder : placeHolders) {
-                    if (!placeHolder.equals("&") && !placeHolder.equals("|")) {
-                        if (placeHolder.toString().contains("..")) {
-                            String expression = placeHolder.toString();
-                            String left = expression.substring(0, expression.indexOf(".."));
-                            String right = expression.substring(expression.indexOf("..")+2, expression.length());
-                            filterValues.add(left);
-                            filterValues.add(right);
-                            placeHolder = placeHolder.toString().replace(left,"%1");
-                            placeHolder = placeHolder.toString().replace(right,"%2");
+                if (!placeHolder.equals("&") && !placeHolder.equals("|")) {
+                    if (placeHolder.toString().contains("..")) {
+                        String expression = placeHolder.toString();
+                        String left = expression.substring(0, expression.indexOf(".."));
+                        String right = expression.substring(expression.indexOf("..") + 2, expression.length());
+                        filterValues.add(left);
+                        filterValues.add(right);
+                        placeHolder = placeHolder.toString().replace(left, "%1");
+                        placeHolder = placeHolder.toString().replace(right, "%2");
 
-                        } else if (placeHolder.toString().contains("*")) {
-                            String expression = placeHolder.toString();
-                            String value = expression.substring(expression.indexOf("<>")+1, expression.length());
-                            placeHolder = placeHolder.toString().replace(value,"%1");
-                            filterValues.add(value);
+                    } else if (placeHolder.toString().contains("*")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf("<>") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
 
-                        }else if (placeHolder.toString().contains(">")) {
-                            String expression = placeHolder.toString();
-                            String value = expression.substring(expression.indexOf(">")+1, expression.length());
-                            placeHolder = placeHolder.toString().replace(value,"%1");
-                            filterValues.add(value);
+                    } else if (placeHolder.toString().contains(">")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf(">") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
 
-                        }else if (placeHolder.toString().contains(">=")) {
-                            String expression = placeHolder.toString();
-                            String value = expression.substring(expression.indexOf(">=")+1, expression.length());
-                            placeHolder = placeHolder.toString().replace(value,"%1");
-                            filterValues.add(value);
+                    } else if (placeHolder.toString().contains(">=")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf(">=") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
 
-                        }else if (placeHolder.toString().contains("<")) {
-                            String expression = placeHolder.toString();
-                            String value = expression.substring(expression.indexOf("<")+1, expression.length());
-                            placeHolder = placeHolder.toString().replace(value,"%1");
-                            filterValues.add(value);
+                    } else if (placeHolder.toString().contains("<")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf("<") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
 
-                        }else if (placeHolder.toString().contains("<=")) {
-                            String expression = placeHolder.toString();
-                            String value = expression.substring(expression.indexOf("<=")+1, expression.length());
-                            placeHolder = placeHolder.toString().replace(value,"%1");
-                            filterValues.add(value);
+                    } else if (placeHolder.toString().contains("<=")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf("<=") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
 
-                        }else if (placeHolder.toString().contains("<>")) {
-                            String expression = placeHolder.toString();
-                            String value = expression.substring(expression.indexOf("<>")+1, expression.length());
-                            placeHolder = placeHolder.toString().replace(value,"%1");
-                            filterValues.add(value);
+                    } else if (placeHolder.toString().contains("<>")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf("<>") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
 
-                        }
-                        else {
-                            filterValues.add(placeHolders.get(index));
-                            placeHolders.set(index,"%"+index);
-                        }
+                    } else {
+                        filterValues.add(placeHolders.get(index));
+                        placeHolders.set(index, "%" + index);
                     }
-                    index++;
                 }
+                index++;
+            }
 
             StringBuilder stringBuilder = new StringBuilder();
             for (Object placeHolder : placeHolders) {
@@ -139,15 +138,77 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             Class<?> type = declaredField.getType();
             if (type.equals(Integer.class)) {
                 for (int i = 0; i < filterValues.size(); i++) {
-                    filterValues.set(i,Integer.parseInt(filterValues.get(i).toString()));
+                    filterValues.set(i, Integer.parseInt(filterValues.get(i).toString()));
                 }
             }
 
-            BusinessCentralUtils.ParserSQLExpression(finalfilters,stringBuilder.toString(),key,filterValues.toArray());
+            BusinessCentralUtils.ParserSQLExpression(finalfilters, stringBuilder.toString(), key, filterValues.toArray());
 
             finalfilters.add(")");
         }
 
-        return businessCentralProtoTypeQueryMapper.FindSetByFilters(table,"",finalfilters);
+        return businessCentralProtoTypeQueryMapper.FindSetByFilters(table, "", finalfilters);
+    }
+
+    @Override
+    public List<LinkedHashMap<String, Object>> QueryContent(Map<String, Object> filters) {
+        StringBuilder finalFilters = new StringBuilder();
+
+        Object table = filters.get("table");
+        String content = (String) filters.get("content");
+        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
+
+        if (content.contains("*")) {
+            if (content.startsWith("*") && content.endsWith("*")) {
+                for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                    finalFilters
+                            .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
+                            .append(" LIKE ")
+                            .append("'%")
+                            .append(content)
+                            .append("%'")
+                            .append(" OR ");
+                }
+            } else if (content.startsWith("*")) {
+                for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                    finalFilters
+                            .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
+                            .append(" LIKE ")
+                            .append("'%")
+                            .append(content)
+                            .append("' OR ");
+                }
+            } else if (content.endsWith("*")) {
+                for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                    finalFilters
+                            .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
+                            .append(" LIKE '")
+                            .append(content)
+                            .append("%'")
+                            .append(" OR ");
+                }
+
+            }
+
+            System.out.println(finalFilters);
+
+            return businessCentralProtoTypeQueryMapper.FindSetBySearch(table, "", finalFilters.toString());
+        }else {
+            for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                finalFilters
+                        .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
+                        .append(" LIKE ")
+                        .append("'%")
+                        .append(content)
+                        .append("%'")
+                        .append(" OR ");
+            }
+
+            System.out.println(finalFilters.lastIndexOf(" OR "));
+            finalFilters.delete(finalFilters.lastIndexOf(" OR "),finalFilters.length());
+            System.out.println(finalFilters);
+
+            return businessCentralProtoTypeQueryMapper.FindSetBySearch(table, "", finalFilters.toString());
+        }
     }
 }
