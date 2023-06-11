@@ -54,6 +54,11 @@ public class BusinessCentralUtils {
     }
 
     public static void ParserSQLExpression(List<String> fitlers, String sqlExpression, String field, Object[] newValue) throws Exception {
+        for (Object o : newValue) {
+//            System.out.println("OnEnter => "+o.getClass());
+        }
+
+
         List<String> placeHolders = new ArrayList<>(Arrays.asList(sqlExpression.split("(?=[|&])|(?<=[|&])")));
         String Convert_Field_Name = convertToSnakeCase(field);
         int lengthOfNewValue = 0;

@@ -56,14 +56,24 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
         Object table = filters.get("table");
         Map<String,Object> conditions = (Map<String, Object>) filters.get("filters");
+        System.out.println(conditions.get("points").getClass());
 
         for (String key : conditions.keySet()) {
 
-                List<Object> placeHolders = new ArrayList<>(Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])")));
-                List<Object> filterValues = new ArrayList<>();
-                int index = 0;
+//            List<String> list = Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])"));
+//
+//            for (String value : list) {
+//                System.out.println("value => " + value);
+//                System.out.println("Native => "+ conditions.get(key) + " Type of => " + conditions.get(key).getClass());
+//            }
 
-                for (Object placeHolder : placeHolders) {
+            List<Object> placeHolders = new ArrayList<>(Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])")));
+            List<Object> filterValues = new ArrayList<>();
+            int index = 0;
+
+//            100|175
+
+            for (Object placeHolder : placeHolders) {
                     if (!placeHolder.equals("&") && !placeHolder.equals("|")) {
                         if (placeHolder.toString().contains("..")) {
                             String expression = placeHolder.toString();
@@ -117,6 +127,8 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
                         }
                         else {
+                            System.out.println("OnBefore => " + placeHolder + " Type of => " + placeHolder.getClass());
+                            System.out.println(conditions.get(key) + " Type of => " + conditions.get(key).getClass());
                             filterValues.add(placeHolders.get(index));
                             placeHolders.set(index,"%"+index);
                         }
@@ -124,23 +136,25 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                     index++;
                 }
 
-                StringBuilder stringBuilder = new StringBuilder();
-                for (Object placeHolder : placeHolders) {
-                    stringBuilder.append(placeHolder);
-                }
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Object placeHolder : placeHolders) {
+                stringBuilder.append(placeHolder);
+            }
 
-                if (!finalfilters.isEmpty()) {
-                    finalfilters.add(" AND ");
-                }
+            if (!finalfilters.isEmpty()) {
+                finalfilters.add(" AND ");
+            }
 
-                finalfilters.add("(");
+//            filterValues.forEach(o -> System.out.println("OnBefore => " + o.getClass()));
 
-                BusinessCentralUtils.ParserSQLExpression(finalfilters,stringBuilder.toString(),key,filterValues.toArray());
+            finalfilters.add("(");
 
-                finalfilters.add(")");
+            BusinessCentralUtils.ParserSQLExpression(finalfilters,stringBuilder.toString(),key,filterValues.toArray());
+
+            finalfilters.add(")");
         }
 
-        System.out.println(finalfilters);
+//        System.out.println(finalfilters);
 
         return businessCentralProtoTypeQueryMapper.FindSetByFilters(table,"",finalfilters);
     }
