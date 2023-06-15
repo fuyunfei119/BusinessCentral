@@ -1,6 +1,7 @@
 package com.example.businesscentral.Dao.ProtoTypeQuery;
 
 import com.example.businesscentral.Dao.Annotation.Table;
+import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeQueryMapper;
@@ -211,5 +212,119 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
             return businessCentralProtoTypeQueryMapper.FindSetBySearch(table, "", finalFilters.toString());
         }
+    }
+
+    @Override
+    public List<LinkedHashMap<String, Object>> SortLinesByDescending(Map<String, Object> filters) throws Exception {
+
+        List<String> finalfilters = new ArrayList<>();
+
+        Object table = filters.get("table");
+        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
+
+        Map<String, Object> conditions = (Map<String, Object>) filters.get("filters");
+
+        for (String key : conditions.keySet()) {
+
+            List<Object> placeHolders = new ArrayList<>(Arrays.asList(conditions.get(key).toString().split("(?=[|&])|(?<=[|&])")));
+            List<Object> filterValues = new ArrayList<>();
+            int index = 0;
+
+            for (Object placeHolder : placeHolders) {
+                if (!placeHolder.equals("&") && !placeHolder.equals("|")) {
+                    if (placeHolder.toString().contains("..")) {
+                        String expression = placeHolder.toString();
+                        String left = expression.substring(0, expression.indexOf(".."));
+                        String right = expression.substring(expression.indexOf("..") + 2, expression.length());
+                        filterValues.add(left);
+                        filterValues.add(right);
+                        placeHolder = placeHolder.toString().replace(left, "%1");
+                        placeHolder = placeHolder.toString().replace(right, "%2");
+
+                    } else if (placeHolder.toString().contains("*")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf("<>") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
+
+                    } else if (placeHolder.toString().contains(">")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf(">") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
+
+                    } else if (placeHolder.toString().contains(">=")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf(">=") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
+
+                    } else if (placeHolder.toString().contains("<")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf("<") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
+
+                    } else if (placeHolder.toString().contains("<=")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf("<=") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
+
+                    } else if (placeHolder.toString().contains("<>")) {
+                        String expression = placeHolder.toString();
+                        String value = expression.substring(expression.indexOf("<>") + 1, expression.length());
+                        placeHolder = placeHolder.toString().replace(value, "%1");
+                        filterValues.add(value);
+
+                    } else {
+                        filterValues.add(placeHolders.get(index));
+                        placeHolders.set(index, "%" + index);
+                    }
+                }
+                index++;
+            }
+
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Object placeHolder : placeHolders) {
+                stringBuilder.append(placeHolder);
+            }
+
+            if (!finalfilters.isEmpty()) {
+                finalfilters.add(" AND ");
+            }
+
+            finalfilters.add("(");
+
+            Field declaredField = bean.getClass().getDeclaredField(BusinessCentralUtils.convertToCamelCase(key));
+            Class<?> type = declaredField.getType();
+            if (type.equals(Integer.class)) {
+                for (int i = 0; i < filterValues.size(); i++) {
+                    filterValues.set(i, Integer.parseInt(filterValues.get(i).toString()));
+                }
+            }
+
+            BusinessCentralUtils.ParserSQLExpression(finalfilters, stringBuilder.toString(), key, filterValues.toArray());
+
+            finalfilters.add(")");
+        }
+
+        StringBuilder finalSort = new StringBuilder();
+        finalSort.append(" ORDER BY ");
+
+        List<LinkedHashMap<String,String>> sortParams = (List<LinkedHashMap<String, String>>) filters.get("sort");
+        for (LinkedHashMap<String, String> sortParam : sortParams) {
+            finalSort
+                    .append(sortParam.get("field"))
+                    .append(" ")
+                    .append(sortParam.get("sort"))
+                    .append(", ");
+        }
+
+        finalSort.delete(finalSort.lastIndexOf(", "),finalSort.length());
+
+        System.out.println(finalSort.toString());
+
+        return businessCentralProtoTypeQueryMapper.FindSetByFilterAndSort(table, "", finalfilters,finalSort.toString());
     }
 }

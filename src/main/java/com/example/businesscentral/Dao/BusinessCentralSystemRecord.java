@@ -1,5 +1,6 @@
 package com.example.businesscentral.Dao;
 
+import com.example.businesscentral.Dao.Request.SortParameter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,6 @@ public interface BusinessCentralSystemRecord {
     List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) throws Exception;
 
     List<LinkedHashMap<String, Object>> QueryContent(Map<String,Object> filters);
+
+    List<LinkedHashMap<String, Object>> SortLinesByDescending(Map<String, Object> filters) throws Exception;
 }

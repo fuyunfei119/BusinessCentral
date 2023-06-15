@@ -43,6 +43,26 @@ public interface BusinessCentralProtoTypeQueryMapper {
                     "${Filters}" +
                     "</if>" +
                     "</script>";
+    final String QueryBySort =
+            "<script>" +
+                    "SELECT" +
+                    "<if test='LoadFields.isEmpty()'> * </if>" +
+                    "<if test='!(LoadFields.isEmpty())'>" +
+                    "${LoadFields} "+
+                    "</if>" +
+                    "FROM Customer" +
+                    "<if test='Filters.isEmpty()'></if>" +
+                    "<if test='!(Filters.isEmpty())'>" +
+                    "WHERE" +
+                    "<foreach collection='Filters' item='Filter'>" +
+                    "${Filter}" +
+                    "</foreach>" +
+                    "</if>" +
+                    "<if test='Sort.isEmpty()'></if>" +
+                    "<if test='!(Sort.isEmpty())'>" +
+                    "${Sort}" +
+                    "</if>" +
+                    "</script>";
 
     @Select(Query)
     List<LinkedHashMap<String,Object>> FindSetByTableName(@Param("fields") String fields,@Param("tableName") String tableName);
@@ -55,4 +75,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
 
     @Select(QueryBySearch)
     List<LinkedHashMap<String,Object>> FindSetBySearch(@Param("table") Object table,@Param("LoadFields") String LoadFields, @Param("Filters") String Filters);
+
+    @Select(QueryBySort)
+    List<LinkedHashMap<String, Object>> FindSetByFilterAndSort(@Param("table") Object table,@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters,@Param("Sort") String sort);
 }

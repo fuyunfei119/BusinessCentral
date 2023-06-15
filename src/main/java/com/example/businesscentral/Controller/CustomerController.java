@@ -1,6 +1,7 @@
 package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.CodeUnits.CustomerManagement;
+import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Page.CustomerPage;
 import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,11 @@ public class CustomerController {
     @PostMapping("/FetchSearchQuery")
     public List<LinkedHashMap<String, Object>> FetchSearchQuery(@RequestBody Map<String,Object> filters) {
         return customerPage.QueryContent(filters);
+    }
+
+    @PostMapping("/SortLines")
+    public List<LinkedHashMap<String,Object>> SortByAscending(@RequestBody Map<String, Object> filters) throws Exception {
+        return customerPage.SortLinesByDescending(filters);
     }
 
     @GetMapping("/test")
