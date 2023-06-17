@@ -312,16 +312,11 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         StringBuilder finalSort = new StringBuilder();
         finalSort.append(" ORDER BY ");
 
-        List<LinkedHashMap<String,String>> sortParams = (List<LinkedHashMap<String, String>>) filters.get("sort");
-        for (LinkedHashMap<String, String> sortParam : sortParams) {
-            finalSort
-                    .append(sortParam.get("field"))
-                    .append(" ")
-                    .append(sortParam.get("sort"))
-                    .append(", ");
-        }
-
-        finalSort.delete(finalSort.lastIndexOf(", "),finalSort.length());
+        LinkedHashMap<String,String> sortParam = (LinkedHashMap<String, String>) filters.get("sort");
+        finalSort
+                .append(sortParam.get("field"))
+                .append(" ")
+                .append(sortParam.get("sort"));
 
         System.out.println(finalSort.toString());
 
