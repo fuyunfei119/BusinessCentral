@@ -2,6 +2,7 @@ package com.example.businesscentral.Dao.ProtoTypeQuery;
 
 import com.example.businesscentral.Dao.Annotation.Keys;
 import com.example.businesscentral.Dao.Annotation.Table;
+import com.example.businesscentral.Dao.Annotation.TableField;
 import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
@@ -342,5 +343,21 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         }
 
         return businessCentralProtoTypeQueryMapper.GetRecordById(recordID.toString(),"",PrimaryKey);
+    }
+
+    @Override
+    public List<String> GetAllFieldNames(String table) {
+
+        Object bean = applicationContext.getBean(table.toLowerCase(Locale.ROOT));
+        for (Field declaredField : bean.getClass().getDeclaredFields()) {
+            if (declaredField.isAnnotationPresent(TableField.class)) {
+                TableField annotation = declaredField.getAnnotation(TableField.class);
+                if (annotation.VISIABLE()) {
+
+                }
+            }
+        }
+
+        return null;
     }
 }

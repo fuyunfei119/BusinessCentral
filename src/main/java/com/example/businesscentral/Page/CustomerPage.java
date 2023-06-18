@@ -21,6 +21,7 @@ public class CustomerPage {
     private ApplicationContext applicationContext;
 
     public List<LinkedHashMap<String, Object>> FindSetProtoType() throws Exception {
+        customerPageData.Reset();
         customerPageData.SetLoadFields(Customer.Fields.userId);
         customerPageData.SetLoadFields(Customer.Fields.firstName);
         customerPageData.SetLoadFields(Customer.Fields.lastName);

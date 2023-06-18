@@ -24,4 +24,6 @@ public interface BusinessCentralSystemRecord {
 
     LinkedHashMap<String, Object> GetRecordById(Map<String, Object> filters);
 
+    List<String> GetAllFieldNames(String table);
+
 }

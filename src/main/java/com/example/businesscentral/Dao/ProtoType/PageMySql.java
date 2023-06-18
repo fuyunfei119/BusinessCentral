@@ -1,15 +1,12 @@
 package com.example.businesscentral.Dao.ProtoType;
 
-import com.example.businesscentral.Dao.Annotation.Keys;
 import com.example.businesscentral.Dao.BusinessCentralPage;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ObjectUtils;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,17 +17,24 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
 
     @Autowired
     private BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper;
-    private final List<String> filters = new ArrayList<>();
-    private final List<String> loadfilters = new ArrayList<>();
+    private List<String> filters = new ArrayList<>();
+    private List<String> loadfilters = new ArrayList<>();
 
     public PageMySql(BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper) {
         this.businessCentralProtoTypeMapper = businessCentralProtoTypeMapper;
     }
 
     @Override
-    public BusinessCentralPage<T,E> SetLoadFields(E field) throws NoSuchFieldException {
+    public BusinessCentralPage<T, E> Reset() {
 
-//        Field declaredField = aClass.getDeclaredField(field.name());
+        this.filters = new ArrayList<>();
+        this.loadfilters = new ArrayList<>();
+
+        return this;
+    }
+
+    @Override
+    public BusinessCentralPage<T,E> SetLoadFields(E field) throws NoSuchFieldException {
 
         this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(field.name()));
 
@@ -39,8 +43,6 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
 
     @Override
     public BusinessCentralPage<T,E> SetRange(E field, Object Value) throws NoSuchFieldException {
-
-//        Field declaredField = aClass.getDeclaredField(field.name());
 
         if (!this.filters.isEmpty()) {
             filters.add(" AND ");

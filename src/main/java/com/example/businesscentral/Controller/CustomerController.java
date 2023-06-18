@@ -1,6 +1,8 @@
 package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.CodeUnits.CustomerManagement;
+import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
+import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Page.CustomerCard;
 import com.example.businesscentral.Page.CustomerPage;
@@ -22,6 +24,8 @@ public class CustomerController {
     private CustomerPage customerPage;
     @Autowired
     private CustomerCard customerCard;
+    @Autowired
+    private BusinessCentralSystemRecord businessCentralSystemRecord;
 
     @GetMapping("/test123")
     public List<Customer> test1() throws Exception { return customerManagement.CheckIfHasOver_PointsCustomers(); }
@@ -57,8 +61,13 @@ public class CustomerController {
     }
 
     @PostMapping("/GetRecordById")
-    public LinkedHashMap<String,Object> GetRecordById(@RequestBody Map<String, Object> filters) throws Exception {
-        return customerCard.GetRecordById(filters);
+    public List<CardGroup> GetRecordById(@RequestBody Map<String, Object> filters) throws Exception {
+        return customerCard.GetCardData(filters);
+    }
+
+    @PostMapping("/InitNewRecord")
+    public List<String> InitNewRecord(String table) {
+        return businessCentralSystemRecord.GetAllFieldNames(table);
     }
 
     @GetMapping("/test")

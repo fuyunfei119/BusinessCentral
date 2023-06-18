@@ -13,5 +13,5 @@ public @interface Page {
     @AliasFor(
             annotation = Component.class
     )
-    String value() default "";
+    String SOURCETABLE() default "";
 }
