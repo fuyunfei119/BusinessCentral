@@ -22,8 +22,8 @@ public class Customer extends BusinessCentralBase {
     private String userId;
 
     @TableField(
-                ON_VALIDATE = "",
-                FLOW_FIELD = @FlowField()
+            ON_VALIDATE = "",
+            FLOW_FIELD = @FlowField()
     )
     private String firstName;
 

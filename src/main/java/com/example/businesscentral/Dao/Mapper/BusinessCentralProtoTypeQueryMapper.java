@@ -63,6 +63,18 @@ public interface BusinessCentralProtoTypeQueryMapper {
                     "${Sort}" +
                     "</if>" +
                     "</script>";
+    final String GetRecordById =
+            "<script>" +
+                    "SELECT" +
+                    "<if test='LoadFields.isEmpty()'> * </if>" +
+                    "<if test='!(LoadFields.isEmpty())'>" +
+                    "${LoadFields} "+
+                    "</if>" +
+                    "FROM Customer" +
+                    " WHERE " +
+                    "${Key} = '${recordID}'" +
+                    " LIMIT 1" +
+                    "</script>";
 
     @Select(Query)
     List<LinkedHashMap<String,Object>> FindSetByTableName(@Param("fields") String fields,@Param("tableName") String tableName);
@@ -78,4 +90,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
 
     @Select(QueryBySort)
     List<LinkedHashMap<String, Object>> FindSetByFilterAndSort(@Param("table") Object table,@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters,@Param("Sort") String sort);
+
+    @Select(GetRecordById)
+    LinkedHashMap<String, Object> GetRecordById(@Param("recordID") String recordID,@Param("LoadFields") String LoadFields,@Param("Key") String primaryKey);
 }

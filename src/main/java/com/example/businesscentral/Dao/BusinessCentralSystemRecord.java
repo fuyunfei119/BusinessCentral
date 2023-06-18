@@ -11,6 +11,7 @@ import java.util.Map;
 @Repository
 @Scope("prototype")
 public interface BusinessCentralSystemRecord {
+
     List<LinkedHashMap<String,Object>> FindSetByTableName(String TableName) throws ClassNotFoundException;
 
     List<LinkedHashMap<String, Object>> FindSetByFields(Map<String,Object> filters);
@@ -20,4 +21,7 @@ public interface BusinessCentralSystemRecord {
     List<LinkedHashMap<String, Object>> QueryContent(Map<String,Object> filters);
 
     List<LinkedHashMap<String, Object>> SortLinesByDescending(Map<String, Object> filters) throws Exception;
+
+    LinkedHashMap<String, Object> GetRecordById(Map<String, Object> filters);
+
 }

@@ -2,6 +2,7 @@ package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.CodeUnits.CustomerManagement;
 import com.example.businesscentral.Dao.Request.SortParameter;
+import com.example.businesscentral.Page.CustomerCard;
 import com.example.businesscentral.Page.CustomerPage;
 import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class CustomerController {
     private CustomerManagement customerManagement;
     @Autowired
     private CustomerPage customerPage;
+    @Autowired
+    private CustomerCard customerCard;
 
     @GetMapping("/test123")
     public List<Customer> test1() throws Exception { return customerManagement.CheckIfHasOver_PointsCustomers(); }
@@ -51,6 +54,11 @@ public class CustomerController {
     @PostMapping("/SortLines")
     public List<LinkedHashMap<String,Object>> SortByAscending(@RequestBody Map<String, Object> filters) throws Exception {
         return customerPage.SortLinesByDescending(filters);
+    }
+
+    @PostMapping("/GetRecordById")
+    public LinkedHashMap<String,Object> GetRecordById(@RequestBody Map<String, Object> filters) throws Exception {
+        return customerCard.GetRecordById(filters);
     }
 
     @GetMapping("/test")

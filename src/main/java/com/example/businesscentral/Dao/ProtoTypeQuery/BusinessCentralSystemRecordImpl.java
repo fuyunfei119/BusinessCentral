@@ -1,5 +1,6 @@
 package com.example.businesscentral.Dao.ProtoTypeQuery;
 
+import com.example.businesscentral.Dao.Annotation.Keys;
 import com.example.businesscentral.Dao.Annotation.Table;
 import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
@@ -321,5 +322,25 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         System.out.println(finalSort.toString());
 
         return businessCentralProtoTypeQueryMapper.FindSetByFilterAndSort(table, "", finalfilters,finalSort.toString());
+    }
+
+    @Override
+    public LinkedHashMap<String, Object> GetRecordById(Map<String, Object> filters) {
+
+        Object table = filters.get("table");
+        Object recordID = filters.get("RecordID");
+        String PrimaryKey = "";
+
+        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
+        for (Field declaredField : bean.getClass().getDeclaredFields()) {
+            if (declaredField.isAnnotationPresent(Keys.class)) {
+                Keys annotation = declaredField.getAnnotation(Keys.class);
+                if (annotation.PRIMARY_KEY()) {
+                    PrimaryKey = BusinessCentralUtils.convertToSnakeCase(declaredField.getName());
+                }
+            }
+        }
+
+        return businessCentralProtoTypeQueryMapper.GetRecordById(recordID.toString(),"",PrimaryKey);
     }
 }

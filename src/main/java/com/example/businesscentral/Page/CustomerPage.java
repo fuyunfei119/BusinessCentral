@@ -3,7 +3,6 @@ package com.example.businesscentral.Page;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.PageData.CustomerPageData;
-import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class CustomerPage {
         customerPageData.SetLoadFields(Customer.Fields.points);
         customerPageData.SetLoadFields(Customer.Fields.phoneNumber);
         customerPageData.SetLoadFields(Customer.Fields.accountStatus);
-         return customerPageData.FindSet();
+        return customerPageData.FindSet();
     }
 
     public List<LinkedHashMap<String, Object>> FindSetByTableName(String TableName) throws ClassNotFoundException {
@@ -76,4 +75,6 @@ public class CustomerPage {
     public List<LinkedHashMap<String, Object>> SortLinesByDescending(Map<String, Object> filters) throws Exception {
         return businessCentralSystemRecord.SortLinesByDescending(filters);
     }
+
+
 }
