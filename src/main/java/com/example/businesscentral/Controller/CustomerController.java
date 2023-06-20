@@ -64,7 +64,7 @@ public class CustomerController {
     }
 
     @PostMapping("/GetRecordById")
-    public LinkedHashMap<String,Object> GetRecordById(@RequestBody Map<String, Object> filters) throws Exception {
+    public List<?> GetRecordById(@RequestBody Map<String, Object> filters) throws Exception {
         return null;
     }
 

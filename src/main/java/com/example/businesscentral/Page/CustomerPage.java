@@ -12,11 +12,7 @@ import org.springframework.context.ApplicationContext;
 import java.lang.reflect.Field;
 import java.util.*;
 
-@Page(
-        SOURCETABLE = "Customer",
-        TYPE = PageType.List,
-        Method = "FindSetProtoType"
-)
+@Page(SOURCETABLE = "Customer", TYPE = PageType.List, Method = "FindSetProtoType")
 public class CustomerPage {
     @Autowired
     private CustomerPageData customerPageData;

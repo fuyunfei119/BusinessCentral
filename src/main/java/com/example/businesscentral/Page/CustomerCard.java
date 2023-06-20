@@ -14,11 +14,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.*;
 
-@Page(
-        SOURCETABLE = "Customer",
-        TYPE = PageType.Card,
-        Method = "GetCardData"
-)
+@Page(SOURCETABLE = "Customer", TYPE = PageType.Card, Method = "GetCardData")
 public class CustomerCard {
 
     @Autowired
