@@ -2,6 +2,7 @@ package com.example.businesscentral.Page;
 
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
+import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.PageData.CustomerPageData;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import com.example.businesscentral.Table.Customer;
@@ -11,7 +12,11 @@ import org.springframework.context.ApplicationContext;
 import java.lang.reflect.Field;
 import java.util.*;
 
-@Page
+@Page(
+        SOURCETABLE = "Customer",
+        TYPE = PageType.List,
+        Method = "FindSetProtoType"
+)
 public class CustomerPage {
     @Autowired
     private CustomerPageData customerPageData;

@@ -1,6 +1,7 @@
 package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.CodeUnits.CustomerManagement;
+import com.example.businesscentral.Dao.Aop.CardAop;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.SortParameter;
@@ -24,6 +25,8 @@ public class CustomerController {
     private CustomerPage customerPage;
     @Autowired
     private CustomerCard customerCard;
+    @Autowired
+    private CardAop cardAop;
     @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
@@ -61,12 +64,12 @@ public class CustomerController {
     }
 
     @PostMapping("/GetRecordById")
-    public List<CardGroup> GetRecordById(@RequestBody Map<String, Object> filters) throws Exception {
-        return customerCard.GetCardData(filters);
+    public LinkedHashMap<String,Object> GetRecordById(@RequestBody Map<String, Object> filters) throws Exception {
+        return null;
     }
 
     @PostMapping("/InitNewRecord")
-    public List<String> InitNewRecord(String table) {
+    public List<CardGroup> InitNewRecord(@RequestBody Map<String,String> table) {
         return businessCentralSystemRecord.GetAllFieldNames(table);
     }
 

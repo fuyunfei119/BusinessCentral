@@ -1,8 +1,10 @@
 package com.example.businesscentral.Dao.ProtoTypeQuery;
 
 import com.example.businesscentral.Dao.Annotation.Keys;
+import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.Annotation.Table;
 import com.example.businesscentral.Dao.Annotation.TableField;
+import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
@@ -346,18 +348,46 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     }
 
     @Override
-    public List<String> GetAllFieldNames(String table) {
+    public List<CardGroup> GetAllFieldNames(Map<String,String> table) {
 
-        Object bean = applicationContext.getBean(table.toLowerCase(Locale.ROOT));
+        String tableName = table.get("table");
+        List<String> GroupNames = new ArrayList<>();
+        List<CardGroup> cardGroups = new ArrayList<>();
+
+        Object bean = applicationContext.getBean(tableName.toLowerCase(Locale.ROOT));
+
         for (Field declaredField : bean.getClass().getDeclaredFields()) {
-            if (declaredField.isAnnotationPresent(TableField.class)) {
-                TableField annotation = declaredField.getAnnotation(TableField.class);
-                if (annotation.VISIABLE()) {
-
+            if (declaredField.isAnnotationPresent(PageField.class)) {
+                PageField annotation = declaredField.getAnnotation(PageField.class);
+                if (!annotation.GROUP().isBlank()) {
+                    if (!GroupNames.contains(annotation.GROUP())) {
+                        GroupNames.add(annotation.GROUP());
+                    }
                 }
             }
         }
 
-        return null;
+        for (String groupName : GroupNames) {
+
+            CardGroup cardGroup = new CardGroup();
+            LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+            cardGroup.setGroupName(groupName);
+
+            for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                if (declaredField.isAnnotationPresent(PageField.class)) {
+                    PageField annotation = declaredField.getAnnotation(PageField.class);
+                    if (!annotation.GROUP().isBlank()) {
+                        if (annotation.GROUP().equals(groupName)) {
+                            map.put(declaredField.getName(), "");
+                        }
+                    }
+                }
+            }
+
+            cardGroup.setFields(map);
+            cardGroups.add(cardGroup);
+        }
+
+        return cardGroups;
     }
 }

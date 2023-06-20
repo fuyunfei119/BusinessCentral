@@ -1,5 +1,6 @@
 package com.example.businesscentral.Dao;
 
+import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.SortParameter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -24,6 +25,6 @@ public interface BusinessCentralSystemRecord {
 
     LinkedHashMap<String, Object> GetRecordById(Map<String, Object> filters);
 
-    List<String> GetAllFieldNames(String table);
+    List<CardGroup> GetAllFieldNames(Map<String,String> table);
 
 }

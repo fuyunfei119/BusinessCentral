@@ -1,5 +1,6 @@
 package com.example.businesscentral.Dao.Annotation;
 
+import com.example.businesscentral.Dao.Enum.PageType;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +11,7 @@ import java.lang.annotation.*;
 @Documented
 @Component
 public @interface Page {
-    @AliasFor(
-            annotation = Component.class
-    )
-    String SOURCETABLE() default "";
+    String SOURCETABLE();
+    PageType TYPE();
+    String Method();
 }
