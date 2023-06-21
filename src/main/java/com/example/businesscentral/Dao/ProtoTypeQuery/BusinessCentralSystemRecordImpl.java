@@ -4,6 +4,7 @@ import com.example.businesscentral.Dao.Annotation.Keys;
 import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.Annotation.Table;
 import com.example.businesscentral.Dao.Annotation.TableField;
+import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
@@ -26,6 +27,8 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
     @Autowired
     private BusinessCentralProtoTypeQueryMapper businessCentralProtoTypeQueryMapper;
+    @Autowired
+    private CustomerRecord customerRecord;
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -389,5 +392,13 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         }
 
         return cardGroups;
+    }
+
+    @Override
+    public LinkedHashMap<String, Object> InsertNewRecord(String table,Map<String,Object> objectMap) {
+
+        businessCentralProtoTypeQueryMapper.InsertNewRecord();
+
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.businesscentral.Dao.Mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -75,6 +76,11 @@ public interface BusinessCentralProtoTypeQueryMapper {
                     "${Key} = '${recordID}'" +
                     " LIMIT 1" +
                     "</script>";
+    final String InsertNewRecord =
+            "<script>" +
+                    "INSERT INTO " +
+                    ""+
+                    "</script>";
 
     @Select(Query)
     List<LinkedHashMap<String,Object>> FindSetByTableName(@Param("fields") String fields,@Param("tableName") String tableName);
@@ -93,4 +99,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
 
     @Select(GetRecordById)
     LinkedHashMap<String, Object> GetRecordById(@Param("recordID") String recordID,@Param("LoadFields") String LoadFields,@Param("Key") String primaryKey);
+
+    @Insert(InsertNewRecord)
+    Integer InsertNewRecord();
 }

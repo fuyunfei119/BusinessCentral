@@ -27,4 +27,5 @@ public interface BusinessCentralSystemRecord {
 
     List<CardGroup> GetAllFieldNames(Map<String,String> table);
 
+    LinkedHashMap<String,Object> InsertNewRecord(String table,Map<String,Object> objectMap);
 }

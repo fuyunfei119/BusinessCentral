@@ -24,10 +24,6 @@ public class CustomerController {
     @Autowired
     private CustomerPage customerPage;
     @Autowired
-    private CustomerCard customerCard;
-    @Autowired
-    private CardAop cardAop;
-    @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
     @GetMapping("/test123")
@@ -71,6 +67,11 @@ public class CustomerController {
     @PostMapping("/InitNewRecord")
     public List<CardGroup> InitNewRecord(@RequestBody Map<String,String> table) {
         return businessCentralSystemRecord.GetAllFieldNames(table);
+    }
+
+    @PostMapping("/InsertOrUpdateRecord")
+    public void InsertOrUpdateRecord(@RequestBody String table,Map<String,Object> objectMap) {
+        businessCentralSystemRecord.InsertNewRecord(table,objectMap);
     }
 
     @GetMapping("/test")
