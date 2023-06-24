@@ -415,7 +415,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             }
         });
 
-        Object newInstance = bean.getClass().getDeclaredConstructor().newInstance();
+        Object newRecordInstance = bean.getClass().getDeclaredConstructor().newInstance();
 
         newRecord.forEach((s, o) -> {
             try {
@@ -423,18 +423,37 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 if (field.isAnnotationPresent(TableField.class)) {
                     TableField annotation = field.getAnnotation(TableField.class);
                     if (!annotation.ON_VALIDATE().isBlank()) {
-                        Method method = ReflectionUtils.findMethod(bean.getClass(), annotation.ON_VALIDATE(),Object.class);
-                        if (!ObjectUtils.isEmpty(method)) {
-                            method.setAccessible(true);
-                            Object invoke = method.invoke(bean, o);
-                            System.out.println(invoke);
+                        Method TableValidateTrigger = ReflectionUtils.findMethod(bean.getClass(), annotation.ON_VALIDATE(),Object.class);
+                        if (!ObjectUtils.isEmpty(TableValidateTrigger)) {
+
+                            TableValidateTrigger.setAccessible(true);
+                            Object RecordAfterTableValidate = TableValidateTrigger.invoke(bean, o);
+
+                            Field FieldAfterTableValidate = RecordAfterTableValidate.getClass().getDeclaredField(field.getName());
+                            FieldAfterTableValidate.setAccessible(true);
+                            Object TableFieldValueAfterValidate = FieldAfterTableValidate.get(RecordAfterTableValidate);
+
+                            Field FieldNewRecordInstance = newRecordInstance.getClass().getDeclaredField(field.getName());
+                            FieldNewRecordInstance.setAccessible(true);
+                            FieldNewRecordInstance.set(newRecordInstance,TableFieldValueAfterValidate);
+                        }else {
+                            field.setAccessible(true);
+                            field.set(newRecordInstance,o);
                         }
+                    }else {
+                        field.setAccessible(true);
+                        field.set(newRecordInstance,o);
                     }
+                }else {
+                    field.setAccessible(true);
+                    field.set(newRecordInstance,o);
                 }
             } catch (NoSuchFieldException | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         });
+
+        System.out.println(newRecordInstance);
 //       businessCentralProtoTypeQueryMapper.InsertNewRecord(table.toString(),newRecord.keySet(),newRecord.values());
 
        return null;
