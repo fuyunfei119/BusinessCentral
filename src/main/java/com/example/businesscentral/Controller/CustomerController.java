@@ -11,6 +11,7 @@ import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,8 +71,8 @@ public class CustomerController {
     }
 
     @PostMapping("/InsertOrUpdateRecord")
-    public void InsertOrUpdateRecord(@RequestBody String table,Map<String,Object> objectMap) {
-        businessCentralSystemRecord.InsertNewRecord(table,objectMap);
+    public void InsertOrUpdateRecord(@RequestBody Map<String,Object> objectMap) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        businessCentralSystemRecord.InsertNewRecord(objectMap);
     }
 
     @GetMapping("/test")

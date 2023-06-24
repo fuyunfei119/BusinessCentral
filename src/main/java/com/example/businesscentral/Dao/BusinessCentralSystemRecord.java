@@ -5,6 +5,7 @@ import com.example.businesscentral.Dao.Request.SortParameter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,5 +28,5 @@ public interface BusinessCentralSystemRecord {
 
     List<CardGroup> GetAllFieldNames(Map<String,String> table);
 
-    LinkedHashMap<String,Object> InsertNewRecord(String table,Map<String,Object> objectMap);
+    LinkedHashMap<String,Object> InsertNewRecord(Map<String,Object> objectMap) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 }

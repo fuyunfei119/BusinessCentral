@@ -5,9 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Mapper
 public interface BusinessCentralProtoTypeQueryMapper {
@@ -78,8 +76,14 @@ public interface BusinessCentralProtoTypeQueryMapper {
                     "</script>";
     final String InsertNewRecord =
             "<script>" +
-                    "INSERT INTO " +
-                    ""+
+                    "INSERT INTO ${table} " +
+                    "<foreach collection='fields' item='field' separator=',' open='(' close=')' >" +
+                    "${field}" +
+                    "</foreach>" +
+                    "VALUES" +
+                    "<foreach collection='values' item='value' separator=',' open='(' close=')' >" +
+                    "${value}" +
+                    "</foreach>" +
                     "</script>";
 
     @Select(Query)
@@ -101,5 +105,6 @@ public interface BusinessCentralProtoTypeQueryMapper {
     LinkedHashMap<String, Object> GetRecordById(@Param("recordID") String recordID,@Param("LoadFields") String LoadFields,@Param("Key") String primaryKey);
 
     @Insert(InsertNewRecord)
-    Integer InsertNewRecord();
+    Integer InsertNewRecord(@Param("table") String tableName,@Param("fields") Set<String> strings,@Param("values") Collection<Object> values);
+
 }

@@ -42,7 +42,7 @@ public class Customer extends BusinessCentralBase {
     private String lastName;
 
     @TableField(
-            ON_VALIDATE = "Hello",
+            ON_VALIDATE = "",
             INIT_VALUE = "OK",
             FLOW_FIELD = @FlowField(),
             NOT_BLANK = true
@@ -155,9 +155,4 @@ public class Customer extends BusinessCentralBase {
 
         return this;
     }
-
-    private void Hello() {
-
-    }
-
 }

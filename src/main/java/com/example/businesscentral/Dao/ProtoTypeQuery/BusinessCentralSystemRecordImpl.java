@@ -4,21 +4,27 @@ import com.example.businesscentral.Dao.Annotation.Keys;
 import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.Annotation.Table;
 import com.example.businesscentral.Dao.Annotation.TableField;
+import com.example.businesscentral.Dao.BusinessCentralRecord;
+import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Dao.Request.CardGroup;
-import com.example.businesscentral.Dao.Request.SortParameter;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeQueryMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
+import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.parsing.BeanComponentDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.*;
 
 @Repository
@@ -395,10 +401,42 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     }
 
     @Override
-    public LinkedHashMap<String, Object> InsertNewRecord(String table,Map<String,Object> objectMap) {
+    public LinkedHashMap<String, Object> InsertNewRecord(Map<String,Object> objectMap) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        businessCentralProtoTypeQueryMapper.InsertNewRecord();
+        Object table = objectMap.get("table");
+        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
 
-        return null;
+        LinkedHashMap<String,Object> record = (LinkedHashMap<String, Object>) objectMap.get("record");
+        LinkedHashMap<String,Object> newRecord = new LinkedHashMap<>();
+
+        record.forEach((s, o) -> {
+            if (!ObjectUtils.isEmpty(o)) {
+                newRecord.put(s,o);
+            }
+        });
+
+        Object newInstance = bean.getClass().getDeclaredConstructor().newInstance();
+
+        newRecord.forEach((s, o) -> {
+            try {
+                Field field = bean.getClass().getDeclaredField(s);
+                if (field.isAnnotationPresent(TableField.class)) {
+                    TableField annotation = field.getAnnotation(TableField.class);
+                    if (!annotation.ON_VALIDATE().isBlank()) {
+                        Method method = ReflectionUtils.findMethod(bean.getClass(), annotation.ON_VALIDATE(),Object.class);
+                        if (!ObjectUtils.isEmpty(method)) {
+                            method.setAccessible(true);
+                            Object invoke = method.invoke(bean, o);
+                            System.out.println(invoke);
+                        }
+                    }
+                }
+            } catch (NoSuchFieldException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
+//       businessCentralProtoTypeQueryMapper.InsertNewRecord(table.toString(),newRecord.keySet(),newRecord.values());
+
+       return null;
     }
 }
