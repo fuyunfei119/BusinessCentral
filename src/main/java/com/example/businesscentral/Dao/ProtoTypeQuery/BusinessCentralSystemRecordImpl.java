@@ -1,12 +1,10 @@
 package com.example.businesscentral.Dao.ProtoTypeQuery;
 
-import com.example.businesscentral.Dao.Annotation.Keys;
-import com.example.businesscentral.Dao.Annotation.PageField;
-import com.example.businesscentral.Dao.Annotation.Table;
-import com.example.businesscentral.Dao.Annotation.TableField;
+import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
+import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
@@ -21,10 +19,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.*;
 
 @Repository
@@ -379,7 +382,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         for (String groupName : GroupNames) {
 
             CardGroup cardGroup = new CardGroup();
-            LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+            LinkedHashMap<String, CardField> map = new LinkedHashMap<>();
             cardGroup.setGroupName(groupName);
 
             for (Field declaredField : bean.getClass().getDeclaredFields()) {
@@ -387,7 +390,23 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                     PageField annotation = declaredField.getAnnotation(PageField.class);
                     if (!annotation.GROUP().isBlank()) {
                         if (annotation.GROUP().equals(groupName)) {
-                            map.put(declaredField.getName(), "");
+
+                            CardField cardField = new CardField();
+                            if (declaredField.getType().isAssignableFrom(String.class)) {
+                                cardField.setType("Text");
+                            }else if (declaredField.getType().isAssignableFrom(Integer.class) ||
+                                    declaredField.getType().isAssignableFrom(Double.class) ||
+                                    declaredField.getType().isAssignableFrom(BigDecimal.class) ||
+                                    declaredField.getType().isAssignableFrom(BigInteger.class)) {
+                                cardField.setType("number");
+                            } else if (declaredField.getType().isAssignableFrom(Date.class)) {
+                                cardField.setType("date");
+                            } else if (declaredField.getType().isAssignableFrom(Time.class)) {
+                                cardField.setType("time");
+                            }
+                            cardField.setValue("");
+
+                            map.put(declaredField.getName(), cardField);
                         }
                     }
                 }
@@ -401,6 +420,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     }
 
     @Override
+    @Transactional
     public LinkedHashMap<String, Object> InsertNewRecord(Map<String,Object> objectMap) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
         Object table = objectMap.get("table");
@@ -415,7 +435,14 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             }
         });
 
+        // Raise up Init Trigger
         Object newRecordInstance = bean.getClass().getDeclaredConstructor().newInstance();
+        for (Method declaredMethod : bean.getClass().getDeclaredMethods()) {
+            if (declaredMethod.isAnnotationPresent(OnInit.class)) {
+                declaredMethod.setAccessible(true);
+                declaredMethod.invoke(newRecordInstance);
+            }
+        }
 
         newRecord.forEach((s, o) -> {
             try {
@@ -445,8 +472,15 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                         field.set(newRecordInstance,o);
                     }
                 }else {
+                    Class<?> type = field.getType();
                     field.setAccessible(true);
-                    field.set(newRecordInstance,o);
+                    if (type.isAssignableFrom(Integer.class)) {
+                        field.set(newRecordInstance,Integer.parseInt(o.toString()));
+                    } else if (type.isAssignableFrom(Date.class)) {
+                        field.set(newRecordInstance, Date.valueOf(o.toString()));
+                    } else if (type.isAssignableFrom(String.class)) {
+                        field.set(newRecordInstance,o);
+                    }
                 }
             } catch (NoSuchFieldException | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
@@ -454,8 +488,34 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         });
 
         System.out.println(newRecordInstance);
-//       businessCentralProtoTypeQueryMapper.InsertNewRecord(table.toString(),newRecord.keySet(),newRecord.values());
 
-       return null;
+        List<String> fields = new ArrayList<>();
+
+        for (Field declaredField : newRecordInstance.getClass().getDeclaredFields()) {
+            declaredField.setAccessible(true);
+            Object o = declaredField.get(newRecordInstance);
+            if (!ObjectUtils.isEmpty(o)) {
+                fields.add(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()));
+            }
+        }
+
+        List<Object> values = new ArrayList<>();
+        for (Field declaredField : newRecordInstance.getClass().getDeclaredFields()) {
+            declaredField.setAccessible(true);
+            if (declaredField.get(newRecordInstance) == null) {
+                continue;
+            }
+            if (declaredField.getType().isAssignableFrom(String.class) || declaredField.getType().isAssignableFrom(Date.class)) {
+                values.add("'" + declaredField.get(newRecordInstance) + "'");
+            }else {
+                values.add(declaredField.get(newRecordInstance));
+            }
+        }
+
+        System.out.println(values);
+
+        businessCentralProtoTypeQueryMapper.InsertNewRecord(table.toString(),fields,values);
+
+        return null;
     }
 }

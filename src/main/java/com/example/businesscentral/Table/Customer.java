@@ -90,7 +90,7 @@ public class Customer extends BusinessCentralBase {
             VISIABLE = true,
             GROUP = "System"
     )
-    private Date lastUpdatedTime;
+    private java.sql.Date lastUpdatedTime;
 
     @PageField(
             VISIABLE = true,

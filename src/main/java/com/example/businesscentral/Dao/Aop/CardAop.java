@@ -3,6 +3,7 @@ package com.example.businesscentral.Dao.Aop;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.Enum.PageType;
+import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -21,6 +22,11 @@ import org.springframework.util.StringUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Date;
+import java.sql.Time;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Aspect
@@ -82,7 +88,7 @@ public class CardAop {
         for (String groupName : GroupNames) {
 
             CardGroup cardGroup = new CardGroup();
-            LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+            LinkedHashMap<String, CardField> map = new LinkedHashMap<>();
             cardGroup.setGroupName(groupName);
 
             for (Field declaredField : bean.getClass().getDeclaredFields()) {
@@ -90,7 +96,23 @@ public class CardAop {
                     PageField annotation = declaredField.getAnnotation(PageField.class);
                     if (!annotation.GROUP().isBlank()) {
                         if (annotation.GROUP().equals(groupName)) {
-                            map.put(declaredField.getName(), result.get(BusinessCentralUtils.convertToSnakeCase(declaredField.getName())));
+
+                            CardField cardField = new CardField();
+                            if (declaredField.getType().isAssignableFrom(String.class)) {
+                                cardField.setType("Text");
+                            }else if (declaredField.getType().isAssignableFrom(Integer.class) || 
+                                      declaredField.getType().isAssignableFrom(Double.class) || 
+                                      declaredField.getType().isAssignableFrom(BigDecimal.class) ||
+                                    declaredField.getType().isAssignableFrom(BigInteger.class)) {
+                                cardField.setType("number");
+                            } else if (declaredField.getType().isAssignableFrom(Date.class)) {
+                                cardField.setType("date");
+                            } else if (declaredField.getType().isAssignableFrom(Time.class)) {
+                                cardField.setType("time");
+                            }
+                            cardField.setValue(result.get(BusinessCentralUtils.convertToSnakeCase(declaredField.getName())));
+
+                            map.put(declaredField.getName(), cardField);
                         }
                     }
                 }

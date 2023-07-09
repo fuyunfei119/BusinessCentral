@@ -76,7 +76,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
                     "</script>";
     final String InsertNewRecord =
             "<script>" +
-                    "INSERT INTO ${table} " +
+                    "INSERT INTO ${table}" +
                     "<foreach collection='fields' item='field' separator=',' open='(' close=')' >" +
                     "${field}" +
                     "</foreach>" +
@@ -105,6 +105,6 @@ public interface BusinessCentralProtoTypeQueryMapper {
     LinkedHashMap<String, Object> GetRecordById(@Param("recordID") String recordID,@Param("LoadFields") String LoadFields,@Param("Key") String primaryKey);
 
     @Insert(InsertNewRecord)
-    Integer InsertNewRecord(@Param("table") String tableName,@Param("fields") Set<String> strings,@Param("values") Collection<Object> values);
+    Integer InsertNewRecord(@Param("table") String tableName,@Param("fields") List<String> strings,@Param("values") Collection<Object> values);
 
 }

@@ -3,11 +3,12 @@ package com.example.businesscentral.Dao.Request;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.LinkedHashMap;
+import java.sql.Time;
 
 @Data
 @Accessors(chain = true)
-public class CardGroup {
-    private String groupName;
-    private LinkedHashMap<String,CardField> fields;
+public class CardField {
+
+    private String Type;
+    private Object Value;
 }
