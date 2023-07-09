@@ -19,8 +19,6 @@ public class CustomerManagement {
     private CustomerRecord customerRecord;
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
-    @Autowired
-    private ApplicationContext applicationContext;
 
     public List<Customer> InsertNewCustomer() throws Exception {
 

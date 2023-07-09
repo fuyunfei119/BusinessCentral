@@ -3,7 +3,7 @@ package com.example.businesscentral.Controller;
 import com.example.businesscentral.CodeUnits.CustomerManagement;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Request.CardGroup;
-import com.example.businesscentral.Page.CustomerList;
+import com.example.businesscentral.Dao.Request.TableParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,21 +16,30 @@ import java.util.Map;
 public class CustomerController {
 
     @Autowired
-    private CustomerManagement customerManagement;
-    @Autowired
-    private CustomerList customerList;
-    @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
-//    @GetMapping("/test123")
-//    public List<Customer> test1() throws Exception { return customerManagement.CheckIfHasOver_PointsCustomers(); }
-//
-//    @GetMapping("/testnewcustomer")
-//    public List<Customer> test() throws Exception { return customerManagement.InsertNewCustomer(); }
+    @PostMapping("/List/OnBeforeMounted")
+    public List<LinkedHashMap<String,Object>> onBeforeMounted(@RequestBody TableParameter table) {
+        return null;
+    }
 
-    @GetMapping("/List")
+    @GetMapping("/List/OnMounted")
     public List<LinkedHashMap<String,Object>> FindSetForList(@RequestParam("list") String list) throws Exception {
-//        return customerPage.FindSetProtoType();
+        return null;
+    }
+
+    @PostMapping("/List/OnBeforeUpdate")
+    public List<LinkedHashMap<String,Object>> OnBeforeUpdate(@RequestBody TableParameter table) {
+        return null;
+    }
+
+    @PostMapping("/List/OnUpdated")
+    public List<LinkedHashMap<String,Object>> OnUpdated(@RequestBody TableParameter table) {
+        return null;
+    }
+
+    @PostMapping("/List/OnBeforeUnmount")
+    public List<LinkedHashMap<String,Object>> OnBeforeUnmount(@RequestBody TableParameter table) {
         return null;
     }
 
