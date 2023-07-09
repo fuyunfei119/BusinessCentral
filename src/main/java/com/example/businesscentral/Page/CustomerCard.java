@@ -10,7 +10,6 @@ import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Table.Customer;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
 import java.util.*;
 

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.*;
 import java.math.BigDecimal;
@@ -445,45 +446,64 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         }
 
         newRecord.forEach((s, o) -> {
-            try {
-                Field field = bean.getClass().getDeclaredField(s);
-                if (field.isAnnotationPresent(TableField.class)) {
-                    TableField annotation = field.getAnnotation(TableField.class);
-                    if (!annotation.ON_VALIDATE().isBlank()) {
-                        Method TableValidateTrigger = ReflectionUtils.findMethod(bean.getClass(), annotation.ON_VALIDATE(),Object.class);
-                        if (!ObjectUtils.isEmpty(TableValidateTrigger)) {
 
-                            TableValidateTrigger.setAccessible(true);
-                            Object RecordAfterTableValidate = TableValidateTrigger.invoke(bean, o);
+            LinkedHashMap<String,Object> Value = (LinkedHashMap<String, Object>) o;
+            if (StringUtils.hasLength(Value.get("value").toString())) {
+                try {
+                    Field field = bean.getClass().getDeclaredField(s);
+                    if (field.isAnnotationPresent(TableField.class)) {
+                        TableField annotation = field.getAnnotation(TableField.class);
+                        if (!annotation.ON_VALIDATE().isBlank()) {
+                            Method TableValidateTrigger = ReflectionUtils.findMethod(bean.getClass(), annotation.ON_VALIDATE(),Object.class);
+                            if (!ObjectUtils.isEmpty(TableValidateTrigger)) {
 
-                            Field FieldAfterTableValidate = RecordAfterTableValidate.getClass().getDeclaredField(field.getName());
-                            FieldAfterTableValidate.setAccessible(true);
-                            Object TableFieldValueAfterValidate = FieldAfterTableValidate.get(RecordAfterTableValidate);
+                                TableValidateTrigger.setAccessible(true);
+                                Object RecordAfterTableValidate = TableValidateTrigger.invoke(bean, ((LinkedHashMap<?, ?>) o).get("value"));
 
-                            Field FieldNewRecordInstance = newRecordInstance.getClass().getDeclaredField(field.getName());
-                            FieldNewRecordInstance.setAccessible(true);
-                            FieldNewRecordInstance.set(newRecordInstance,TableFieldValueAfterValidate);
+                                Field FieldAfterTableValidate = RecordAfterTableValidate.getClass().getDeclaredField(field.getName());
+                                FieldAfterTableValidate.setAccessible(true);
+                                Object TableFieldValueAfterValidate = FieldAfterTableValidate.get(RecordAfterTableValidate);
+
+                                Field FieldNewRecordInstance = newRecordInstance.getClass().getDeclaredField(field.getName());
+                                FieldNewRecordInstance.setAccessible(true);
+                                FieldNewRecordInstance.set(newRecordInstance,TableFieldValueAfterValidate);
+
+                            }else {
+                                Class<?> type = field.getType();
+                                field.setAccessible(true);
+                                if (type.isAssignableFrom(Integer.class)) {
+                                    field.set(newRecordInstance,Integer.parseInt(((LinkedHashMap<?, ?>) o).get("value").toString()));
+                                } else if (type.isAssignableFrom(Date.class)) {
+                                    field.set(newRecordInstance, Date.valueOf(((LinkedHashMap<?, ?>) o).get("value").toString()));
+                                } else if (type.isAssignableFrom(String.class)) {
+                                    field.set(newRecordInstance,((LinkedHashMap<?, ?>) o).get("value"));
+                                }
+                            }
                         }else {
+                            Class<?> type = field.getType();
                             field.setAccessible(true);
-                            field.set(newRecordInstance,o);
+                            if (type.isAssignableFrom(Integer.class)) {
+                                field.set(newRecordInstance,Integer.parseInt(((LinkedHashMap<?, ?>) o).get("value").toString()));
+                            } else if (type.isAssignableFrom(Date.class)) {
+                                field.set(newRecordInstance, Date.valueOf(((LinkedHashMap<?, ?>) o).get("value").toString()));
+                            } else if (type.isAssignableFrom(String.class)) {
+                                field.set(newRecordInstance,((LinkedHashMap<?, ?>) o).get("value"));
+                            }
                         }
                     }else {
+                        Class<?> type = field.getType();
                         field.setAccessible(true);
-                        field.set(newRecordInstance,o);
+                        if (type.isAssignableFrom(Integer.class)) {
+                            field.set(newRecordInstance,Integer.parseInt(((LinkedHashMap<?, ?>) o).get("value").toString()));
+                        } else if (type.isAssignableFrom(Date.class)) {
+                            field.set(newRecordInstance, Date.valueOf(((LinkedHashMap<?, ?>) o).get("value").toString()));
+                        } else if (type.isAssignableFrom(String.class)) {
+                            field.set(newRecordInstance,((LinkedHashMap<?, ?>) o).get("value"));
+                        }
                     }
-                }else {
-                    Class<?> type = field.getType();
-                    field.setAccessible(true);
-                    if (type.isAssignableFrom(Integer.class)) {
-                        field.set(newRecordInstance,Integer.parseInt(o.toString()));
-                    } else if (type.isAssignableFrom(Date.class)) {
-                        field.set(newRecordInstance, Date.valueOf(o.toString()));
-                    } else if (type.isAssignableFrom(String.class)) {
-                        field.set(newRecordInstance,o);
-                    }
+                } catch (NoSuchFieldException | InvocationTargetException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (NoSuchFieldException | InvocationTargetException | IllegalAccessException e) {
-                throw new RuntimeException(e);
             }
         });
 
