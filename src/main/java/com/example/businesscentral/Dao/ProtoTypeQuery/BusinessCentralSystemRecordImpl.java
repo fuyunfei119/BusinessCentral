@@ -1,8 +1,6 @@
 package com.example.businesscentral.Dao.ProtoTypeQuery;
 
 import com.example.businesscentral.Dao.Annotation.*;
-import com.example.businesscentral.Dao.BusinessCentralRecord;
-import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
@@ -10,11 +8,7 @@ import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeQueryMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
-import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -64,10 +58,20 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> FindSetByFields(Map<String, Object> filters) {
+    public List<Object> FindSetByFields(Map<String, Object> filters) {
         Object table = filters.get("table");
         Object filterName = filters.get("filterName");
-        return businessCentralProtoTypeQueryMapper.FindSetByFields(table, filterName);
+
+        List<LinkedHashMap<String, Object>> linkedHashMaps = businessCentralProtoTypeQueryMapper.FindSetByFields(table, filterName);
+
+        List<Object> convertedList = new ArrayList<>();
+
+        for (LinkedHashMap<String, Object> map : linkedHashMaps) {
+            Object item = map.values().stream().findFirst().orElse(null);
+            convertedList.add(item);
+        }
+
+        return convertedList;
     }
 
     @Override
@@ -537,5 +541,21 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         businessCentralProtoTypeQueryMapper.InsertNewRecord(table.toString(),fields,values);
 
         return null;
+    }
+
+    @Override
+    public List<String> GetFilterGroups(Map<String, Object> filter) {
+
+        List<String> fields = new ArrayList<>();
+
+        String table = (String) filter.get("table");
+
+        Object bean = applicationContext.getBean(table.toLowerCase(Locale.ROOT));
+
+        for (Field declaredField : bean.getClass().getDeclaredFields()) {
+            fields.add(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()));
+        }
+
+        return fields;
     }
 }

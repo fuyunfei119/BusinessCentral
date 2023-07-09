@@ -1,18 +1,13 @@
 package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.CodeUnits.CustomerManagement;
-import com.example.businesscentral.Dao.Aop.CardAop;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Request.CardGroup;
-import com.example.businesscentral.Dao.Request.SortParameter;
-import com.example.businesscentral.Page.CustomerCard;
-import com.example.businesscentral.Page.CustomerPage;
-import com.example.businesscentral.Table.Customer;
+import com.example.businesscentral.Page.CustomerList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,41 +18,48 @@ public class CustomerController {
     @Autowired
     private CustomerManagement customerManagement;
     @Autowired
-    private CustomerPage customerPage;
+    private CustomerList customerList;
     @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
-    @GetMapping("/test123")
-    public List<Customer> test1() throws Exception { return customerManagement.CheckIfHasOver_PointsCustomers(); }
+//    @GetMapping("/test123")
+//    public List<Customer> test1() throws Exception { return customerManagement.CheckIfHasOver_PointsCustomers(); }
+//
+//    @GetMapping("/testnewcustomer")
+//    public List<Customer> test() throws Exception { return customerManagement.InsertNewCustomer(); }
 
-    @GetMapping("/testnewcustomer")
-    public List<Customer> test() throws Exception { return customerManagement.InsertNewCustomer(); }
-
-    @GetMapping("/FindSet")
-    public List<LinkedHashMap<String,Object>> test2() throws Exception { return customerPage.FindSetProtoType(); }
+    @GetMapping("/List")
+    public List<LinkedHashMap<String,Object>> FindSetForList(@RequestParam("list") String list) throws Exception {
+//        return customerPage.FindSetProtoType();
+        return null;
+    }
 
     @GetMapping("/")
-    public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return customerPage.FindSetByTableName(tableName); }
+    public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return businessCentralSystemRecord.FindSetByTableName(tableName); }
 
     @PostMapping("/FindSetByFilters")
-    public List<LinkedHashMap<String, Object>> FindSetByFilters(@RequestBody Map<String,Object> filters) throws Exception { return customerPage.FindSetByFilters(filters); }
+    public List<LinkedHashMap<String, Object>> FindSetByFilters(@RequestBody Map<String,Object> filters) throws Exception {
+        return businessCentralSystemRecord.FindSetByFilters(filters);
+    }
 
     @PostMapping("/getfilterOptions")
-    public List<Object> handleRequest(@RequestBody Map<String,Object> filters) { return customerPage.FindSetByFields(filters); }
+    public List<Object> handleRequest(@RequestBody Map<String,Object> filters) {
+        return businessCentralSystemRecord.FindSetByFields(filters);
+    }
 
     @PostMapping("/getfilterGroups")
     public List<String> getFilterGroup(@RequestBody Map<String,Object> filter) {
-        return customerPage.GetFilterGroups(filter);
+        return businessCentralSystemRecord.GetFilterGroups(filter);
     }
 
     @PostMapping("/FetchSearchQuery")
     public List<LinkedHashMap<String, Object>> FetchSearchQuery(@RequestBody Map<String,Object> filters) {
-        return customerPage.QueryContent(filters);
+        return businessCentralSystemRecord.QueryContent(filters);
     }
 
     @PostMapping("/SortLines")
     public List<LinkedHashMap<String,Object>> SortByAscending(@RequestBody Map<String, Object> filters) throws Exception {
-        return customerPage.SortLinesByDescending(filters);
+        return businessCentralSystemRecord.SortLinesByDescending(filters);
     }
 
     @PostMapping("/GetRecordById")

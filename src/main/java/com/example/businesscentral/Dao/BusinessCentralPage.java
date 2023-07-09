@@ -11,7 +11,10 @@ import java.util.List;
 public interface BusinessCentralPage<T,E extends Enum<E>> {
 
     BusinessCentralPage<T,E> Reset();
+
     BusinessCentralPage<T,E> SetLoadFields(E field) throws NoSuchFieldException;
+
+    BusinessCentralPage<T,E> SetLoadFields(String field);
 
     BusinessCentralPage<T,E> SetRange(E field, Object Value) throws NoSuchFieldException;
 

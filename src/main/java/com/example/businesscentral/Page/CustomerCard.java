@@ -4,6 +4,7 @@ import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.Annotation.TableField;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
+import com.example.businesscentral.Dao.Enum.PageData;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.PageData.CustomerPageData;
 import com.example.businesscentral.Dao.Request.CardGroup;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-@Page(SOURCETABLE = "Customer", TYPE = PageType.Card, Method = "GetCardData")
+@Page(SOURCETABLE = "Customer", TYPE = PageType.Card, Method = "GetCardData",DATA = PageData.CustomerPageData)
 public class CustomerCard {
 
     @Autowired

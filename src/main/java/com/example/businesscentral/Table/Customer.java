@@ -19,26 +19,14 @@ public class Customer extends BusinessCentralBase {
             INIT_VALUE = "",
             NOT_BLANK = false
     )
-    @PageField(
-            VISIABLE = true,
-            GROUP = "General"
-    )
     private String userId;
 
     @TableField(
             ON_VALIDATE = "",
             FLOW_FIELD = @FlowField()
     )
-    @PageField(
-            VISIABLE = true,
-            GROUP = "General"
-    )
     private String firstName;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "General"
-    )
     private String lastName;
 
     @TableField(
@@ -47,73 +35,29 @@ public class Customer extends BusinessCentralBase {
             FLOW_FIELD = @FlowField(),
             NOT_BLANK = true
     )
-    @PageField(
-            VISIABLE = true,
-            GROUP = "General"
-    )
     private String emailAddress;
 
     @TableField(
             ON_VALIDATE = "OnValidatePhoneNumberTriggerMethod"
     )
-    @PageField(
-            VISIABLE = true,
-            GROUP = "Address"
-    )
     private String phoneNumber;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "Address"
-    )
     private String billingAddress;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "Address"
-    )
     private String shippingAddress;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "Accounting"
-    )
     private java.sql.Date accountCreationDate;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "System"
-    )
     private java.sql.Date lastLoginDate;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "System"
-    )
     private java.sql.Date lastUpdatedTime;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "Accounting"
-    )
     private String accountStatus;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "Accounting"
-    )
     private String paymentInformation;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "Accounting"
-    )
     private String orderHistory;
 
-    @PageField(
-            VISIABLE = true,
-            GROUP = "Accounting"
-    )
     private Integer points;
 
     private String customerType;

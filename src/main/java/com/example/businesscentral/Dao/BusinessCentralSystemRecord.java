@@ -1,7 +1,6 @@
 package com.example.businesscentral.Dao;
 
 import com.example.businesscentral.Dao.Request.CardGroup;
-import com.example.businesscentral.Dao.Request.SortParameter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +15,7 @@ public interface BusinessCentralSystemRecord {
 
     List<LinkedHashMap<String,Object>> FindSetByTableName(String TableName) throws ClassNotFoundException;
 
-    List<LinkedHashMap<String, Object>> FindSetByFields(Map<String,Object> filters);
+    List<Object> FindSetByFields(Map<String,Object> filters);
 
     List<LinkedHashMap<String, Object>> FindSetByFilters(Map<String, Object> filters) throws Exception;
 
@@ -29,4 +28,6 @@ public interface BusinessCentralSystemRecord {
     List<CardGroup> GetAllFieldNames(Map<String,String> table);
 
     LinkedHashMap<String,Object> InsertNewRecord(Map<String,Object> objectMap) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
+
+    List<String> GetFilterGroups(Map<String, Object> filter);
 }

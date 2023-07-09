@@ -42,6 +42,14 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
     }
 
     @Override
+    public BusinessCentralPage<T, E> SetLoadFields(String field) {
+
+        this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(field));
+
+        return this;
+    }
+
+    @Override
     public BusinessCentralPage<T,E> SetRange(E field, Object Value) throws NoSuchFieldException {
 
         if (!this.filters.isEmpty()) {
