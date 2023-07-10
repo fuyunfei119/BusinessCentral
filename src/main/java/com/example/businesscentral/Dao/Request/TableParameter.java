@@ -9,4 +9,5 @@ import java.util.List;
 public class TableParameter {
     private String table;
     private List<LinkedHashMap<String,Object>> records;
+    private LinkedHashMap<String,Object> record;
 }

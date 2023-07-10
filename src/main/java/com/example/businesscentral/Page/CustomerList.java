@@ -2,7 +2,6 @@ package com.example.businesscentral.Page;
 
 import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.Enum.PageType;
-import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import com.example.businesscentral.Table.Customer;
 import lombok.Data;
 
@@ -76,12 +75,16 @@ public class CustomerList {
     @OnNextRecord
     public Integer OnBeforeOnNextRecord(Integer Steps) {
         System.out.println("OnNextRecord trigger raised...");
-        Steps = 2;
+        Steps += 3;
+        System.out.println(Steps);
         return Steps;
     }
 
     @OnAfterGetCurrRecord
-    public void OnBeforeOnAfterCurrRecRecord() { System.out.println("OnAfterCurrRecRecord trigger raised..."); }
+    public void OnBeforeOnAfterCurrRecRecord(Customer customer) {
+        System.out.println("OnAfterCurrRecRecord trigger raised...");
+        System.out.println(customer);
+    }
 
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage() {

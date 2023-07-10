@@ -15,6 +15,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -53,27 +55,51 @@ public class OnAfterGetRecordAop {
 
         Object newInstance = beanClass.getDeclaredConstructor().newInstance();
 
+        Method OnAfterGetRecordMethod = null;
+        Method OnNextRecordMethod = null;
 
         for (Method declaredMethod : beanClass.getDeclaredMethods()) {
-
             if (declaredMethod.isAnnotationPresent(OnAfterGetRecord.class)) {
+                OnAfterGetRecordMethod = declaredMethod;
+            }
 
-                for (LinkedHashMap<String, Object> record : table.getRecords()) {
+            if (declaredMethod.isAnnotationPresent(OnNextRecord.class)) {
+                OnNextRecordMethod = declaredMethod;
+            }
+        }
 
-                    Object newRecord = Instance.getClass().getDeclaredConstructor().newInstance();
+        Iterator<LinkedHashMap<String, Object>> iterator = table.getRecords().iterator();
 
-                    Iterator<Map.Entry<String, Object>> iterator = record.entrySet().iterator();
+        Integer Steps = null;
 
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, Object> entry = iterator.next();
+        while (iterator.hasNext())
+        {
+            LinkedHashMap<String, Object> record = null;
 
-                        Field declaredField = newRecord.getClass().getDeclaredField(BusinessCentralUtils.convertToCamelCase(entry.getKey()));
-                        declaredField.setAccessible(true);
-                        declaredField.set(newRecord,entry.getValue());
+            if (ObjectUtils.isEmpty(Steps)) {
+                record = iterator.next();
+            }else {
+                for (int i = 0; i < Steps; i++) {
+                    if (iterator.hasNext()) {
+                        record = iterator.next();
                     }
-
-                    Object invoke = declaredMethod.invoke(newInstance,newRecord);
                 }
+            }
+
+            Object newRecord = Instance.getClass().getDeclaredConstructor().newInstance();
+
+            for (Map.Entry<String, Object> entry : record.entrySet()) {
+                Field declaredField = newRecord.getClass().getDeclaredField(BusinessCentralUtils.convertToCamelCase(entry.getKey()));
+                declaredField.setAccessible(true);
+                declaredField.set(newRecord,entry.getValue());
+            }
+
+            OnAfterGetRecordMethod.invoke(newInstance,newRecord);
+
+            if (ObjectUtils.isEmpty(Steps)) {
+                Steps = (Integer) OnNextRecordMethod.invoke(newInstance, 1);
+            }else {
+                Steps = (Integer) OnNextRecordMethod.invoke(newInstance, Steps);
             }
         }
 
