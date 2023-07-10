@@ -12,5 +12,5 @@ import java.lang.annotation.*;
 public @interface Page {
     String SOURCETABLE();
     PageType TYPE();
-    String Method();
+    String Method() default "";
 }

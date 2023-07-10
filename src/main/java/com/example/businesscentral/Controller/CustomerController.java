@@ -24,9 +24,7 @@ public class CustomerController {
     }
 
     @GetMapping("/List/OnMounted")
-    public List<LinkedHashMap<String,Object>> FindSetForList(@RequestParam("list") String list) throws Exception {
-        return null;
-    }
+    public List<LinkedHashMap<String,Object>> OnMounted(@RequestParam("list") String list) throws Exception {return null;}
 
     @PostMapping("/List/OnBeforeUpdate")
     public List<LinkedHashMap<String,Object>> OnBeforeUpdate(@RequestBody TableParameter table) {

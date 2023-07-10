@@ -30,4 +30,6 @@ public interface BusinessCentralSystemRecord {
     LinkedHashMap<String,Object> InsertNewRecord(Map<String,Object> objectMap) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     List<String> GetFilterGroups(Map<String, Object> filter);
+
+    List<LinkedHashMap<String,Object>> GetDataForListPage(String table);
 }

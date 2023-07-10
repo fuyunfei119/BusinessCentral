@@ -2,8 +2,15 @@ package com.example.businesscentral.Page;
 
 import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.Enum.PageType;
+import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
+import com.example.businesscentral.Table.Customer;
+import lombok.Data;
 
-@Page(SOURCETABLE = "Customer", TYPE = PageType.List, Method = "FindSetProtoType")
+import java.util.LinkedHashMap;
+import java.util.List;
+
+@Page(SOURCETABLE = "Customer", TYPE = PageType.List)
+@Data
 public class CustomerList {
 
     @PageField(
@@ -53,25 +60,28 @@ public class CustomerList {
         System.out.println("OnOpenPage trigger raised...");
     }
 
-    @OnAfterGetRecord
-    public void OnBeforeOnAfterGetRecord() {
-        System.out.println("OnAfterGetRecord trigger raised...");
+    @OnFindRecord
+    public List<LinkedHashMap<String,Object>> OnBeforeOnFindRecord(List<LinkedHashMap<String,Object>> Records) {
+        System.out.println("OnFindRecord trigger raised...");
+        return Records;
     }
 
-    @OnFindRecord
-    public void OnBeforeOnFindRecord() {
-        System.out.println("OnFindRecord trigger raised...");
+    @OnAfterGetRecord
+    public Customer OnBeforeOnAfterGetRecord(Customer customer) {
+        System.out.println("OnAfterGetRecord trigger raised...");
+        System.out.println(customer);
+        return customer;
     }
 
     @OnNextRecord
-    public void OnBeforeOnNextRecord() {
+    public Integer OnBeforeOnNextRecord(Integer Steps) {
         System.out.println("OnNextRecord trigger raised...");
+        Steps = 2;
+        return Steps;
     }
 
     @OnAfterGetCurrRecord
-    public void OnBeforeOnAfterCurrRecRecord() {
-        System.out.println("OnAfterCurrRecRecord trigger raised...");
-    }
+    public void OnBeforeOnAfterCurrRecRecord() { System.out.println("OnAfterCurrRecRecord trigger raised..."); }
 
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage() {

@@ -1,6 +1,8 @@
 package com.example.businesscentral.Dao.ProtoTypeQuery;
 
 import com.example.businesscentral.Dao.Annotation.*;
+import com.example.businesscentral.Dao.Enum.PageType;
+import com.example.businesscentral.Dao.ProtoType.PageMySql;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
@@ -18,6 +20,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -557,5 +560,34 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         }
 
         return fields;
+    }
+
+    @Override
+    public List<LinkedHashMap<String, Object>> GetDataForListPage(String table) {
+
+        Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
+
+        PageMySql pageMysql = applicationContext.getBean(PageMySql.class);
+
+        for (Object bean : beans) {
+            for (Annotation annotation : bean.getClass().getAnnotations()) {
+                Page page = (Page) annotation;
+
+                if (page.SOURCETABLE().equals(table) && page.TYPE().equals(PageType.List)) {
+                    Class<?> aClass = bean.getClass();
+                    for (Field declaredField : aClass.getDeclaredFields()) {
+                        if (declaredField.isAnnotationPresent(PageField.class)) {
+                            PageField pageField = declaredField.getAnnotation(PageField.class);
+                            if (pageField.VISIABLE()) {
+                                pageMysql.SetLoadFields(declaredField.getName());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        List list = pageMysql.FindSet();
+        return list;
     }
 }

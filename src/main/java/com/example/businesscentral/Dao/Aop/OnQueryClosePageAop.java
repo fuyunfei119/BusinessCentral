@@ -1,6 +1,7 @@
 package com.example.businesscentral.Dao.Aop;
 
 import com.example.businesscentral.Dao.Annotation.OnOpenPage;
+import com.example.businesscentral.Dao.Annotation.OnQueryClosePage;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Request.TableParameter;
@@ -11,20 +12,18 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 
 @Aspect
 @Configuration
-public class OnInitTriggerAop {
+public class OnQueryClosePageAop {
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Pointcut("execution(java.util.List<*> com.example.businesscentral.Controller.CustomerController.onBeforeMounted(..))")
+    @Pointcut("execution(java.util.List<*> com.example.businesscentral.Controller.CustomerController.OnBeforeUnmount(..))")
     public void OnInitTrigger() {
     }
 
@@ -49,7 +48,7 @@ public class OnInitTriggerAop {
         Object newInstance = beanClass.getDeclaredConstructor().newInstance();
 
         for (Method declaredMethod : beanClass.getDeclaredMethods()) {
-            if (declaredMethod.isAnnotationPresent(OnOpenPage.class)) {
+            if (declaredMethod.isAnnotationPresent(OnQueryClosePage.class)) {
                 Object invoke = declaredMethod.invoke(newInstance);
             }
         }
