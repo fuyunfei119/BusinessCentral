@@ -68,22 +68,22 @@ public class CustomerList {
     @OnAfterGetRecord
     public Customer OnBeforeOnAfterGetRecord(Customer customer) {
         System.out.println("OnAfterGetRecord trigger raised...");
-        System.out.println(customer);
+        customer.setCustomerType("Sievers");
         return customer;
     }
 
     @OnNextRecord
     public Integer OnBeforeOnNextRecord(Integer Steps) {
         System.out.println("OnNextRecord trigger raised...");
-        Steps += 3;
-        System.out.println(Steps);
+//        Steps = 3;
+//        System.out.println(Steps);
         return Steps;
     }
 
     @OnAfterGetCurrRecord
     public void OnBeforeOnAfterCurrRecRecord(Customer customer) {
         System.out.println("OnAfterCurrRecRecord trigger raised...");
-        System.out.println(customer);
+//        System.out.println(customer);
     }
 
     @OnQueryClosePage

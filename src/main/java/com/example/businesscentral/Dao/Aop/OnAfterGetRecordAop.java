@@ -2,7 +2,6 @@ package com.example.businesscentral.Dao.Aop;
 
 import com.example.businesscentral.Dao.Annotation.OnAfterGetRecord;
 import com.example.businesscentral.Dao.Annotation.OnNextRecord;
-import com.example.businesscentral.Dao.Annotation.OnOpenPage;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Request.TableParameter;
@@ -11,12 +10,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -72,6 +69,8 @@ public class OnAfterGetRecordAop {
 
         Integer Steps = null;
 
+        List<LinkedHashMap<String,Object>> results = new ArrayList<>();
+
         while (iterator.hasNext())
         {
             LinkedHashMap<String, Object> record = null;
@@ -94,15 +93,27 @@ public class OnAfterGetRecordAop {
                 declaredField.set(newRecord,entry.getValue());
             }
 
-            OnAfterGetRecordMethod.invoke(newInstance,newRecord);
+            Object invoke = OnAfterGetRecordMethod.invoke(newInstance, newRecord);
+
+            LinkedHashMap<String,Object> result = new LinkedHashMap<>();
+            for (Field declaredField : invoke.getClass().getDeclaredFields()) {
+                declaredField.setAccessible(true);
+                if (!ObjectUtils.isEmpty(declaredField.get(invoke))) {
+                    result.put(declaredField.getName(),declaredField.get(invoke));
+                }
+            }
 
             if (ObjectUtils.isEmpty(Steps)) {
                 Steps = (Integer) OnNextRecordMethod.invoke(newInstance, 1);
             }else {
                 Steps = (Integer) OnNextRecordMethod.invoke(newInstance, Steps);
             }
+
+            System.out.println(result);
+
+            results.add(result);
         }
 
-        return joinPoint.proceed();
+        return results;
     }
 }
