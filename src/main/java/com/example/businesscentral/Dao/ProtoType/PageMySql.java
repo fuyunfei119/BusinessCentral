@@ -20,6 +20,9 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
     private List<String> filters = new ArrayList<>();
     private List<String> loadfilters = new ArrayList<>();
 
+    public PageMySql() {
+    }
+
     public PageMySql(BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper) {
         this.businessCentralProtoTypeMapper = businessCentralProtoTypeMapper;
     }

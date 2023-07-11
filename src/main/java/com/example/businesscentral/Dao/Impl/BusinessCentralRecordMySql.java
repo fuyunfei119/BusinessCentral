@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -166,6 +167,12 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public T GetRecord() {
         return this.entity;
+    }
+
+    @Override
+    public BusinessCentralRecord<T, E> SetRecord(Object record) {
+        entity = (T) record;
+        return this;
     }
 
     @Override

@@ -54,6 +54,7 @@ public class OnFindRecordAop {
         Object newInstance = beanClass.getDeclaredConstructor().newInstance();
 
         for (Method declaredMethod : beanClass.getDeclaredMethods()) {
+
             if (declaredMethod.isAnnotationPresent(OnFindRecord.class)) {
 
                 List<LinkedHashMap<String, Object>> records = businessCentralSystemRecord.GetDataForListPage(table.toString());

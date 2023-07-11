@@ -2,6 +2,7 @@ package com.example.businesscentral.Dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.io.Serializable;
 import java.util.List;
 
 public interface BusinessCentralRecord<T,E extends Enum<E>> {
@@ -29,6 +30,8 @@ public interface BusinessCentralRecord<T,E extends Enum<E>> {
     Integer Count() throws Exception;
 
     T GetRecord();
+
+    BusinessCentralRecord<T,E> SetRecord(Object record);
 
     BusinessCentralRecord<T,E> Reset();
 

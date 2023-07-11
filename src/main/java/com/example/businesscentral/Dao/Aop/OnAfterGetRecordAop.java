@@ -3,7 +3,9 @@ package com.example.businesscentral.Dao.Aop;
 import com.example.businesscentral.Dao.Annotation.OnAfterGetRecord;
 import com.example.businesscentral.Dao.Annotation.OnNextRecord;
 import com.example.businesscentral.Dao.Annotation.Page;
+import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
+import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.TableParameter;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -39,16 +41,27 @@ public class OnAfterGetRecordAop {
 
         Class<?> beanClass = null;
         Object Instance = null;
+        Class<?> Record = null;
 
         for (Object bean : beans) {
             Page annotation = bean.getClass().getAnnotation(Page.class);
             if (annotation.SOURCETABLE().equals(table.getTable()) && annotation.TYPE().equals(PageType.List)) {
                 beanClass = bean.getClass();
+                for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                    if (declaredField.isAnnotationPresent(Autowired.class)) {
+                        Record = declaredField.getType();
+                    }
+                }
                 Instance = applicationContext.getBean(table.getTable().toLowerCase(Locale.ROOT));
             }
         }
 
-        assert beanClass != null;
+        assert Record != null;
+
+        List<Class<?>> classList = new ArrayList<>();
+        classList.add(Instance.getClass());
+
+        BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);
 
         Object newInstance = beanClass.getDeclaredConstructor().newInstance();
 
@@ -87,15 +100,22 @@ public class OnAfterGetRecordAop {
 
             Object newRecord = Instance.getClass().getDeclaredConstructor().newInstance();
 
+            assert record != null;
+
             for (Map.Entry<String, Object> entry : record.entrySet()) {
                 Field declaredField = newRecord.getClass().getDeclaredField(BusinessCentralUtils.convertToCamelCase(entry.getKey()));
                 declaredField.setAccessible(true);
                 declaredField.set(newRecord,entry.getValue());
             }
 
-            Object invoke = OnAfterGetRecordMethod.invoke(newInstance, newRecord);
+            assert OnAfterGetRecordMethod != null;
+
+            businessCentralRecord.SetRecord(newRecord);
+
+            Object invoke = OnAfterGetRecordMethod.invoke(newInstance,businessCentralRecord);
 
             LinkedHashMap<String,Object> result = new LinkedHashMap<>();
+
             for (Field declaredField : invoke.getClass().getDeclaredFields()) {
                 declaredField.setAccessible(true);
                 if (!ObjectUtils.isEmpty(declaredField.get(invoke))) {
@@ -109,7 +129,7 @@ public class OnAfterGetRecordAop {
                 Steps = (Integer) OnNextRecordMethod.invoke(newInstance, Steps);
             }
 
-            System.out.println(result);
+//            System.out.println(result);
 
             results.add(result);
         }
