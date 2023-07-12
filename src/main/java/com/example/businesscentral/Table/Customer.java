@@ -60,6 +60,9 @@ public class Customer extends BusinessCentralBase {
 
     private Integer points;
 
+    @TableField(
+            ON_VALIDATE = "OnValidateCustomerType"
+    )
     private String customerType;
 
     @OnInit
@@ -95,6 +98,16 @@ public class Customer extends BusinessCentralBase {
 
         if (StringUtils.hasLength(newValue.toString())) {
             this.phoneNumber = newValue.toString();
+        }
+
+        return this;
+    }
+
+    private Customer OnValidateCustomerType(Object newValue) {
+        System.out.println("Validate Trigger Raised...");
+
+        if (StringUtils.hasLength(newValue.toString())) {
+            this.customerType = newValue.toString();
         }
 
         return this;

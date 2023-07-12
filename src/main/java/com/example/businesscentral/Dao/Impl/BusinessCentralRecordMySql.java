@@ -225,9 +225,16 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
             if (!field.isAnnotationPresent(TableField.class)) return this;
 
-            String onValidate = Objects.requireNonNull(field.getAnnotation(TableField.class)).ON_VALIDATE();
+            String onValidate = field.getAnnotation(TableField.class).ON_VALIDATE();
 
-            if (onValidate.isBlank()) return this;
+            if (onValidate.isBlank()) {
+
+                field.setAccessible(true);
+
+                field.set(entity,newValue);
+
+                return this;
+            }
 
             Method method = ReflectionUtils.findMethod(this.aClass, onValidate, Object.class);
 
@@ -286,6 +293,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
 
+                break;
             }
         }
 

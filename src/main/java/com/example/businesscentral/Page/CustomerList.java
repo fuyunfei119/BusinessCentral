@@ -92,7 +92,7 @@ public class CustomerList {
     @OnNextRecord
     public Integer OnBeforeOnNextRecord(Integer Steps) {
 //        System.out.println("OnNextRecord trigger raised...");
-//        Steps = 3;
+        Steps = 3;
 //        System.out.println(Steps);
         return Steps;
     }
