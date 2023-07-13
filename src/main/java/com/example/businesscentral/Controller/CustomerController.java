@@ -32,7 +32,7 @@ public class CustomerController {
     }
 
     @PostMapping("/List/OnUpdated")
-    public List<LinkedHashMap<String,Object>> OnUpdated(@RequestBody TableParameter table) {
+    public LinkedHashMap<String,Object> OnUpdated(@RequestBody TableParameter table) {
         return null;
     }
 

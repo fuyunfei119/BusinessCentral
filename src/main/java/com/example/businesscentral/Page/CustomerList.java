@@ -68,49 +68,38 @@ public class CustomerList {
 
     @OnOpenPage
     public void OnBeforeOnOpenPage() {
-//        System.out.println("OnOpenPage trigger raised...");
     }
 
     @OnFindRecord
     public List<LinkedHashMap<String,Object>> OnBeforeOnFindRecord(List<LinkedHashMap<String,Object>> Records) {
-//        System.out.println("OnFindRecord trigger raised...");
         return Records;
     }
 
     @OnAfterGetRecord
     public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-
-//        System.out.println("OnAfterGetRecord trigger raised...");
-        System.out.println(Rec.GetRecord());
-//        Rec.Validate(Customer.Fields.customerType,"Sievers",true);
-        Rec.Validate(Customer.Fields.phoneNumber,"157305952",true);
+        Rec.Validate(Customer.Fields.phoneNumber,"Irina",true);
         Rec.Modify(true);
-//        Rec.setCustomerType("Sievers");
-//        return Rec;
         return Rec.GetRecord();
     }
 
     @OnNextRecord
     public Integer OnBeforeOnNextRecord(Integer Steps) {
-//        System.out.println("OnNextRecord trigger raised...");
-        Steps = 3;
-//        System.out.println(Steps);
+        Steps = 2;
         return Steps;
     }
 
     @OnAfterGetCurrRecord
-    public void OnBeforeOnAfterCurrRecRecord(Customer customer) {
-//        System.out.println("OnAfterCurrRecRecord trigger raised...");
-//        System.out.println(customer);
+    public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        Rec.Validate(Customer.Fields.phoneNumber,"********",true);
+        Rec.Modify(true);
+        return Rec.GetRecord();
     }
 
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage() {
-//        System.out.println("OnQueryClosePage trigger raised...");
     }
 
     @OnClosePage
     public void OnClosePage() {
-//        System.out.println("OnClosePage trigger raised...");
     }
 }

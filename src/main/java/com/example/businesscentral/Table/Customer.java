@@ -98,7 +98,6 @@ public class Customer extends BusinessCentralBase {
 
         if (StringUtils.hasLength(newValue.toString())) {
             Rec.setPhoneNumber(newValue.toString());
-//            this.phoneNumber = newValue.toString();
         }
 
         return Rec;

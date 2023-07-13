@@ -129,8 +129,6 @@ public class OnAfterGetRecordAop {
                 Steps = (Integer) OnNextRecordMethod.invoke(newInstance, Steps);
             }
 
-//            System.out.println(result);
-
             results.add(result);
         }
 
