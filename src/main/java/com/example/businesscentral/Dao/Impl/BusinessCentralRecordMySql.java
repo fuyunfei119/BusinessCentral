@@ -172,6 +172,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public BusinessCentralRecord<T, E> SetRecord(Object record) {
         entity = (T) record;
+        BeanUtils.copyProperties(entity,x_entity);
         return this;
     }
 
@@ -236,7 +237,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
                 return this;
             }
 
-            Method method = ReflectionUtils.findMethod(this.aClass, onValidate, Object.class);
+            Method method = ReflectionUtils.findMethod(this.aClass, onValidate, Object.class, this.aClass);
 
             if (method != null) {
 
@@ -244,7 +245,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 Object bean = applicationContext.getBean(this.aClass);
 
-                this.entity = (T) ReflectionUtils.invokeMethod(method, bean,newValue);
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean,newValue,entity);
             }
         }
 
@@ -291,7 +292,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 Object bean = applicationContext.getBean(this.aClass);
 
-                this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean,this.entity);
 
                 break;
             }

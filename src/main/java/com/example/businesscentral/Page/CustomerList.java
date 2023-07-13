@@ -82,7 +82,8 @@ public class CustomerList {
 
 //        System.out.println("OnAfterGetRecord trigger raised...");
         System.out.println(Rec.GetRecord());
-        Rec.Validate(Customer.Fields.customerType,"Sievers",true);
+//        Rec.Validate(Customer.Fields.customerType,"Sievers",true);
+        Rec.Validate(Customer.Fields.phoneNumber,"157305952",true);
         Rec.Modify(true);
 //        Rec.setCustomerType("Sievers");
 //        return Rec;

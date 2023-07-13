@@ -82,9 +82,9 @@ public class Customer extends BusinessCentralBase {
     }
 
     @OnModify
-    private Customer OnModifyTriggerMethod() {
+    private Customer OnModifyTriggerMethod(Customer Rec) {
         System.out.println("Modify Trigger Raised...");
-        return this;
+        return Rec;
     }
 
     @OnDelete
@@ -93,23 +93,24 @@ public class Customer extends BusinessCentralBase {
         return this;
     }
 
-    private Customer OnValidatePhoneNumberTriggerMethod(Object newValue) {
+    private Customer OnValidatePhoneNumberTriggerMethod(Object newValue, Customer Rec) {
         System.out.println("Validate Trigger Raised...");
 
         if (StringUtils.hasLength(newValue.toString())) {
-            this.phoneNumber = newValue.toString();
+            Rec.setPhoneNumber(newValue.toString());
+//            this.phoneNumber = newValue.toString();
         }
 
-        return this;
+        return Rec;
     }
 
-    private Customer OnValidateCustomerType(Object newValue) {
+    private Customer OnValidateCustomerType(Object newValue,Customer Rec) {
         System.out.println("Validate Trigger Raised...");
 
         if (StringUtils.hasLength(newValue.toString())) {
-            this.customerType = newValue.toString();
+            Rec.setCustomerType(newValue.toString());
         }
 
-        return this;
+        return Rec;
     }
 }
