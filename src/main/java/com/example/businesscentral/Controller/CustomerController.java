@@ -33,6 +33,7 @@ public class CustomerController {
 
     @PostMapping("/List/OnUpdated")
     public LinkedHashMap<String,Object> OnUpdated(@RequestBody TableParameter table) {
+        System.out.println(table);
         return null;
     }
 
