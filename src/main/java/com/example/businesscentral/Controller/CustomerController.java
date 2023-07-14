@@ -2,6 +2,7 @@ package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.CodeUnits.CustomerManagement;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
+import com.example.businesscentral.Dao.Request.ActionParamter;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.TableParameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,16 @@ public class CustomerController {
     @PostMapping("/InsertOrUpdateRecord")
     public void InsertOrUpdateRecord(@RequestBody Map<String,Object> objectMap) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         businessCentralSystemRecord.InsertNewRecord(objectMap);
+    }
+
+    @PostMapping("/GetActions")
+    public List<String> GetActions(@RequestBody ActionParamter ListName) {
+        return businessCentralSystemRecord.GetPageActions(ListName);
+    }
+
+    @PostMapping("/RaiseActions")
+    public void RaiseActions(@RequestBody ActionParamter paramter) throws InvocationTargetException, IllegalAccessException {
+        businessCentralSystemRecord.RaiseAction(paramter);
     }
 
     @GetMapping("/test")

@@ -1,5 +1,6 @@
 package com.example.businesscentral.Dao;
 
+import com.example.businesscentral.Dao.Request.ActionParamter;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -32,4 +33,9 @@ public interface BusinessCentralSystemRecord {
     List<String> GetFilterGroups(Map<String, Object> filter);
 
     List<LinkedHashMap<String,Object>> GetDataForListPage(String table);
+
+    List<String> GetPageActions(ActionParamter listName);
+
+    void RaiseAction(ActionParamter paramter) throws InvocationTargetException, IllegalAccessException;
+
 }

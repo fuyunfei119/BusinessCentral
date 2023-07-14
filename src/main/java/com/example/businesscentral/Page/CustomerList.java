@@ -11,6 +11,7 @@ import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Table.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -84,7 +85,7 @@ public class CustomerList {
 
     @OnNextRecord
     public Integer OnBeforeOnNextRecord(Integer Steps) {
-        Steps = 2;
+//        Steps = 2;
         return Steps;
     }
 
@@ -101,5 +102,10 @@ public class CustomerList {
 
     @OnClosePage
     public void OnClosePage() {
+    }
+
+    @Action(NAME = "SendMessage")
+    public void SendMessage() {
+        System.out.println("Hello");
     }
 }

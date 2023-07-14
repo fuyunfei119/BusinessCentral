@@ -4,12 +4,14 @@ import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.ProtoType.PageMySql;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
+import com.example.businesscentral.Dao.Request.ActionParamter;
 import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeQueryMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
+import org.apache.tomcat.util.net.jsse.JSSEUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -589,5 +591,41 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
         List list = pageMysql.FindSet();
         return list;
+    }
+
+    @Override
+    public List<String> GetPageActions(ActionParamter listName) {
+
+        List<String> actions = new ArrayList<>();
+
+        String finalListName = Character.toLowerCase(listName.getPage().charAt(0)) + listName.getPage().substring(1);
+
+        Object bean = applicationContext.getBean(finalListName);
+
+        for (Method declaredMethod : bean.getClass().getDeclaredMethods()) {
+            if (declaredMethod.isAnnotationPresent(Action.class)) {
+                Action annotation = declaredMethod.getAnnotation(Action.class);
+                actions.add(annotation.NAME());
+            }
+        }
+
+        return actions;
+    }
+
+    @Override
+    public void RaiseAction(ActionParamter paramter) throws InvocationTargetException, IllegalAccessException {
+
+        String finalListName = Character.toLowerCase(paramter.getPage().charAt(0)) + paramter.getPage().substring(1);
+
+        Object bean = applicationContext.getBean(finalListName);
+
+        for (Method declaredMethod : bean.getClass().getDeclaredMethods()) {
+            if (declaredMethod.isAnnotationPresent(Action.class)) {
+                Action annotation = declaredMethod.getAnnotation(Action.class);
+                if (annotation.NAME().equals(paramter.getActionName())) {
+                    declaredMethod.invoke(bean);
+                }
+            }
+        }
     }
 }
