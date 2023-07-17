@@ -623,6 +623,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             if (declaredMethod.isAnnotationPresent(Action.class)) {
                 Action annotation = declaredMethod.getAnnotation(Action.class);
                 if (annotation.NAME().equals(paramter.getActionName())) {
+                    System.out.println(annotation.NAME());
                     declaredMethod.invoke(bean);
                 }
             }

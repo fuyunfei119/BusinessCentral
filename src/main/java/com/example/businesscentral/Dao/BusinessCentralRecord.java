@@ -17,6 +17,10 @@ public interface BusinessCentralRecord<T,E extends Enum<E>> {
 
     Boolean IsEmpty();
 
+    Boolean HasNext();
+
+    BusinessCentralRecord<T, E> Next();
+
     List<T> FindSet() throws IllegalAccessException;
 
     T FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException;

@@ -13,8 +13,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,6 +31,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     private Field primaryKey;
     private Object keyValue;
     private List<T> entityList;
+    private Integer currentIndex;
     private T entity;
     private T x_entity;
     private Class<T> aClass;
@@ -47,6 +46,8 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         this.primaryKey = BusinessCentralUtils.getPrimaryKeyField(this.aClass);
         this.entity = (T) this.aClass.getDeclaredConstructor().newInstance();
         this.x_entity = (T) this.aClass.getDeclaredConstructor().newInstance();
+
+        currentIndex = 0;
     }
 
     @Override
@@ -106,6 +107,17 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         return mapper.IsEmpty(String.join(", ", loadfields),filters) != 0;
     }
 
+    @Override
+    public Boolean HasNext() {
+        return currentIndex == entityList.size();
+    }
+
+    @Override
+    public BusinessCentralRecord<T,E> Next() {
+        entity = entityList.get(currentIndex);
+        currentIndex++;
+        return this;
+    }
 
     @Override
     public List<T> FindSet() throws IllegalAccessException {
@@ -180,6 +192,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     public BusinessCentralRecord<T,E> Reset() {
         this.filters.clear();
         this.loadfields.clear();
+        this.currentIndex = 0;
         return this;
     }
 
@@ -392,4 +405,5 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         BeanUtils.copyProperties(this.entity,this.x_entity);
     }
+
 }

@@ -15,15 +15,13 @@ import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 @Page(SOURCETABLE = "Customer", TYPE = PageType.List)
 @Data
 public class CustomerList {
-
-    @Autowired
-    private CustomerRecord record;
 
     @PageField(
             VISIABLE = true,
@@ -104,8 +102,19 @@ public class CustomerList {
     public void OnClosePage() {
     }
 
-    @Action(NAME = "SendMessage")
-    public void SendMessage() {
-        System.out.println("Hello");
+    @Action(NAME = "ChangeAccounStatus")
+    public void SendMessage() throws Exception {
+        record.Reset();
+        record.FindSet();
+        while (record.HasNext()) {
+            record.Next();
+            record.Validate(Customer.Fields.accountStatus,"Closed",false);
+            record.Modify(true);
+
+            System.out.println(record.GetRecord());
+        }
     }
+
+    @Autowired
+    private CustomerRecord record;
 }
