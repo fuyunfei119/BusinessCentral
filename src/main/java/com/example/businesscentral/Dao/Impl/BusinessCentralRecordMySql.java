@@ -5,8 +5,12 @@ import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.metadata.ItemHint;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -109,7 +113,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
     @Override
     public Boolean HasNext() {
-        return currentIndex == entityList.size();
+        return currentIndex < entityList.size();
     }
 
     @Override
@@ -122,9 +126,14 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public List<T> FindSet() throws IllegalAccessException {
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
         List<LinkedHashMap<String, Object>> resultLists = mapper.FindSet(String.join(", ", loadfields), filters);
 
-        this.entityList = ConvertToObject(resultLists);
+        for (LinkedHashMap<String, Object> linkedHashMap : resultLists) {
+            this.entityList.add(objectMapper.convertValue(linkedHashMap, aClass));
+        }
 
         return this.entityList;
     }
@@ -365,7 +374,9 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
             for (Map.Entry<String, Object> stringObjectEntry : properties.get(0).entrySet()) {
 
-                if (BusinessCentralUtils.convertToSnakeCase(field.getName()).equals(stringObjectEntry.getKey())) {
+                System.out.println(BusinessCentralUtils.convertToSnakeCase(field.getName()).equals(stringObjectEntry.getKey().toLowerCase(Locale.ROOT)));
+
+                if (BusinessCentralUtils.convertToSnakeCase(field.getName()).equals(stringObjectEntry.getKey().toLowerCase(Locale.ROOT))) {
 
                     if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
 

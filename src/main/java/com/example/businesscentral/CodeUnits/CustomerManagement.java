@@ -5,7 +5,6 @@ import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Event.CustomerEvent;
 import com.example.businesscentral.Table.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
@@ -20,24 +19,28 @@ public class CustomerManagement {
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
+    public List<Customer> test() throws IllegalAccessException {
+        return customerRecord.FindSet();
+    }
+
     public List<Customer> InsertNewCustomer() throws Exception {
 
         List<Customer> customers = new ArrayList<>();
 
         customerRecord.Init();
-        customerRecord.Validate(Customer.Fields.firstName,"YUNFEI",false);
-        customerRecord.Validate(Customer.Fields.lastName,"FU",false);
-        customerRecord.Validate(Customer.Fields.phoneNumber,"123456789",true);
+        customerRecord.Validate(Customer.Fields.First_Name,"YUNFEI",false);
+        customerRecord.Validate(Customer.Fields.Last_Name,"FU",false);
+        customerRecord.Validate(Customer.Fields.Phone_Number,"123456789",true);
         Boolean inserted = customerRecord.Insert(true, true);
 
         if (inserted) {
             customerRecord.Reset();
-            customerRecord.SetRange(Customer.Fields.firstName,"YUNFEI");
-            customerRecord.SetRange(Customer.Fields.lastName,"FU");
+            customerRecord.SetRange(Customer.Fields.First_Name,"YUNFEI");
+            customerRecord.SetRange(Customer.Fields.Last_Name,"FU");
             customerRecord.FindFirst();
         }
 
-        customerRecord.Validate(Customer.Fields.emailAddress,"fuyunfei119@gmail.com",false);
+        customerRecord.Validate(Customer.Fields.Email_Address,"fuyunfei119@gmail.com",false);
         customerRecord.Modify(true);
         Customer customer = customerRecord.GetRecord();
         customers.add(customer);
@@ -54,16 +57,16 @@ public class CustomerManagement {
         if (IsHandled.get()) return null;
 
         customerRecord.Reset();
-        customerRecord.SetLoadFields(Customer.Fields.firstName);
-        customerRecord.SetLoadFields(Customer.Fields.emailAddress);
-        customerRecord.SetLoadFields(Customer.Fields.accountStatus);
-        customerRecord.SetLoadFields(Customer.Fields.billingAddress);
-        customerRecord.SetLoadFields(Customer.Fields.points);
-        customerRecord.SetLoadFields(Customer.Fields.emailAddress);
-        customerRecord.SetLoadFields(Customer.Fields.accountCreationDate);
-        customerRecord.SetFilter(Customer.Fields.points,">%1&<%2",50,500);
-        customerRecord.SetRange(Customer.Fields.accountStatus,"Active");
-        customerRecord.SetFilter(Customer.Fields.firstName,"%1*","J");
+        customerRecord.SetLoadFields(Customer.Fields.First_Name);
+        customerRecord.SetLoadFields(Customer.Fields.Email_Address);
+        customerRecord.SetLoadFields(Customer.Fields.Account_Status);
+        customerRecord.SetLoadFields(Customer.Fields.Billing_Address);
+        customerRecord.SetLoadFields(Customer.Fields.Points);
+        customerRecord.SetLoadFields(Customer.Fields.Email_Address);
+        customerRecord.SetLoadFields(Customer.Fields.Account_Creation_Date);
+        customerRecord.SetFilter(Customer.Fields.Points,">%1&<%2",50,500);
+        customerRecord.SetRange(Customer.Fields.Account_Status,"Active");
+        customerRecord.SetFilter(Customer.Fields.First_Name,"%1*","J");
         List<Customer> customers = customerRecord.FindSet();
 
         System.out.println(customers);

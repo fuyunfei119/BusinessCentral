@@ -1,21 +1,14 @@
 package com.example.businesscentral.Page;
 
 import com.example.businesscentral.Dao.Annotation.*;
-import com.example.businesscentral.Dao.BusinessCentralBase;
-import com.example.businesscentral.Dao.BusinessCentralPage;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
-import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeMapper;
-import com.example.businesscentral.Dao.ProtoType.PageMySql;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Table.Customer;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -76,7 +69,7 @@ public class CustomerList {
 
     @OnAfterGetRecord
     public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        Rec.Validate(Customer.Fields.phoneNumber,"Irina",true);
+        Rec.Validate(Customer.Fields.Phone_Number,"Irina",true);
         Rec.Modify(true);
         return Rec.GetRecord();
     }
@@ -89,7 +82,7 @@ public class CustomerList {
 
     @OnAfterGetCurrRecord
     public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        Rec.Validate(Customer.Fields.phoneNumber,"********",true);
+        Rec.Validate(Customer.Fields.Phone_Number,"********",true);
         Rec.Modify(true);
         return Rec.GetRecord();
     }
@@ -104,11 +97,13 @@ public class CustomerList {
 
     @Action(NAME = "ChangeAccounStatus")
     public void SendMessage() throws Exception {
+
         record.Reset();
         record.FindSet();
         while (record.HasNext()) {
             record.Next();
-            record.Validate(Customer.Fields.accountStatus,"Closed",false);
+            System.out.println(record.GetRecord());
+            record.Validate(Customer.Fields.Account_Status,"Closed",false);
             record.Modify(true);
 
             System.out.println(record.GetRecord());

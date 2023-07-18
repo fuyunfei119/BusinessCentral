@@ -16,20 +16,20 @@ public class CustomerCard {
 
     public LinkedHashMap<String, Object> GetCardData(String table, String recordID) throws Exception {
         customerPageData.Reset();
-        customerPageData.SetLoadFields(Customer.Fields.userId);
-        customerPageData.SetLoadFields(Customer.Fields.firstName);
-        customerPageData.SetLoadFields(Customer.Fields.lastName);
-        customerPageData.SetLoadFields(Customer.Fields.emailAddress);
-        customerPageData.SetLoadFields(Customer.Fields.phoneNumber);
-        customerPageData.SetLoadFields(Customer.Fields.billingAddress);
-        customerPageData.SetLoadFields(Customer.Fields.shippingAddress);
-        customerPageData.SetLoadFields(Customer.Fields.accountCreationDate);
-        customerPageData.SetLoadFields(Customer.Fields.accountStatus);
-        customerPageData.SetLoadFields(Customer.Fields.paymentInformation);
-        customerPageData.SetLoadFields(Customer.Fields.orderHistory);
-        customerPageData.SetLoadFields(Customer.Fields.points);
-        customerPageData.SetLoadFields(Customer.Fields.lastLoginDate);
-        customerPageData.SetLoadFields(Customer.Fields.lastUpdatedTime);
+        customerPageData.SetLoadFields(Customer.Fields.User_ID);
+        customerPageData.SetLoadFields(Customer.Fields.First_Name);
+        customerPageData.SetLoadFields(Customer.Fields.Last_Name);
+        customerPageData.SetLoadFields(Customer.Fields.Email_Address);
+        customerPageData.SetLoadFields(Customer.Fields.Phone_Number);
+        customerPageData.SetLoadFields(Customer.Fields.Billing_Address);
+        customerPageData.SetLoadFields(Customer.Fields.Shipping_Address);
+        customerPageData.SetLoadFields(Customer.Fields.Account_Creation_Date);
+        customerPageData.SetLoadFields(Customer.Fields.Account_Status);
+        customerPageData.SetLoadFields(Customer.Fields.Payment_Information);
+        customerPageData.SetLoadFields(Customer.Fields.Order_History);
+        customerPageData.SetLoadFields(Customer.Fields.Points);
+        customerPageData.SetLoadFields(Customer.Fields.Last_Login_Date);
+        customerPageData.SetLoadFields(Customer.Fields.Last_Updated_Time);
         return customerPageData.Get(recordID,true);
     }
 }

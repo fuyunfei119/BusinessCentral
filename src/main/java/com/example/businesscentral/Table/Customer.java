@@ -19,15 +19,15 @@ public class Customer extends BusinessCentralBase {
             INIT_VALUE = "",
             NOT_BLANK = false
     )
-    private String userId;
+    private String User_ID;
 
     @TableField(
             ON_VALIDATE = "",
             FLOW_FIELD = @FlowField()
     )
-    private String firstName;
+    private String First_Name;
 
-    private String lastName;
+    private String Last_Name;
 
     @TableField(
             ON_VALIDATE = "",
@@ -35,43 +35,43 @@ public class Customer extends BusinessCentralBase {
             FLOW_FIELD = @FlowField(),
             NOT_BLANK = true
     )
-    private String emailAddress;
+    private String Email_Address;
 
     @TableField(
             ON_VALIDATE = "OnValidatePhoneNumberTriggerMethod"
     )
-    private String phoneNumber;
+    private String Phone_Number;
 
-    private String billingAddress;
+    private String Billing_Address;
 
-    private String shippingAddress;
+    private String Shipping_Address;
 
-    private java.sql.Date accountCreationDate;
+    private java.sql.Date Account_Creation_Date;
 
-    private java.sql.Date lastLoginDate;
+    private java.sql.Date Last_Login_Date;
 
-    private java.sql.Date lastUpdatedTime;
+    private java.sql.Date Last_Updated_Time;
 
-    private String accountStatus;
+    private String Account_Status;
 
-    private String paymentInformation;
+    private String Payment_Information;
 
-    private String orderHistory;
+    private String Order_History;
 
-    private Integer points;
+    private Integer Points;
 
     @TableField(
             ON_VALIDATE = "OnValidateCustomerType"
     )
-    private String customerType;
+    private String Customer_Type;
 
     @OnInit
     private Customer OnInitTriggerMethod() {
         System.out.println("Init Trigger Raised...");
 
-        this.userId = UUID.randomUUID().toString();
-        this.accountStatus = "Active";
-        this.accountCreationDate = new Date(System.currentTimeMillis());
+        this.User_ID = UUID.randomUUID().toString();
+        this.Account_Status = "Active";
+        this.Account_Creation_Date = new Date(System.currentTimeMillis());
         return this;
     }
 
@@ -97,7 +97,7 @@ public class Customer extends BusinessCentralBase {
         System.out.println("Validate Trigger Raised...");
 
         if (StringUtils.hasLength(newValue.toString())) {
-            Rec.setPhoneNumber(newValue.toString());
+            Rec.setPhone_Number(newValue.toString());
         }
 
         return Rec;
@@ -107,7 +107,7 @@ public class Customer extends BusinessCentralBase {
         System.out.println("Validate Trigger Raised...");
 
         if (StringUtils.hasLength(newValue.toString())) {
-            Rec.setCustomerType(newValue.toString());
+            Rec.setCustomer_Type(newValue.toString());
         }
 
         return Rec;
