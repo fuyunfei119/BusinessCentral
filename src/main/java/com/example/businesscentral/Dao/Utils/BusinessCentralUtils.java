@@ -78,7 +78,7 @@ public class BusinessCentralUtils {
     public static void ParserSQLExpression(List<String> fitlers, String sqlExpression, String field, Object[] newValue) throws Exception {
 
         List<String> placeHolders = new ArrayList<>(Arrays.asList(sqlExpression.split("(?=[|&])|(?<=[|&])")));
-        String Convert_Field_Name = convertToSnakeCase(field);
+        String Convert_Field_Name = field;
         int lengthOfNewValue = 0;
 
         String finalFilter = fitlers.contains(field) ? " AND " : "";
@@ -160,7 +160,7 @@ public class BusinessCentralUtils {
             Object obj1Value = field.get(obj1);
             Object obj2Value = field.get(obj2);
             if (!Objects.equals(obj1Value, obj2Value)) {
-                diffMap.put(convertToSnakeCase(field.getName()), obj1Value);
+                diffMap.put(field.getName(), obj1Value);
             }
         }
 
@@ -175,7 +175,7 @@ public class BusinessCentralUtils {
             try {
                 Object fieldValue = field.get(object);
                 if (fieldValue != null && !"".equals(fieldValue)) {
-                    fieldNameList.add(convertToSnakeCase(field.getName()));
+                    fieldNameList.add(field.getName());
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -210,7 +210,7 @@ public class BusinessCentralUtils {
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
-            fieldNameList.add(convertToSnakeCase(field.getName()));
+            fieldNameList.add(field.getName());
         }
         return fieldNameList;
     }

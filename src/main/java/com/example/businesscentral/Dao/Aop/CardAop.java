@@ -110,7 +110,7 @@ public class CardAop {
                             } else if (declaredField.getType().isAssignableFrom(Time.class)) {
                                 cardField.setType("time");
                             }
-                            cardField.setValue(result.get(BusinessCentralUtils.convertToSnakeCase(declaredField.getName())));
+                            cardField.setValue(result.get(declaredField.getName()));
 
                             map.put(declaredField.getName(), cardField);
                         }

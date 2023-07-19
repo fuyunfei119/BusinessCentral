@@ -71,7 +71,7 @@ public class OnAfterGetCurrRecordAop {
             if (declaredMethod.isAnnotationPresent(OnAfterGetCurrRecord.class)) {
 
                 for (Map.Entry<String, Object> entry : table.getRecord().entrySet()) {
-                    Field declaredField = newRecord.getClass().getDeclaredField(BusinessCentralUtils.convertToCamelCase(entry.getKey()));
+                    Field declaredField = newRecord.getClass().getDeclaredField(entry.getKey());
                     declaredField.setAccessible(true);
                     declaredField.set(newRecord,entry.getValue());
                 }

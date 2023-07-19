@@ -39,7 +39,7 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
     @Override
     public BusinessCentralPage<T,E> SetLoadFields(E field) throws NoSuchFieldException {
 
-        this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(field.name()));
+        this.loadfilters.add(field.name());
 
         return this;
     }
@@ -47,7 +47,7 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
     @Override
     public BusinessCentralPage<T, E> SetLoadFields(String field) {
 
-        this.loadfilters.add(BusinessCentralUtils.convertToSnakeCase(field));
+        this.loadfilters.add(field);
 
         return this;
     }
@@ -59,7 +59,7 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
             filters.add(" AND ");
         }
 
-        filters.add(BusinessCentralUtils.convertToSnakeCase(field.name()) + " = " + "'" +Value + "'");
+        filters.add(field.name() + " = " + "'" +Value + "'");
 
         return this;
     }
@@ -71,6 +71,8 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
 
     @Override
     public List<LinkedHashMap<String, Object>> FindSet() {
+        System.out.println(this.filters);
+        System.out.println(this.loadfilters);
         return businessCentralProtoTypeMapper.FindSet(String.join(", ", loadfilters), filters);
     }
 

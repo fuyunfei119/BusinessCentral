@@ -20,43 +20,43 @@ public class CustomerList {
             VISIABLE = true,
             GROUP = "General"
     )
-    private String userId;
+    private String User_ID;
 
     @PageField(
             VISIABLE = true,
             GROUP = "General"
     )
-    private String firstName;
+    private String First_Name;
 
     @PageField(
             VISIABLE = true,
             GROUP = "General"
     )
-    private String lastName;
+    private String Last_Name;
 
     @PageField(
             VISIABLE = true,
             GROUP = "Accounting"
     )
-    private String customerType;
+    private String Customer_Type;
 
     @PageField(
             VISIABLE = true,
             GROUP = "Accounting"
     )
-    private Integer points;
+    private Integer Points;
 
     @PageField(
             VISIABLE = true,
             GROUP = "Address"
     )
-    private String phoneNumber;
+    private String Phone_Number;
 
     @PageField(
             VISIABLE = true,
             GROUP = "Accounting"
     )
-    private String accountStatus;
+    private String Account_Status;
 
     @OnOpenPage
     public void OnBeforeOnOpenPage() {
@@ -102,11 +102,8 @@ public class CustomerList {
         record.FindSet();
         while (record.HasNext()) {
             record.Next();
-            System.out.println(record.GetRecord());
             record.Validate(Customer.Fields.Account_Status,"Closed",false);
             record.Modify(true);
-
-            System.out.println(record.GetRecord());
         }
     }
 

@@ -5,12 +5,12 @@ import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.deser.impl.FailingDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.metadata.ItemHint;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -34,7 +34,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     private final List<String> loadfields = new ArrayList<>();
     private Field primaryKey;
     private Object keyValue;
-    private List<T> entityList;
+    private List<T> entityList = new ArrayList<>();
     private Integer currentIndex;
     private T entity;
     private T x_entity;
@@ -63,7 +63,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
             filters.add(" AND ");
         }
 
-        filters.add(BusinessCentralUtils.convertToSnakeCase(field.getName()) + " = " + "'" +newValue + "'");
+        filters.add(field.getName() + " = " + "'" +newValue + "'");
 
         return this;
     }
@@ -89,7 +89,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         Field field = aClass.getDeclaredField(entityFields.name());
 
-        this.loadfields.add(BusinessCentralUtils.convertToSnakeCase(field.getName()));
+        this.loadfields.add(field.getName());
 
         return this;
     }
@@ -101,7 +101,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
             Field finalField = this.aClass.getDeclaredField(field.name());
 
-            this.loadfields.add(BusinessCentralUtils.convertToSnakeCase(finalField.getName()));
+            this.loadfields.add(finalField.getName());
         }
         return this;
     }
@@ -128,6 +128,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.UpperCamelCaseStrategy());
 
         List<LinkedHashMap<String, Object>> resultLists = mapper.FindSet(String.join(", ", loadfields), filters);
 
@@ -168,7 +169,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public T Get(Object ID) throws IllegalAccessException {
         this.filters.clear();
-        this.filters.add(BusinessCentralUtils.convertToSnakeCase(primaryKey.getName() + " = " + "'" + ID + "'"));
+        this.filters.add(primaryKey.getName() + " = " + "'" + ID + "'");
 
         LinkedHashMap result = mapper.Get(String.join(", ", loadfields), filters);
 
@@ -298,7 +299,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         this.keyValue = field.get(this.entity);
 
-        return mapper.Delete(BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),this.keyValue.toString()) != 0;
+        return mapper.Delete(primaryKey.getName(),this.keyValue.toString()) != 0;
     }
 
     @Override
@@ -331,7 +332,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         if (diffMap.isEmpty()) return true;
 
-        return mapper.Modify(diffMap,BusinessCentralUtils.convertToSnakeCase(primaryKey.getName()),keyValue) != 0;
+        return mapper.Modify(diffMap,primaryKey.getName(),keyValue) != 0;
     }
 
     @Override
@@ -374,9 +375,9 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
             for (Map.Entry<String, Object> stringObjectEntry : properties.get(0).entrySet()) {
 
-                System.out.println(BusinessCentralUtils.convertToSnakeCase(field.getName()).equals(stringObjectEntry.getKey().toLowerCase(Locale.ROOT)));
+                System.out.println(field.getName().equals(stringObjectEntry.getKey().toLowerCase(Locale.ROOT)));
 
-                if (BusinessCentralUtils.convertToSnakeCase(field.getName()).equals(stringObjectEntry.getKey().toLowerCase(Locale.ROOT))) {
+                if (field.getName().equals(stringObjectEntry.getKey().toLowerCase(Locale.ROOT))) {
 
                     if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
 
@@ -402,7 +403,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
             for (Map.Entry<String, Object> stringObjectEntry : properties.entrySet()) {
 
-                if (BusinessCentralUtils.convertToSnakeCase(field.getName()).equals(stringObjectEntry.getKey())) {
+                if (field.getName().equals(stringObjectEntry.getKey())) {
 
                     if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
 

@@ -50,7 +50,7 @@ public class Customer extends BusinessCentralBase {
 
     private java.sql.Date Last_Login_Date;
 
-    private java.sql.Date Last_Updated_Time;
+    private java.sql.Timestamp Last_Updated_Time;
 
     private String Account_Status;
 

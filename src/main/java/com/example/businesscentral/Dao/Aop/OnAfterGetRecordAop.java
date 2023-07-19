@@ -103,7 +103,7 @@ public class OnAfterGetRecordAop {
             assert record != null;
 
             for (Map.Entry<String, Object> entry : record.entrySet()) {
-                Field declaredField = newRecord.getClass().getDeclaredField(BusinessCentralUtils.convertToCamelCase(entry.getKey()));
+                Field declaredField = newRecord.getClass().getDeclaredField(entry.getKey());
                 declaredField.setAccessible(true);
                 declaredField.set(newRecord,entry.getValue());
             }
