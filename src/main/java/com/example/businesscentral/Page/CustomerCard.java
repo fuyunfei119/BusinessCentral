@@ -1,35 +1,91 @@
 package com.example.businesscentral.Page;
 
-import com.example.businesscentral.Dao.Annotation.Page;
+import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.Enum.PageType;
-import com.example.businesscentral.Dao.PageData.CustomerPageData;
-import com.example.businesscentral.Table.Customer;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
-
-@Page(SOURCETABLE = "Customer", TYPE = PageType.Card, Method = "GetCardData")
+@Page(SOURCETABLE = "Customer", TYPE = PageType.Card)
 public class CustomerCard {
+    @PageField(
+            VISIABLE = true,
+            GROUP = "General"
+    )
+    private String User_ID;
 
-    @Autowired
-    private CustomerPageData customerPageData;
+    @PageField(
+            VISIABLE = true,
+            GROUP = "General"
+    )
+    private String First_Name;
 
-    public LinkedHashMap<String, Object> GetCardData(String table, String recordID) throws Exception {
-        customerPageData.Reset();
-        customerPageData.SetLoadFields(Customer.Fields.User_ID);
-        customerPageData.SetLoadFields(Customer.Fields.First_Name);
-        customerPageData.SetLoadFields(Customer.Fields.Last_Name);
-        customerPageData.SetLoadFields(Customer.Fields.Email_Address);
-        customerPageData.SetLoadFields(Customer.Fields.Phone_Number);
-        customerPageData.SetLoadFields(Customer.Fields.Billing_Address);
-        customerPageData.SetLoadFields(Customer.Fields.Shipping_Address);
-        customerPageData.SetLoadFields(Customer.Fields.Account_Creation_Date);
-        customerPageData.SetLoadFields(Customer.Fields.Account_Status);
-        customerPageData.SetLoadFields(Customer.Fields.Payment_Information);
-        customerPageData.SetLoadFields(Customer.Fields.Order_History);
-        customerPageData.SetLoadFields(Customer.Fields.Points);
-        customerPageData.SetLoadFields(Customer.Fields.Last_Login_Date);
-        customerPageData.SetLoadFields(Customer.Fields.Last_Updated_Time);
-        return customerPageData.Get(recordID,true);
-    }
+    @PageField(
+            VISIABLE = true,
+            GROUP = "General"
+    )
+    private String Last_Name;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "General"
+    )
+    private String Email_Address;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "Address"
+    )
+    private String Phone_Number;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "Address"
+    )
+    private String Billing_Address;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "Address"
+    )
+    private String Shipping_Address;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "Accounting"
+    )
+    private java.sql.Date Account_Creation_Date;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "System"
+    )
+    private java.sql.Date Last_Login_Date;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "System"
+    )
+    private java.sql.Timestamp Last_Updated_Time;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "Accounting"
+    )
+    private String Account_Status;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "Accounting"
+    )
+    private String Payment_Information;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "Accounting"
+    )
+    private String Order_History;
+
+    @PageField(
+            VISIABLE = true,
+            GROUP = "Accounting"
+    )
+    private Integer Points;
 }

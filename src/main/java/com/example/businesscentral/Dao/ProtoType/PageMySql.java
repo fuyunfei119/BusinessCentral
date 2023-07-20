@@ -71,8 +71,6 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
 
     @Override
     public List<LinkedHashMap<String, Object>> FindSet() {
-        System.out.println(this.filters);
-        System.out.println(this.loadfilters);
         return businessCentralProtoTypeMapper.FindSet(String.join(", ", loadfilters), filters);
     }
 

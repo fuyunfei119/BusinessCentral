@@ -37,8 +37,6 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     @Autowired
     private BusinessCentralProtoTypeQueryMapper businessCentralProtoTypeQueryMapper;
     @Autowired
-    private CustomerRecord customerRecord;
-    @Autowired
     private ApplicationContext applicationContext;
 
     @Override
@@ -56,7 +54,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         Class<?> aClass = collect.get(0);
 
         List<String> list = Arrays.stream(aClass.getDeclaredFields())
-                .map(field -> BusinessCentralUtils.convertToSnakeCase(field.getName()))
+                .map(field -> field.getName())
                 .toList();
 
         return businessCentralProtoTypeQueryMapper.FindSetByTableName(String.join(",", list), TableName);
@@ -161,7 +159,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
             finalfilters.add("(");
 
-            Field declaredField = bean.getClass().getDeclaredField(BusinessCentralUtils.convertToCamelCase(key));
+            Field declaredField = bean.getClass().getDeclaredField(key);
             Class<?> type = declaredField.getType();
             if (type.equals(Integer.class)) {
                 for (int i = 0; i < filterValues.size(); i++) {
@@ -190,7 +188,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 for (Field declaredField : bean.getClass().getDeclaredFields()) {
                     content = content.replace("*","");
                     finalFilters
-                            .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
+                            .append(declaredField.getName())
                             .append(" LIKE ")
                             .append("'%")
                             .append(content)
@@ -201,7 +199,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 for (Field declaredField : bean.getClass().getDeclaredFields()) {
                     content = content.replace("*","");
                     finalFilters
-                            .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
+                            .append(declaredField.getName())
                             .append(" LIKE ")
                             .append("'%")
                             .append(content)
@@ -211,7 +209,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 for (Field declaredField : bean.getClass().getDeclaredFields()) {
                     content = content.replace("*","");
                     finalFilters
-                            .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
+                            .append(declaredField.getName())
                             .append(" LIKE '")
                             .append(content)
                             .append("%'")
@@ -226,7 +224,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         }else {
             for (Field declaredField : bean.getClass().getDeclaredFields()) {
                 finalFilters
-                        .append(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()))
+                        .append(declaredField.getName())
                         .append(" LIKE ")
                         .append("'%")
                         .append(content)
@@ -322,7 +320,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
             finalfilters.add("(");
 
-            Field declaredField = bean.getClass().getDeclaredField(BusinessCentralUtils.convertToCamelCase(key));
+            Field declaredField = bean.getClass().getDeclaredField(key);
             Class<?> type = declaredField.getType();
             if (type.equals(Integer.class)) {
                 for (int i = 0; i < filterValues.size(); i++) {
@@ -361,7 +359,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             if (declaredField.isAnnotationPresent(Keys.class)) {
                 Keys annotation = declaredField.getAnnotation(Keys.class);
                 if (annotation.PRIMARY_KEY()) {
-                    PrimaryKey = BusinessCentralUtils.convertToSnakeCase(declaredField.getName());
+                    PrimaryKey = declaredField.getName();
                 }
             }
         }
@@ -524,7 +522,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             declaredField.setAccessible(true);
             Object o = declaredField.get(newRecordInstance);
             if (!ObjectUtils.isEmpty(o)) {
-                fields.add(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()));
+                fields.add(declaredField.getName());
             }
         }
 
@@ -558,7 +556,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         Object bean = applicationContext.getBean(table.toLowerCase(Locale.ROOT));
 
         for (Field declaredField : bean.getClass().getDeclaredFields()) {
-            fields.add(BusinessCentralUtils.convertToSnakeCase(declaredField.getName()));
+            fields.add(declaredField.getName());
         }
 
         return fields;

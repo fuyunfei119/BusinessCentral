@@ -1,7 +1,6 @@
 package com.example.businesscentral.Table;
 
 import com.example.businesscentral.Dao.Annotation.*;
-import com.example.businesscentral.Dao.BusinessCentralBase;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.util.StringUtils;

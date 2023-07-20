@@ -7,7 +7,6 @@ import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.deser.impl.FailingDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +47,8 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         this.mapper = applicationContext.getBean(BusinessCentralMapper.class);
         this.aClass = (Class<T>) entityClass.get(0);
         this.primaryKey = BusinessCentralUtils.getPrimaryKeyField(this.aClass);
-        this.entity = (T) this.aClass.getDeclaredConstructor().newInstance();
-        this.x_entity = (T) this.aClass.getDeclaredConstructor().newInstance();
+        this.entity = this.aClass.getDeclaredConstructor().newInstance();
+        this.x_entity = this.aClass.getDeclaredConstructor().newInstance();
 
         currentIndex = 0;
     }
@@ -143,7 +142,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public T FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
 
-        LinkedHashMap result = mapper.FindFirst(String.join(", ", loadfields), filters);
+        LinkedHashMap<String, Object> result = mapper.FindFirst(String.join(", ", loadfields), filters);
 
         ConvertToObject(result);
 
@@ -153,7 +152,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public T FindLast() throws IllegalAccessException {
 
-        LinkedHashMap result = mapper.FindLast(String.join(", ", loadfields), filters);
+        LinkedHashMap<String, Object> result = mapper.FindLast(String.join(", ", loadfields), filters);
 
         ConvertToObject(result);
 
@@ -162,7 +161,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
     @Override
     public List<T> Find(Integer Count) {
-        return mapper.Find(String.join(", ", loadfields), filters, Count);
+        return (List<T>) mapper.Find(String.join(", ", loadfields), filters, Count);
     }
 
 
@@ -171,7 +170,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         this.filters.clear();
         this.filters.add(primaryKey.getName() + " = " + "'" + ID + "'");
 
-        LinkedHashMap result = mapper.Get(String.join(", ", loadfields), filters);
+        LinkedHashMap<String, Object> result = mapper.Get(String.join(", ", loadfields), filters);
 
         ConvertToObject(result);
 
@@ -217,10 +216,11 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 method.setAccessible(true);
 
-                Object bean = applicationContext.getBean(this.aClass);
+                T bean = applicationContext.getBean(this.aClass);
 
                 this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
 
+                break;
             }
         }
 
@@ -266,7 +266,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 method.setAccessible(true);
 
-                Object bean = applicationContext.getBean(this.aClass);
+                T bean = applicationContext.getBean(this.aClass);
 
                 this.entity = (T) ReflectionUtils.invokeMethod(method, bean,newValue,entity);
             }
@@ -286,10 +286,11 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 method.setAccessible(true);
 
-                Object bean = applicationContext.getBean(this.aClass);
+                T bean = applicationContext.getBean(this.aClass);
 
                 this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
 
+                break;
             }
         }
 
@@ -313,7 +314,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 method.setAccessible(true);
 
-                Object bean = applicationContext.getBean(this.aClass);
+                T bean = applicationContext.getBean(this.aClass);
 
                 this.entity = (T) ReflectionUtils.invokeMethod(method, bean,this.entity);
 
@@ -346,10 +347,11 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 method.setAccessible(true);
 
-                Object bean = applicationContext.getBean(this.aClass);
+                T bean = applicationContext.getBean(this.aClass);
 
                 this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
 
+                break;
             }
         }
 
@@ -365,36 +367,6 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         }
 
         return count != 0;
-    }
-
-    private List<T> ConvertToObject(List<LinkedHashMap<String, Object>> properties) throws IllegalAccessException {
-
-        List<T> list = new ArrayList<>();
-
-        for (Field field : this.entity.getClass().getDeclaredFields()) {
-
-            for (Map.Entry<String, Object> stringObjectEntry : properties.get(0).entrySet()) {
-
-                System.out.println(field.getName().equals(stringObjectEntry.getKey().toLowerCase(Locale.ROOT)));
-
-                if (field.getName().equals(stringObjectEntry.getKey().toLowerCase(Locale.ROOT))) {
-
-                    if (!ObjectUtils.isEmpty(stringObjectEntry.getValue())) {
-
-                        field.setAccessible(true);
-
-                        field.set(this.entity,stringObjectEntry.getValue());
-                    }
-                }
-            }
-        }
-
-        BeanUtils.copyProperties(this.entity,this.x_entity);
-
-        list.add(this.entity);
-
-        return list;
-
     }
 
     private void ConvertToObject(LinkedHashMap<String, Object> properties) throws IllegalAccessException {

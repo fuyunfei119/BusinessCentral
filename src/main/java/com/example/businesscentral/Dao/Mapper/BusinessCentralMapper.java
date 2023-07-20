@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface BusinessCentralMapper<T> {
-
+public interface BusinessCentralMapper {
 
     final String FindSet =
             "<script>" +

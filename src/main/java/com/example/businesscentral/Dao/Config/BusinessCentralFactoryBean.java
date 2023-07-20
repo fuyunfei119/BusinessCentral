@@ -15,7 +15,6 @@ public class BusinessCentralFactoryBean implements FactoryBean {
 
     @Autowired
     ApplicationContext applicationContext;
-
     Class<?> repositryInterface;
     Class<?> entityInterface;
     Class<?> fieldInterface;

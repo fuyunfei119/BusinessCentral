@@ -89,7 +89,6 @@ public class OnAfterGetCurrRecordAop {
                     }
                 }
 
-                System.out.println(result);
                 return result;
             }
         }
