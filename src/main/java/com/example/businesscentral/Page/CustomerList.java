@@ -69,8 +69,8 @@ public class CustomerList {
 
     @OnAfterGetRecord
     public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        Rec.Validate(Customer.Fields.Phone_Number,"Irina",true);
-        Rec.Modify(true);
+//        Rec.Validate(Customer.Fields.Phone_Number,"Irina",true);
+//        Rec.Modify(true);
         return Rec.GetRecord();
     }
 
@@ -82,8 +82,8 @@ public class CustomerList {
 
     @OnAfterGetCurrRecord
     public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        Rec.Validate(Customer.Fields.Phone_Number,"********",true);
-        Rec.Modify(true);
+//        Rec.Validate(Customer.Fields.Phone_Number,"********",true);
+//        Rec.Modify(true);
         return Rec.GetRecord();
     }
 

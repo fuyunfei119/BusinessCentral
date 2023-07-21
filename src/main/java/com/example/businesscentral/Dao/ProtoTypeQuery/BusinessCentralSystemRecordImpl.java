@@ -613,6 +613,8 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     @Override
     public void RaiseAction(ActionParamter paramter) throws InvocationTargetException, IllegalAccessException {
 
+        System.out.println(paramter);
+
         String finalListName = Character.toLowerCase(paramter.getPage().charAt(0)) + paramter.getPage().substring(1);
 
         Object bean = applicationContext.getBean(finalListName);

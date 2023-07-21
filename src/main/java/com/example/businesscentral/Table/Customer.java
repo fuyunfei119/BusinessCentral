@@ -11,7 +11,7 @@ import java.util.UUID;
 @Table
 @Data
 @FieldNameConstants(asEnum = true)
-public class Customer extends BusinessCentralBase {
+public class Customer{
 
     @Keys(PRIMARY_KEY = true,AUTO_INCREMENT = true)
     @TableField(
