@@ -587,6 +587,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         }
 
         List list = pageMysql.FindSet();
+
         return list;
     }
 
