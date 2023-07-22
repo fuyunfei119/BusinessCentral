@@ -57,6 +57,9 @@ public class Customer{
 
     private String Order_History;
 
+    @TableField(
+            ON_VALIDATE = "OnValidatePoint"
+    )
     private Integer Points;
 
     @TableField(
@@ -109,6 +112,15 @@ public class Customer{
             Rec.setCustomer_Type(newValue.toString());
         }
 
+        return Rec;
+    }
+
+    private Customer OnValidatePoint(Object currentValue, Object newValue,Customer Rec) {
+        System.out.println("Point Validate Trigger Raised...");
+
+        if (currentValue != newValue) {
+            Rec.setPoints(Integer.valueOf(newValue.toString()));
+        }
         return Rec;
     }
 }

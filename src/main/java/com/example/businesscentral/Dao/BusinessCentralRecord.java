@@ -50,4 +50,8 @@ public interface BusinessCentralRecord<T,E extends Enum<E>> {
     Boolean Modify(Boolean UseEvent) throws Exception;
 
     Boolean Insert(Boolean UseEvent,Boolean FullFields);
+
+    BusinessCentralRecord<T,E> SetCurrentRecord(T entity);
+
+    BusinessCentralRecord<T,E> SetXRecord(T X_entity);
 }

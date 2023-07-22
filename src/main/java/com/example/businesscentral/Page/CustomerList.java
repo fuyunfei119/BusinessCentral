@@ -42,7 +42,8 @@ public class CustomerList {
 
     @PageField(
             VISIABLE = true,
-            GROUP = "Accounting"
+            GROUP = "Accounting",
+            ON_VALIDATE = "OnValidatePoints"
     )
     private Integer Points;
 
@@ -105,6 +106,12 @@ public class CustomerList {
             record.Validate(Customer.Fields.Account_Status,"Closed",false);
             record.Modify(true);
         }
+    }
+
+    private Customer OnValidatePoints(Object currentValue, Object newValue,BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+        System.out.println("Point Page Validate Trigger Raised...");
+
+        return Rec.GetRecord();
     }
 
     @Autowired

@@ -11,4 +11,6 @@ public @interface PageField {
     boolean VISIABLE() default false;
 
     String GROUP();
+
+    String ON_VALIDATE() default "";
 }

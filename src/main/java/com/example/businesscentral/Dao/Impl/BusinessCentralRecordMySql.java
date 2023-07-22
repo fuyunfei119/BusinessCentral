@@ -369,6 +369,18 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         return count != 0;
     }
 
+    @Override
+    public BusinessCentralRecord<T,E> SetCurrentRecord(T entity) {
+        this.entity = entity;
+        return this;
+    }
+
+    @Override
+    public BusinessCentralRecord<T, E> SetXRecord(T X_entity) {
+        BeanUtils.copyProperties(X_entity,this.x_entity);
+        return this;
+    }
+
     private void ConvertToObject(LinkedHashMap<String, Object> properties) throws IllegalAccessException {
 
         for (Field field : this.entity.getClass().getDeclaredFields()) {
