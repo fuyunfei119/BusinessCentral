@@ -538,8 +538,6 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             }
         }
 
-        System.out.println(values);
-
         businessCentralProtoTypeQueryMapper.InsertNewRecord(table.toString(),fields,values);
 
         return null;
@@ -568,6 +566,8 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
         PageMySql pageMysql = applicationContext.getBean(PageMySql.class);
 
+        List<String> fields = new ArrayList<>();
+
         for (Object bean : beans) {
             for (Annotation annotation : bean.getClass().getAnnotations()) {
                 Page page = (Page) annotation;
@@ -578,6 +578,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                         if (declaredField.isAnnotationPresent(PageField.class)) {
                             PageField pageField = declaredField.getAnnotation(PageField.class);
                             if (pageField.VISIABLE()) {
+                                fields.add(declaredField.getName());
                                 pageMysql.SetLoadFields(declaredField.getName());
                             }
                         }
@@ -586,9 +587,21 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             }
         }
 
-        List list = pageMysql.FindSet();
+        List<LinkedHashMap<String,Object>> linkedHashMapList = new ArrayList<>();
+        LinkedHashMap<String,Object> linkedHashMap = new LinkedHashMap<>();
 
-        return list;
+        List list = pageMysql.FindSet();
+        for (Object o : list) {
+            LinkedHashMap<String, Object> map;
+            map = (LinkedHashMap<String, Object>) o;
+            linkedHashMap.clear();
+            for (String field : fields) {
+                linkedHashMap.put(field,map.get(field));
+            }
+            linkedHashMapList.add(linkedHashMap);
+        }
+
+        return linkedHashMapList;
     }
 
     @Override
