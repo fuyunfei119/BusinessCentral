@@ -588,15 +588,13 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         }
 
         List<LinkedHashMap<String,Object>> linkedHashMapList = new ArrayList<>();
-        LinkedHashMap<String,Object> linkedHashMap = new LinkedHashMap<>();
 
         List list = pageMysql.FindSet();
         for (Object o : list) {
-            LinkedHashMap<String, Object> map;
-            map = (LinkedHashMap<String, Object>) o;
-            linkedHashMap.clear();
+            LinkedHashMap<String,Object> linkedHashMap;
+            linkedHashMap = (LinkedHashMap<String, Object>) o;
             for (String field : fields) {
-                linkedHashMap.put(field,map.get(field));
+                linkedHashMap.put(field,linkedHashMap.get(field));
             }
             linkedHashMapList.add(linkedHashMap);
         }

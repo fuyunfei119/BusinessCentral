@@ -8,6 +8,8 @@ import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.TableParameter;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,7 +37,7 @@ public class OnAfterGetCurrRecordAop {
     @Around("OnAfterGetRecordTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        TableParameter table = (TableParameter) joinPoint.getArgs()[0];
+        TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
 
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
@@ -45,14 +47,14 @@ public class OnAfterGetCurrRecordAop {
 
         for (Object bean : beans) {
             Page annotation = bean.getClass().getAnnotation(Page.class);
-            if (annotation.SOURCETABLE().equals(table.getTable()) && annotation.TYPE().equals(PageType.List)) {
+            if (annotation.SOURCETABLE().equals(parameter.getTable()) && annotation.TYPE().equals(PageType.List)) {
                 beanClass = bean.getClass();
                 for (Field declaredField : bean.getClass().getDeclaredFields()) {
                     if (declaredField.isAnnotationPresent(Autowired.class)) {
                         Record = declaredField.getType();
                     }
                 }
-                Instance = applicationContext.getBean(table.getTable().toLowerCase(Locale.ROOT));
+                Instance = applicationContext.getBean(parameter.getTable().toLowerCase(Locale.ROOT));
                 break;
             }
         }
@@ -70,7 +72,7 @@ public class OnAfterGetCurrRecordAop {
         for (Method declaredMethod : beanClass.getDeclaredMethods()) {
             if (declaredMethod.isAnnotationPresent(OnAfterGetCurrRecord.class)) {
 
-                for (Map.Entry<String, Object> entry : table.getRecord().entrySet()) {
+                for (Map.Entry<String, Object> entry : parameter.getRecord().entrySet()) {
                     Field declaredField = newRecord.getClass().getDeclaredField(entry.getKey());
                     declaredField.setAccessible(true);
                     declaredField.set(newRecord,entry.getValue());
@@ -89,9 +91,28 @@ public class OnAfterGetCurrRecordAop {
                     }
                 }
 
-                return result;
+                Object pageBean = applicationContext.getBean(parameter.getPage());
+
+                List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
+                        .filter(field -> field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
+
+                List<String> includefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
+                        .filter(field -> !field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
+
+                for (String excludefield : excludefields) {
+                    excludefield = excludefield.replaceFirst(String.valueOf(excludefield.charAt(0)),String.valueOf(excludefield.charAt(0)).toUpperCase(Locale.ROOT));
+                    result.remove(excludefield);
+                }
+
+                LinkedHashMap<String,Object> sortedLinkedHashMap = new LinkedHashMap<>();
+                for (String includefield : includefields) {
+                    sortedLinkedHashMap.put(includefield,result.get(includefield));
+                }
+
+                return sortedLinkedHashMap;
             }
         }
+
 
         return joinPoint.proceed();
     }
