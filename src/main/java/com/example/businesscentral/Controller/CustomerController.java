@@ -2,10 +2,7 @@ package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.CodeUnits.CustomerManagement;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
-import com.example.businesscentral.Dao.Request.ActionParamter;
-import com.example.businesscentral.Dao.Request.CardGroup;
-import com.example.businesscentral.Dao.Request.PageValidate;
-import com.example.businesscentral.Dao.Request.TableParameter;
+import com.example.businesscentral.Dao.Request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,6 +95,12 @@ public class CustomerController {
 
     @PostMapping("/List/PageFieldValidate")
     public LinkedHashMap<String, Object> PageFieldValidate(@RequestBody PageValidate pageValidate) { return null; }
+
+    @PostMapping("/List/OnNewRecord")
+    public LinkedHashMap<String,Object> OnNewRecord(@RequestBody NewRecord newRecord) {
+        System.out.println(newRecord);
+        return null;
+    }
 
     @GetMapping("/test")
     public String testhelloworld() {

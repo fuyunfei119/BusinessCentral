@@ -88,6 +88,11 @@ public class CustomerList {
         return Rec.GetRecord();
     }
 
+    @OnNewRecord
+    public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+        return Rec.GetRecord();
+    }
+
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage() {
     }

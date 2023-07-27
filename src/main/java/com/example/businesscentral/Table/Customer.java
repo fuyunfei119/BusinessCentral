@@ -14,10 +14,7 @@ import java.util.UUID;
 public class Customer{
 
     @Keys(PRIMARY_KEY = true,AUTO_INCREMENT = true)
-    @TableField(
-            INIT_VALUE = "",
-            NOT_BLANK = false
-    )
+    @TableField()
     private String User_ID;
 
     @TableField(
