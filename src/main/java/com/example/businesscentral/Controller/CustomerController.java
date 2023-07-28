@@ -103,7 +103,6 @@ public class CustomerController {
 
     @PostMapping("/List/OnInsertRecord")
     public Object OnInsertRecord(@RequestBody NewRecord newRecord) {
-        System.out.println(newRecord);
         return null;
     }
 
