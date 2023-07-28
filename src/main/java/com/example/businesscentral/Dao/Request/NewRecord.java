@@ -10,4 +10,5 @@ import java.util.LinkedHashMap;
 public class NewRecord {
     private String table;
     private String page;
+    private LinkedHashMap<String,Object> record;
 }

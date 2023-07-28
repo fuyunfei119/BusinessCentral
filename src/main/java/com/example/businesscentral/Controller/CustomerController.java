@@ -101,6 +101,12 @@ public class CustomerController {
         return null;
     }
 
+    @PostMapping("/List/OnInsertRecord")
+    public Object OnInsertRecord(@RequestBody NewRecord newRecord) {
+        System.out.println(newRecord);
+        return null;
+    }
+
     @GetMapping("/test")
     public String testhelloworld() {
         return "Hello World";

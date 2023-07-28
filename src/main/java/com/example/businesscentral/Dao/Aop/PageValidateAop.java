@@ -17,6 +17,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -70,9 +71,18 @@ public class PageValidateAop {
                 tableBean.getClass()
         );
 
-        tableValidate.setAccessible(true);
+        Object recordAfterTableValidate = null;
 
-        Object recordAfterTableValidate = tableValidate.invoke(tableBean, parametes.getCurrentValue(), parametes.getNewValue(), record);
+        if (ObjectUtils.isEmpty(tableValidate)) {
+            tableField.setAccessible(true);
+            tableField.set(tableBean,parametes.getNewValue());
+
+            recordAfterTableValidate = tableBean;
+        }else {
+            tableValidate.setAccessible(true);
+
+            recordAfterTableValidate = tableValidate.invoke(tableBean, parametes.getCurrentValue(), parametes.getNewValue(), record);
+        }
 
         businessCentralRecord.SetCurrentRecord(recordAfterTableValidate);
 
@@ -94,9 +104,16 @@ public class PageValidateAop {
                 BusinessCentralRecord.class
         );
 
-        pageValidate.setAccessible(true);
+        Object recordAfterPageValidate = null;
 
-        Object recordAfterPageValidate = pageValidate.invoke(pageBean, parametes.getCurrentValue(), FieldNewValue, businessCentralRecord);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        if (!ObjectUtils.isEmpty(pageValidate)) {
+            pageValidate.setAccessible(true);
+            recordAfterPageValidate = pageValidate.invoke(pageBean, parametes.getCurrentValue(), FieldNewValue, businessCentralRecord);
+        }else {
+            recordAfterPageValidate = objectMapper.convertValue(recordAfterDatabaseModify, pageBean.getClass());
+        }
 
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -109,12 +126,14 @@ public class PageValidateAop {
         Object result = objectMapper.convertValue(recordAfterPageValidate, pageBean.getClass());
 
         LinkedHashMap<String,Object> linkedHashMap = objectMapper.convertValue(result,LinkedHashMap.class);
+
         for (String excludefield : excludefields) {
             excludefield = excludefield.replaceFirst(String.valueOf(excludefield.charAt(0)),String.valueOf(excludefield.charAt(0)).toUpperCase(Locale.ROOT));
             linkedHashMap.remove(excludefield);
         }
 
         LinkedHashMap<String,Object> sortedLinkedHashMap = new LinkedHashMap<>();
+
         for (String includefield : includefields) {
             sortedLinkedHashMap.put(includefield,linkedHashMap.get(includefield));
         }
