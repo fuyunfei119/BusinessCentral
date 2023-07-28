@@ -23,6 +23,9 @@ public class Customer{
     )
     private String First_Name;
 
+    @TableField(
+
+    )
     private String Last_Name;
 
     @TableField(

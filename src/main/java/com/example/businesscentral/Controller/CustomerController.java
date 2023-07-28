@@ -97,8 +97,7 @@ public class CustomerController {
     public LinkedHashMap<String, Object> PageFieldValidate(@RequestBody PageValidate pageValidate) { return null; }
 
     @PostMapping("/List/OnNewRecord")
-    public LinkedHashMap<String,Object> OnNewRecord(@RequestBody NewRecord newRecord) {
-        System.out.println(newRecord);
+    public Object OnNewRecord(@RequestBody NewRecord newRecord) {
         return null;
     }
 

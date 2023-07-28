@@ -9,6 +9,8 @@ import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.NewRecord;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -30,7 +33,7 @@ public class OnNewRecordAop {
     @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
-    @Pointcut("execution(java.util.* com.example.businesscentral.Controller.CustomerController.OnNewRecord(..))")
+    @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.OnNewRecord(..))")
     public void OnNewRecordTrigger() {
     }
 
@@ -38,8 +41,6 @@ public class OnNewRecordAop {
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
         NewRecord parameter = (NewRecord) joinPoint.getArgs()[0];
-
-        System.out.println(parameter);
 
         Object pageBean = applicationContext.getBean(parameter.getPage());
         Object tableBean = applicationContext.getBean(parameter.getTable());
@@ -57,7 +58,6 @@ public class OnNewRecordAop {
 
         onInitMethod.setAccessible(true);
         Object initializedNewRecord = onInitMethod.invoke(tableBean);
-        System.out.println(initializedNewRecord);
 
         Method onNewRecordMethod = null;
 
@@ -67,9 +67,37 @@ public class OnNewRecordAop {
             }
         }
 
-        onNewRecordMethod.setAccessible(true);
-        onNewRecordMethod.invoke(pageBean);
+        List<Class<?>> classList = new ArrayList<>();
+        classList.add(tableBean.getClass());
+        BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);
+        businessCentralRecord.SetRecord(initializedNewRecord);
 
-        return joinPoint.proceed();
+        onNewRecordMethod.setAccessible(true);
+        Object invokePageObject = onNewRecordMethod.invoke(pageBean, businessCentralRecord);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
+
+        List<String> includefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
+                .filter(field -> !field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
+
+        LinkedHashMap<String,Object> linkedHashMap = objectMapper.convertValue(invokePageObject,LinkedHashMap.class);
+
+        for (String excludefield : excludefields) {
+            excludefield = excludefield.replaceFirst(String.valueOf(excludefield.charAt(0)),String.valueOf(excludefield.charAt(0)).toUpperCase(Locale.ROOT));
+            linkedHashMap.remove(excludefield);
+        }
+
+        LinkedHashMap<String,Object> sortedLinkedHashMap = new LinkedHashMap<>();
+        for (String includefield : includefields) {
+            char firstChar = includefield.charAt(0);
+            String LowerCase = String.valueOf(firstChar).toLowerCase(Locale.ROOT);
+            sortedLinkedHashMap.put(includefield,linkedHashMap.get(includefield.replaceFirst(String.valueOf(includefield.charAt(0)),LowerCase)));
+        }
+
+        return sortedLinkedHashMap;
     }
 }

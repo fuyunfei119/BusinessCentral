@@ -89,7 +89,9 @@ public class CustomerList {
     }
 
     @OnNewRecord
-    public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+    public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        Rec.Validate(Customer.Fields.First_Name,"YUNFEI",true);
+        Rec.Validate(Customer.Fields.Last_Name,"FU",true);
         return Rec.GetRecord();
     }
 
