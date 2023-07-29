@@ -41,20 +41,44 @@ public class Customer{
     )
     private String Phone_Number;
 
+    @TableField(
+
+    )
     private String Billing_Address;
 
+    @TableField(
+
+    )
     private String Shipping_Address;
 
+    @TableField(
+
+    )
     private java.sql.Date Account_Creation_Date;
 
+    @TableField(
+
+    )
     private java.sql.Date Last_Login_Date;
 
+    @TableField(
+
+    )
     private java.sql.Timestamp Last_Updated_Time;
 
+    @TableField(
+
+    )
     private String Account_Status;
 
+    @TableField(
+
+    )
     private String Payment_Information;
 
+    @TableField(
+
+    )
     private String Order_History;
 
     @TableField(

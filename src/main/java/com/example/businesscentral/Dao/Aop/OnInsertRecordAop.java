@@ -1,16 +1,16 @@
 package com.example.businesscentral.Dao.Aop;
 
-import com.example.businesscentral.Dao.Annotation.OnFindRecord;
 import com.example.businesscentral.Dao.Annotation.OnInit;
+import com.example.businesscentral.Dao.Annotation.OnInsert;
+import com.example.businesscentral.Dao.Annotation.OnInsertRecord;
 import com.example.businesscentral.Dao.Annotation.OnNewRecord;
-import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
-import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.NewRecord;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,26 +18,24 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
 @Aspect
 @Configuration
-public class OnNewRecordAop {
+public class OnInsertRecordAop {
 
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
-    @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.OnNewRecord(..))")
-    public void OnNewRecordTrigger() {
+    @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.OnInsertRecord(..))")
+    public void OnInsertRecordTrigger() {
     }
 
-    @Around("OnNewRecordTrigger()")
+    @Around("OnInsertRecordTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
         NewRecord parameter = (NewRecord) joinPoint.getArgs()[0];
@@ -48,36 +46,46 @@ public class OnNewRecordAop {
         Class<?> pageBeanClass = pageBean.getClass();
         Class<?> tableBeanClass = tableBean.getClass();
 
-        Method onInitMethod = null;
-
-        for (Method declaredMethod : tableBeanClass.getDeclaredMethods()) {
-            if (declaredMethod.isAnnotationPresent(OnInit.class)) {
-                onInitMethod = declaredMethod;
-            }
-        }
-
-        onInitMethod.setAccessible(true);
-        Object initializedNewRecord = onInitMethod.invoke(tableBean);
-
-        Method onNewRecordMethod = null;
+        Method OnInsertRecordMethod = null;
 
         for (Method declaredMethod : pageBeanClass.getDeclaredMethods()) {
-            if (declaredMethod.isAnnotationPresent(OnNewRecord.class)) {
-                onNewRecordMethod = declaredMethod;
+            if (declaredMethod.isAnnotationPresent(OnInsertRecord.class)) {
+                OnInsertRecordMethod = declaredMethod;
                 break;
             }
         }
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+        Object Record = objectMapper.convertValue(parameter.getRecord(), tableBeanClass);
+
         List<Class<?>> classList = new ArrayList<>();
         classList.add(tableBean.getClass());
         BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);
-        businessCentralRecord.SetRecord(initializedNewRecord);
+        businessCentralRecord.SetRecord(Record);
 
-        onNewRecordMethod.setAccessible(true);
-        Object invokePageObject = onNewRecordMethod.invoke(pageBean, businessCentralRecord);
+        Object RecordAfterOnInsertRecord = OnInsertRecordMethod.invoke(pageBean, businessCentralRecord);
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        businessCentralRecord.SetRecord(RecordAfterOnInsertRecord);
+
+        Method OnInsert = null;
+
+        for (Method declaredMethod : tableBeanClass.getDeclaredMethods()) {
+            if (declaredMethod.isAnnotationPresent(OnInsert.class)) {
+                OnInsert = declaredMethod;
+                break;
+            }
+        }
+
+        OnInsert.setAccessible(true);
+        Object RecordAfterTableInsert = OnInsert.invoke(RecordAfterOnInsertRecord);
+        businessCentralRecord.SetRecord(RecordAfterOnInsertRecord);
+        if (!businessCentralRecord.Insert(true,true)) {
+            return joinPoint.proceed();
+        }
+
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Object convertValue = objectMapper.convertValue(RecordAfterTableInsert, pageBeanClass);
 
         List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
@@ -85,7 +93,7 @@ public class OnNewRecordAop {
         List<String> includefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
                 .filter(field -> !field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
 
-        LinkedHashMap<String,Object> linkedHashMap = objectMapper.convertValue(invokePageObject,LinkedHashMap.class);
+        LinkedHashMap<String,Object> linkedHashMap = objectMapper.convertValue(convertValue,LinkedHashMap.class);
 
         for (String excludefield : excludefields) {
             excludefield = excludefield.replaceFirst(String.valueOf(excludefield.charAt(0)),String.valueOf(excludefield.charAt(0)).toUpperCase(Locale.ROOT));
@@ -94,9 +102,7 @@ public class OnNewRecordAop {
 
         LinkedHashMap<String,Object> sortedLinkedHashMap = new LinkedHashMap<>();
         for (String includefield : includefields) {
-            char firstChar = includefield.charAt(0);
-            String LowerCase = String.valueOf(firstChar).toLowerCase(Locale.ROOT);
-            sortedLinkedHashMap.put(includefield,linkedHashMap.get(includefield.replaceFirst(String.valueOf(includefield.charAt(0)),LowerCase)));
+            sortedLinkedHashMap.put(includefield,linkedHashMap.get(includefield));
         }
 
         return sortedLinkedHashMap;

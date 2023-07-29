@@ -95,6 +95,13 @@ public class CustomerList {
         return Rec.GetRecord();
     }
 
+    @OnInsertRecord
+    public Customer OnBeforeInsertRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        Rec.Validate(Customer.Fields.Payment_Information,"Cash",true);
+        return Rec.GetRecord();
+    }
+
+
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage() {
     }
