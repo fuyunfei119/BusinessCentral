@@ -41,7 +41,9 @@ public class CustomerController {
     }
 
     @GetMapping("/")
-    public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException { return businessCentralSystemRecord.FindSetByTableName(tableName); }
+    public List<LinkedHashMap<String, Object>> test3(@RequestParam("table") String tableName) throws ClassNotFoundException {
+        return businessCentralSystemRecord.FindSetByTableName(tableName);
+    }
 
     @PostMapping("/FindSetByFilters")
     public List<LinkedHashMap<String, Object>> FindSetByFilters(@RequestBody Map<String,Object> filters) throws Exception {

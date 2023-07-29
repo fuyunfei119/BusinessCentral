@@ -56,7 +56,12 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 .map(field -> field.getName())
                 .toList();
 
-        return businessCentralProtoTypeQueryMapper.FindSetByTableName(String.join(",", list), TableName);
+        List<LinkedHashMap<String, Object>> linkedHashMapList = businessCentralProtoTypeQueryMapper.FindSetByTableName(String.join(",", list), TableName);
+        for (LinkedHashMap<String, Object> linkedHashMap : linkedHashMapList) {
+            System.out.println(linkedHashMap);
+        }
+
+        return linkedHashMapList;
     }
 
     @Override
