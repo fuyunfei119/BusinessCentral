@@ -163,7 +163,7 @@ public interface BusinessCentralMapper {
                     "</script>";
 
     final String Delete =
-            "DELETE FROM Customer WHERE ${PK_Field} = #{PK_Value}";
+            "DELETE FROM Customer WHERE ${PK_Field} = ${PK_Value}";
 
     final String Modify =
             "<script>"+

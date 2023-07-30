@@ -83,15 +83,15 @@ public class CustomerList {
 
     @OnAfterGetCurrRecord
     public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        Rec.Validate(Customer.Fields.Phone_Number,"********",true);
-        Rec.Modify(true);
+//        Rec.Validate(Customer.Fields.Phone_Number,"********",true);
+//        Rec.Modify(true);
         return Rec.GetRecord();
     }
 
     @OnNewRecord
     public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        Rec.Validate(Customer.Fields.First_Name,"YUNFEI",true);
-        Rec.Validate(Customer.Fields.Last_Name,"FU",true);
+//        Rec.Validate(Customer.Fields.First_Name,"YUNFEI",true);
+//        Rec.Validate(Customer.Fields.Last_Name,"FU",true);
         return Rec.GetRecord();
     }
 

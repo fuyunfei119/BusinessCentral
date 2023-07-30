@@ -5,16 +5,16 @@ spring:
     password: root
     url: jdbc:mysql://localhost:3306/test
 
-#  sql:
-#    init:
-#      mode: always
-#      platform: mysql
-#      schema-locations: classpath:sql/customer.sql
+  sql:
+    init:
+      mode: always
+      platform: mysql
+      schema-locations: classpath:sql/customer.sql
 
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     call-setters-on-nulls: true
     return-instance-for-empty-row: true
 

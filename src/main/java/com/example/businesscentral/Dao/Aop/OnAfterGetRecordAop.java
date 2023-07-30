@@ -134,7 +134,6 @@ public class OnAfterGetRecordAop {
             results.add(result);
         }
 
-
         Object pageBean = applicationContext.getBean(parameter.getPage());
 
         List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())

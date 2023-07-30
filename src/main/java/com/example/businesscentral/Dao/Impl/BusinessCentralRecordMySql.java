@@ -288,7 +288,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 T bean = applicationContext.getBean(this.aClass);
 
-                this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean,this.entity);
 
                 break;
             }
@@ -300,7 +300,13 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         this.keyValue = field.get(this.entity);
 
-        return mapper.Delete(primaryKey.getName(),this.keyValue.toString()) != 0;
+        System.out.println(this.keyValue.getClass());
+
+        if (this.keyValue.getClass().isAssignableFrom(String.class)) {
+            this.keyValue = "'" + this.keyValue + "'";
+        }
+
+        return mapper.Delete(primaryKey.getName(),keyValue.toString()) != 0;
     }
 
     @Override

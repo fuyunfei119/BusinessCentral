@@ -114,9 +114,9 @@ public class Customer{
     }
 
     @OnDelete
-    private Customer OnDeleteTriggerMethod() {
+    private Customer OnDeleteTriggerMethod(Customer Rec) {
         System.out.println("Delete Trigger Raised...");
-        return this;
+        return Rec;
     }
 
     private Customer OnValidatePhoneNumberTriggerMethod(Object newValue, Customer Rec) {
@@ -143,7 +143,7 @@ public class Customer{
         System.out.println("Point Validate Trigger Raised...");
 
         if (currentValue != newValue) {
-            Rec.setPoints(Integer.valueOf(newValue.toString()));
+//            Rec.setPoints(Integer.valueOf(newValue.toString()));
         }
         return Rec;
     }

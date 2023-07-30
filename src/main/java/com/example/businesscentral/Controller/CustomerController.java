@@ -108,6 +108,11 @@ public class CustomerController {
         return null;
     }
 
+    @PostMapping("/List/DeleteLine")
+    public Boolean OnDeleteRecord(@RequestBody DeleteRecord deleteRecord) {
+        return null;
+    }
+
     @GetMapping("/test")
     public String testhelloworld() {
         return "Hello World";
