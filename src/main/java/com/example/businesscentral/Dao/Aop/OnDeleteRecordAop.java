@@ -46,12 +46,17 @@ public class OnDeleteRecordAop {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
-        Object Record = objectMapper.convertValue(parameter.getRecord(), tableBeanClass);
 
-        List<Class<?>> classList = new ArrayList<>();
-        classList.add(tableBean.getClass());
-        BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);
-        businessCentralRecord.SetRecord(Record);
-        return businessCentralRecord.Delete();
+        for (LinkedHashMap<String, Object> record : parameter.getRecords()) {
+            Object Record = objectMapper.convertValue(record, tableBeanClass);
+            List<Class<?>> classList = new ArrayList<>();
+            classList.add(tableBean.getClass());
+            BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);
+            businessCentralRecord.Reset();
+            businessCentralRecord.SetRecord(Record);
+            businessCentralRecord.Delete();
+        }
+
+        return joinPoint.proceed();
     }
 }

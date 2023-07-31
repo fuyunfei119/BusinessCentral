@@ -122,31 +122,16 @@ public class Customer{
 
     private Customer OnValidatePhoneNumberTriggerMethod(Object newValue, Customer Rec) {
         System.out.println("Table => Validate Trigger Raised...");
-
-        if (StringUtils.hasLength(newValue.toString())) {
-            Rec.setPhone_Number(newValue.toString());
-        }
-
         return Rec;
     }
 
     private Customer OnValidateCustomerType(Object newValue,Customer Rec) {
         System.out.println("Table => Validate Trigger Raised...");
-
-        if (StringUtils.hasLength(newValue.toString())) {
-            Rec.setCustomer_Type(newValue.toString());
-        }
-
         return Rec;
     }
 
     private Customer OnValidatePoint(Object currentValue, Object newValue, Customer Rec) {
         System.out.println("Table => Point Validate Trigger Raised...");
-
-        if (currentValue != newValue) {
-//            Rec.setPoints(Integer.valueOf(newValue.toString()));
-        }
-
         return Rec;
     }
 }
