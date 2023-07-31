@@ -1,6 +1,7 @@
 package com.example.businesscentral.Table;
 
 import com.example.businesscentral.Dao.Annotation.*;
+import com.example.businesscentral.Dao.BusinessCentralRecord;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.util.StringUtils;
@@ -93,7 +94,7 @@ public class Customer{
 
     @OnInit
     private Customer OnInitTriggerMethod() {
-        System.out.println("Init Trigger Raised...");
+        System.out.println("Table => Init Trigger Raised...");
 
         this.User_ID = UUID.randomUUID().toString();
         this.Account_Status = "Active";
@@ -102,25 +103,25 @@ public class Customer{
     }
 
     @OnInsert
-    private Customer OnInsertTriggerMethod() {
-        System.out.println("Insert Trigger Raised...");
-        return this;
+    private Customer OnInsertTriggerMethod(Customer Rec) {
+        System.out.println("Table => Insert Trigger Raised...");
+        return Rec;
     }
 
     @OnModify
     private Customer OnModifyTriggerMethod(Customer Rec) {
-        System.out.println("Modify Trigger Raised...");
+        System.out.println("Table => Modify Trigger Raised...");
         return Rec;
     }
 
     @OnDelete
     private Customer OnDeleteTriggerMethod(Customer Rec) {
-        System.out.println("Delete Trigger Raised...");
+        System.out.println("Table => Delete Trigger Raised...");
         return Rec;
     }
 
     private Customer OnValidatePhoneNumberTriggerMethod(Object newValue, Customer Rec) {
-        System.out.println("Validate Trigger Raised...");
+        System.out.println("Table => Validate Trigger Raised...");
 
         if (StringUtils.hasLength(newValue.toString())) {
             Rec.setPhone_Number(newValue.toString());
@@ -130,7 +131,7 @@ public class Customer{
     }
 
     private Customer OnValidateCustomerType(Object newValue,Customer Rec) {
-        System.out.println("Validate Trigger Raised...");
+        System.out.println("Table => Validate Trigger Raised...");
 
         if (StringUtils.hasLength(newValue.toString())) {
             Rec.setCustomer_Type(newValue.toString());
@@ -139,12 +140,13 @@ public class Customer{
         return Rec;
     }
 
-    private Customer OnValidatePoint(Object currentValue, Object newValue,Customer Rec) {
-        System.out.println("Point Validate Trigger Raised...");
+    private Customer OnValidatePoint(Object currentValue, Object newValue, Customer Rec) {
+        System.out.println("Table => Point Validate Trigger Raised...");
 
         if (currentValue != newValue) {
 //            Rec.setPoints(Integer.valueOf(newValue.toString()));
         }
+
         return Rec;
     }
 }

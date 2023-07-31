@@ -45,8 +45,6 @@ public class CustomerManagement {
         Customer customer = customerRecord.GetRecord();
         customers.add(customer);
 
-        System.out.println("Result => " + customerRecord.Delete());
-
         return customers;
     }
 
@@ -68,8 +66,6 @@ public class CustomerManagement {
         customerRecord.SetRange(Customer.Fields.Account_Status,"Active");
         customerRecord.SetFilter(Customer.Fields.First_Name,"%1*","J");
         List<Customer> customers = customerRecord.FindSet();
-
-        System.out.println(customers);
 
         OnBeforeReturnResultOnAfterCheckIfHasOver_250_PointCustomers(customers,IsHandled);
         return !IsHandled.get() ? customers : null;

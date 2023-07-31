@@ -75,18 +75,26 @@ public class PageValidateAop {
 
         if (ObjectUtils.isEmpty(tableValidate)) {
             tableField.setAccessible(true);
-            tableField.set(tableBean,parametes.getNewValue());
+            tableField.set(record,parametes.getNewValue());
 
-            recordAfterTableValidate = tableBean;
+            recordAfterTableValidate = record;
         }else {
             tableValidate.setAccessible(true);
 
-            recordAfterTableValidate = tableValidate.invoke(tableBean, parametes.getCurrentValue(), parametes.getNewValue(), record);
+            recordAfterTableValidate = tableValidate.invoke(
+                    record,
+                    parametes.getCurrentValue(),
+                    parametes.getNewValue(),
+                    record
+            );
         }
 
         businessCentralRecord.SetCurrentRecord(recordAfterTableValidate);
 
-        businessCentralRecord.Modify(true);
+        if (!parametes.getNewRecord())
+        {
+            businessCentralRecord.Modify(true);
+        }
 
         Object recordAfterDatabaseModify = businessCentralRecord.GetRecord();
 

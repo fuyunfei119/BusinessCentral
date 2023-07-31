@@ -48,6 +48,8 @@ public class OnNewRecordAop {
         Class<?> pageBeanClass = pageBean.getClass();
         Class<?> tableBeanClass = tableBean.getClass();
 
+        Object newtableInstance = tableBeanClass.getDeclaredConstructor().newInstance();
+
         Method onInitMethod = null;
 
         for (Method declaredMethod : tableBeanClass.getDeclaredMethods()) {
@@ -57,7 +59,7 @@ public class OnNewRecordAop {
         }
 
         onInitMethod.setAccessible(true);
-        Object initializedNewRecord = onInitMethod.invoke(tableBean);
+        Object initializedNewRecord = onInitMethod.invoke(newtableInstance);
 
         Method onNewRecordMethod = null;
 

@@ -65,31 +65,38 @@ public class CustomerList {
 
     @OnFindRecord
     public List<LinkedHashMap<String,Object>> OnBeforeOnFindRecord(List<LinkedHashMap<String,Object>> Records) {
+        System.out.println("Page => OnFindRecord Trigger Raised...");
         return Records;
     }
 
     @OnAfterGetRecord
     public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        System.out.println("Page => OnAfterGetRecord Trigger Raised...");
 //        Rec.Validate(Customer.Fields.Phone_Number,"Irina",true);
 //        Rec.Modify(true);
+//        System.out.println(Rec.GetRecord());
         return Rec.GetRecord();
     }
 
     @OnNextRecord
     public Integer OnBeforeOnNextRecord(Integer Steps) {
+        System.out.println("Page => OnNextRecord Trigger Raised...");
 //        Steps = 2;
         return Steps;
     }
 
     @OnAfterGetCurrRecord
     public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        System.out.println("Page => OnAfterGetCurrRecord Trigger Raised...");
 //        Rec.Validate(Customer.Fields.Phone_Number,"********",true);
 //        Rec.Modify(true);
+//        System.out.println(Rec.GetRecord());
         return Rec.GetRecord();
     }
 
     @OnNewRecord
     public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        System.out.println("Page => OnNewRecord Trigger Raised...");
 //        Rec.Validate(Customer.Fields.First_Name,"YUNFEI",true);
 //        Rec.Validate(Customer.Fields.Last_Name,"FU",true);
         return Rec.GetRecord();
@@ -97,6 +104,7 @@ public class CustomerList {
 
     @OnInsertRecord
     public Customer OnBeforeInsertRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        System.out.println("Page => OnInsertRecord Trigger Raised...");
         Rec.Validate(Customer.Fields.Payment_Information,"Cash",true);
         return Rec.GetRecord();
     }
@@ -123,7 +131,7 @@ public class CustomerList {
     }
 
     private Customer OnValidatePoints(Object currentValue, Object newValue,BusinessCentralRecord<Customer,Customer.Fields> Rec) {
-        System.out.println("Point Page Validate Trigger Raised...");
+        System.out.println("Page => Point Page Validate Trigger Raised...");
 
         return Rec.GetRecord();
     }

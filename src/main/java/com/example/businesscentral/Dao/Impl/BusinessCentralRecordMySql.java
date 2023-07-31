@@ -355,7 +355,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                 T bean = applicationContext.getBean(this.aClass);
 
-                this.entity = (T) ReflectionUtils.invokeMethod(method, bean);
+                this.entity = (T) ReflectionUtils.invokeMethod(method, bean,this.entity);
 
                 break;
             }

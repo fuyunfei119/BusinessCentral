@@ -15,4 +15,5 @@ public class PageValidate {
     private String field;
     private Integer rowIndex;
     private LinkedHashMap<String,Object> record;
+    private Boolean newRecord;
 }

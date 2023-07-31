@@ -78,9 +78,9 @@ public class OnInsertRecordAop {
         }
 
         OnInsert.setAccessible(true);
-        Object RecordAfterTableInsert = OnInsert.invoke(RecordAfterOnInsertRecord);
+        Object RecordAfterTableInsert = OnInsert.invoke(RecordAfterOnInsertRecord,RecordAfterOnInsertRecord);
         businessCentralRecord.SetRecord(RecordAfterOnInsertRecord);
-        if (!businessCentralRecord.Insert(true,true)) {
+        if (!businessCentralRecord.Insert(false,true)) {
             return joinPoint.proceed();
         }
 

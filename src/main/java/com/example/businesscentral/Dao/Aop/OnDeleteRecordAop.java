@@ -48,8 +48,6 @@ public class OnDeleteRecordAop {
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
         Object Record = objectMapper.convertValue(parameter.getRecord(), tableBeanClass);
 
-        System.out.println(Record);
-
         List<Class<?>> classList = new ArrayList<>();
         classList.add(tableBean.getClass());
         BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);
