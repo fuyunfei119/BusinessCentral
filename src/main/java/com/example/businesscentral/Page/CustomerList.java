@@ -65,44 +65,44 @@ public class CustomerList {
 
     @OnFindRecord
     public List<LinkedHashMap<String,Object>> OnBeforeOnFindRecord(List<LinkedHashMap<String,Object>> Records) {
-        System.out.println("Page => OnFindRecord Trigger Raised...");
+//        System.out.println("Page => OnFindRecord Trigger Raised...");
         return Records;
     }
 
     @OnAfterGetRecord
     public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        System.out.println("Page => OnAfterGetRecord Trigger Raised...");
+//        System.out.println("Page => OnAfterGetRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnNextRecord
     public Integer OnBeforeOnNextRecord(Integer Steps) {
-        System.out.println("Page => OnNextRecord Trigger Raised...");
+//        System.out.println("Page => OnNextRecord Trigger Raised...");
         return Steps;
     }
 
     @OnAfterGetCurrRecord
     public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        System.out.println("Page => OnAfterGetCurrRecord Trigger Raised...");
+//        System.out.println("Page => OnAfterGetCurrRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnNewRecord
     public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        System.out.println("Page => OnNewRecord Trigger Raised...");
+//        System.out.println("Page => OnNewRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnInsertRecord
     public Customer OnBeforeInsertRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        System.out.println("Page => OnInsertRecord Trigger Raised...");
+//        System.out.println("Page => OnInsertRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
 
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage() {
-        System.out.println("Page => ");
+//        System.out.println("Page => ");
     }
 
     @OnClosePage
@@ -122,7 +122,7 @@ public class CustomerList {
     }
 
     private Customer OnValidatePoints(Object currentValue, Object newValue,BusinessCentralRecord<Customer,Customer.Fields> Rec) {
-        System.out.println("Page => Point Page Validate Trigger Raised...");
+//        System.out.println("Page => Point Page Validate Trigger Raised...");
         return Rec.GetRecord();
     }
 

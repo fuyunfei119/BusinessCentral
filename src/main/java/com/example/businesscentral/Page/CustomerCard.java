@@ -2,9 +2,12 @@ package com.example.businesscentral.Page;
 
 import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.Enum.PageType;
+import lombok.Data;
 
 @Page(SOURCETABLE = "Customer", TYPE = PageType.Card)
+@Data
 public class CustomerCard {
+
     @PageField(
             VISIABLE = true,
             GROUP = "General"

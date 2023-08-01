@@ -71,7 +71,7 @@ public class CustomerController {
     }
 
     @PostMapping("/GetRecordById")
-    public List<?> GetRecordById(@RequestBody Map<String, Object> filters) throws Exception {
+    public List<?> GetRecordById(@RequestBody CardPageID cardPageID) throws Exception {
         return null;
     }
 

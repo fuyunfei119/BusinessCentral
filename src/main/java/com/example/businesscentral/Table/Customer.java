@@ -94,7 +94,7 @@ public class Customer{
 
     @OnInit
     private Customer OnInitTriggerMethod() {
-        System.out.println("Table => Init Trigger Raised...");
+//        System.out.println("Table => Init Trigger Raised...");
 
         this.User_ID = UUID.randomUUID().toString();
         this.Account_Status = "Active";
@@ -104,19 +104,19 @@ public class Customer{
 
     @OnInsert
     private Customer OnInsertTriggerMethod(Customer Rec) {
-        System.out.println("Table => Insert Trigger Raised...");
+//        System.out.println("Table => Insert Trigger Raised...");
         return Rec;
     }
 
     @OnModify
     private Customer OnModifyTriggerMethod(Customer Rec) {
-        System.out.println("Table => Modify Trigger Raised...");
+//        System.out.println("Table => Modify Trigger Raised...");
         return Rec;
     }
 
     @OnDelete
     private Customer OnDeleteTriggerMethod(Customer Rec) {
-        System.out.println("Table => Delete Trigger Raised...");
+//        System.out.println("Table => Delete Trigger Raised...");
         return Rec;
     }
 

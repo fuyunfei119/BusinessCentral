@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -276,6 +277,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     }
 
     @Override
+    @Transactional
     public Boolean Delete() throws NoSuchFieldException, IllegalAccessException {
 
         Method[] methods = this.aClass.getDeclaredMethods();
