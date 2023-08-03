@@ -1,8 +1,10 @@
 package com.example.businesscentral.Dao.Aop;
 
 import com.example.businesscentral.Dao.Annotation.Page;
+import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
+import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.CardPageID;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -65,10 +67,39 @@ public class CardAop {
                 .filter(field -> !field.isAnnotationPresent(Autowired.class)).toList();
 
         for (Field field : fields) {
-            CardGroup cardGroup = new CardGroup();
-
+            if (field.isAnnotationPresent(PageField.class)) {
+                PageField pageField = field.getAnnotation(PageField.class);
+                if (!GroupNames.contains(pageField.GROUP())) {
+                    GroupNames.add(pageField.GROUP());
+                }
+            }
         }
 
-        return joinPoint.proceed();
+        for (String groupName : GroupNames) {
+
+            CardGroup cardGroup = new CardGroup();
+            cardGroup.setGroupName(groupName);
+            LinkedHashMap<String,CardField> map = new LinkedHashMap<>();
+
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(PageField.class)) {
+                    PageField pageField = field.getAnnotation(PageField.class);
+                    if (groupName.equals(pageField.GROUP())) {
+
+                        CardField cardField = new CardField();
+                        field.setAccessible(true);
+                        cardField.setType(field.getType().getTypeName());
+                        cardField.setValue(field.get(cardRecord));
+
+                        map.put(field.getName(), cardField);
+                    }
+                }
+            }
+
+            cardGroup.setFields(map);
+            cardGroups.add(cardGroup);
+        }
+
+        return cardGroups;
     }
 }
