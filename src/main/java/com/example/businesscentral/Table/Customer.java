@@ -132,6 +132,7 @@ public class Customer{
 
     private Customer OnValidatePoint(Object currentValue, Object newValue, Customer Rec) {
         System.out.println("Table => Point Validate Trigger Raised...");
+        Rec.setPoints((Integer) newValue);
         return Rec;
     }
 }

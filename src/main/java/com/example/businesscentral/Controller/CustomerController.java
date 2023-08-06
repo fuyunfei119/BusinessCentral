@@ -1,6 +1,5 @@
 package com.example.businesscentral.Controller;
 
-import com.example.businesscentral.CodeUnits.CustomerManagement;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Request.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,11 +72,6 @@ public class CustomerController {
     @PostMapping("/GetRecordById")
     public List<?> GetRecordById(@RequestBody CardPageID cardPageID) throws Exception {
         return null;
-    }
-
-    @PostMapping("/InitNewRecord")
-    public List<CardGroup> InitNewRecord(@RequestBody Map<String,String> table) {
-        return businessCentralSystemRecord.GetAllFieldNames(table);
     }
 
     @PostMapping("/InsertOrUpdateRecord")

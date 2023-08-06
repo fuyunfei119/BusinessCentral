@@ -367,66 +367,6 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     }
 
     @Override
-    public List<CardGroup> GetAllFieldNames(Map<String,String> table) {
-
-        String tableName = table.get("table");
-        List<String> GroupNames = new ArrayList<>();
-        List<CardGroup> cardGroups = new ArrayList<>();
-
-        Object bean = applicationContext.getBean(tableName.toLowerCase(Locale.ROOT));
-
-        for (Field declaredField : bean.getClass().getDeclaredFields()) {
-            if (declaredField.isAnnotationPresent(PageField.class)) {
-                PageField annotation = declaredField.getAnnotation(PageField.class);
-                if (!annotation.GROUP().isBlank()) {
-                    if (!GroupNames.contains(annotation.GROUP())) {
-                        GroupNames.add(annotation.GROUP());
-                    }
-                }
-            }
-        }
-
-        for (String groupName : GroupNames) {
-
-            CardGroup cardGroup = new CardGroup();
-            LinkedHashMap<String, CardField> map = new LinkedHashMap<>();
-            cardGroup.setGroupName(groupName);
-
-            for (Field declaredField : bean.getClass().getDeclaredFields()) {
-                if (declaredField.isAnnotationPresent(PageField.class)) {
-                    PageField annotation = declaredField.getAnnotation(PageField.class);
-                    if (!annotation.GROUP().isBlank()) {
-                        if (annotation.GROUP().equals(groupName)) {
-
-                            CardField cardField = new CardField();
-                            if (declaredField.getType().isAssignableFrom(String.class)) {
-                                cardField.setType("Text");
-                            }else if (declaredField.getType().isAssignableFrom(Integer.class) ||
-                                    declaredField.getType().isAssignableFrom(Double.class) ||
-                                    declaredField.getType().isAssignableFrom(BigDecimal.class) ||
-                                    declaredField.getType().isAssignableFrom(BigInteger.class)) {
-                                cardField.setType("number");
-                            } else if (declaredField.getType().isAssignableFrom(Date.class)) {
-                                cardField.setType("date");
-                            } else if (declaredField.getType().isAssignableFrom(Time.class)) {
-                                cardField.setType("time");
-                            }
-                            cardField.setValue("");
-
-                            map.put(declaredField.getName(), cardField);
-                        }
-                    }
-                }
-            }
-
-            cardGroup.setFields(map);
-            cardGroups.add(cardGroup);
-        }
-
-        return cardGroups;
-    }
-
-    @Override
     @Transactional
     public LinkedHashMap<String, Object> InsertNewRecord(Map<String,Object> objectMap) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 

@@ -3,6 +3,7 @@ package com.example.businesscentral.Dao.Aop;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
+import com.example.businesscentral.Dao.Enum.DataType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
@@ -88,9 +89,16 @@ public class CardAop {
 
                         CardField cardField = new CardField();
                         field.setAccessible(true);
-                        cardField.setType(field.getType().getTypeName());
-                        cardField.setValue(field.get(cardRecord));
 
+                        if (field.getType().isAssignableFrom(String.class)) {
+                            cardField.setType(DataType.string);
+                        }else if(field.getType().isAssignableFrom(Integer.class) ||field.getType().isAssignableFrom(Double.class) || field.getType().isAssignableFrom(Float.class)) {
+                            cardField.setType(DataType.number);
+                        }else if (field.getType().isAssignableFrom(Date.class) || field.getType().isAssignableFrom(java.sql.Date.class)) {
+                            cardField.setType(DataType.date);
+                        }
+
+                        cardField.setValue(field.get(cardRecord));
                         map.put(field.getName(), cardField);
                     }
                 }

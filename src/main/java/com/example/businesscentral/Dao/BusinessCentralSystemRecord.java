@@ -26,8 +26,6 @@ public interface BusinessCentralSystemRecord {
 
     LinkedHashMap<String, Object> GetRecordById(Map<String, Object> filters);
 
-    List<CardGroup> GetAllFieldNames(Map<String,String> table);
-
     LinkedHashMap<String,Object> InsertNewRecord(Map<String,Object> objectMap) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     List<String> GetFilterGroups(Map<String, Object> filter);
