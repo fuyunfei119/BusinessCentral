@@ -401,7 +401,13 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
                         field.setAccessible(true);
 
-                        field.set(this.entity,stringObjectEntry.getValue());
+                        if (Enum.class.isAssignableFrom(field.getType())) {
+                            Class<?> enumType = field.getType();
+                            Object enumValue = Enum.valueOf((Class<Enum>) enumType, stringObjectEntry.getValue().toString());
+                            field.set(this.entity, enumValue);
+                        }else {
+                            field.set(this.entity,stringObjectEntry.getValue());
+                        }
                     }
                 }
             }

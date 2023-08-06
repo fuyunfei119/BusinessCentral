@@ -4,6 +4,8 @@ import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
+import com.example.businesscentral.Enum.Account_Status_Enum;
+import com.example.businesscentral.Enum.Customer_Type_Enum;
 import com.example.businesscentral.Table.Customer;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,7 @@ public class CustomerList {
             VISIABLE = true,
             GROUP = "Accounting"
     )
-    private String Customer_Type;
+    private Customer_Type_Enum Customer_Type;
 
     @PageField(
             VISIABLE = true,
@@ -57,7 +59,7 @@ public class CustomerList {
             VISIABLE = true,
             GROUP = "Accounting"
     )
-    private String Account_Status;
+    private Account_Status_Enum Account_Status;
 
     @OnOpenPage
     public void OnBeforeOnOpenPage() {

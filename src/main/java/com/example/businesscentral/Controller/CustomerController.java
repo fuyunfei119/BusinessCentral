@@ -107,6 +107,11 @@ public class CustomerController {
         return null;
     }
 
+    @PostMapping("/Card/GetFieldOptionForCard")
+    public Object GetFieldOptionForCard(@RequestBody CardFieldOption cardFieldOption) {
+        return null;
+    }
+
     @GetMapping("/test")
     public String testhelloworld() {
         return "Hello World";

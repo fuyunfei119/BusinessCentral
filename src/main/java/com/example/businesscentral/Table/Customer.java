@@ -1,10 +1,10 @@
 package com.example.businesscentral.Table;
 
 import com.example.businesscentral.Dao.Annotation.*;
-import com.example.businesscentral.Dao.BusinessCentralRecord;
+import com.example.businesscentral.Enum.Account_Status_Enum;
+import com.example.businesscentral.Enum.Customer_Type_Enum;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
-import org.springframework.util.StringUtils;
 
 import java.sql.Date;
 import java.util.UUID;
@@ -15,7 +15,9 @@ import java.util.UUID;
 public class Customer{
 
     @Keys(PRIMARY_KEY = true,AUTO_INCREMENT = true)
-    @TableField()
+    @TableField(
+
+    )
     private String User_ID;
 
     @TableField(
@@ -70,7 +72,7 @@ public class Customer{
     @TableField(
 
     )
-    private String Account_Status;
+    private Account_Status_Enum Account_Status;
 
     @TableField(
 
@@ -90,14 +92,14 @@ public class Customer{
     @TableField(
             ON_VALIDATE = "OnValidateCustomerType"
     )
-    private String Customer_Type;
+    private Customer_Type_Enum Customer_Type;
 
     @OnInit
     private Customer OnInitTriggerMethod() {
 //        System.out.println("Table => Init Trigger Raised...");
 
         this.User_ID = UUID.randomUUID().toString();
-        this.Account_Status = "Active";
+        this.Account_Status = Account_Status_Enum.Active;
         this.Account_Creation_Date = new Date(System.currentTimeMillis());
         return this;
     }

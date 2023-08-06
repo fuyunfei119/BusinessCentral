@@ -2,6 +2,7 @@ package com.example.businesscentral.Page;
 
 import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.Enum.PageType;
+import com.example.businesscentral.Enum.Account_Status_Enum;
 import lombok.Data;
 
 @Page(SOURCETABLE = "Customer", TYPE = PageType.Card)
@@ -72,7 +73,7 @@ public class CustomerCard {
             VISIABLE = true,
             GROUP = "Accounting"
     )
-    private String Account_Status;
+    private Account_Status_Enum Account_Status;
 
     @PageField(
             VISIABLE = true,

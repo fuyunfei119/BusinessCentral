@@ -107,7 +107,13 @@ public class OnAfterGetRecordAop {
             for (Map.Entry<String, Object> entry : record.entrySet()) {
                 Field declaredField = newRecord.getClass().getDeclaredField(entry.getKey());
                 declaredField.setAccessible(true);
-                declaredField.set(newRecord,entry.getValue());
+                if (Enum.class.isAssignableFrom(declaredField.getType())) {
+                    Class<?> enumType = declaredField.getType();
+                    Object enumValue = Enum.valueOf((Class<Enum>) enumType, entry.getValue().toString());
+                    declaredField.set(newRecord, enumValue);
+                }else {
+                    declaredField.set(newRecord,entry.getValue());
+                }
             }
 
             assert OnAfterGetRecordMethod != null;

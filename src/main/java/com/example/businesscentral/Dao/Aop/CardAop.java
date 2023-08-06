@@ -89,6 +89,7 @@ public class CardAop {
 
                         CardField cardField = new CardField();
                         field.setAccessible(true);
+                        System.out.println(field.getType());
 
                         if (field.getType().isAssignableFrom(String.class)) {
                             cardField.setType(DataType.string);
@@ -96,6 +97,8 @@ public class CardAop {
                             cardField.setType(DataType.number);
                         }else if (field.getType().isAssignableFrom(Date.class) || field.getType().isAssignableFrom(java.sql.Date.class)) {
                             cardField.setType(DataType.date);
+                        }else if (Enum.class.isAssignableFrom(field.getType())) {
+                            cardField.setType(DataType.enumeration);
                         }
 
                         cardField.setValue(field.get(cardRecord));
