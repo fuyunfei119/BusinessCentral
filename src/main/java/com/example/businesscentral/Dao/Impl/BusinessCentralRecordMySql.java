@@ -32,6 +32,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     private ApplicationContext applicationContext;
     private final List<String> filters = new ArrayList<>();
     private final List<String> loadfields = new ArrayList<>();
+    private String tableName;
     private Field primaryKey;
     private Object keyValue;
     private List<T> entityList = new ArrayList<>();
@@ -47,6 +48,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         this.applicationContext = applicationContext;
         this.mapper = applicationContext.getBean(BusinessCentralMapper.class);
         this.aClass = (Class<T>) entityClass.get(0);
+        this.tableName = this.aClass.getSimpleName();
         this.primaryKey = BusinessCentralUtils.getPrimaryKeyField(this.aClass);
         this.entity = this.aClass.getDeclaredConstructor().newInstance();
         this.x_entity = this.aClass.getDeclaredConstructor().newInstance();
@@ -108,7 +110,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
     @Override
     public Boolean IsEmpty() {
-        return mapper.IsEmpty(String.join(", ", loadfields),filters) != 0;
+        return mapper.IsEmpty(String.join(", ", loadfields),filters, tableName) != 0;
     }
 
     @Override
@@ -130,7 +132,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.UpperCamelCaseStrategy());
 
-        List<LinkedHashMap<String, Object>> resultLists = mapper.FindSet(String.join(", ", loadfields), filters);
+        List<LinkedHashMap<String, Object>> resultLists = mapper.FindSet(String.join(", ", loadfields), filters, tableName);
 
         for (LinkedHashMap<String, Object> linkedHashMap : resultLists) {
             this.entityList.add(objectMapper.convertValue(linkedHashMap, aClass));
@@ -143,7 +145,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public T FindFirst() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
 
-        LinkedHashMap<String, Object> result = mapper.FindFirst(String.join(", ", loadfields), filters);
+        LinkedHashMap<String, Object> result = mapper.FindFirst(String.join(", ", loadfields), filters,tableName);
 
         ConvertToObject(result);
 
@@ -153,7 +155,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
     @Override
     public T FindLast() throws IllegalAccessException {
 
-        LinkedHashMap<String, Object> result = mapper.FindLast(String.join(", ", loadfields), filters);
+        LinkedHashMap<String, Object> result = mapper.FindLast(String.join(", ", loadfields), filters, tableName);
 
         ConvertToObject(result);
 
@@ -162,7 +164,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
     @Override
     public List<T> Find(Integer Count) {
-        return (List<T>) mapper.Find(String.join(", ", loadfields), filters, Count);
+        return (List<T>) mapper.Find(String.join(", ", loadfields), filters, Count, tableName);
     }
 
 
@@ -171,7 +173,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         this.filters.clear();
         this.filters.add(primaryKey.getName() + " = " + "'" + ID + "'");
 
-        LinkedHashMap<String, Object> result = mapper.Get(String.join(", ", loadfields), filters);
+        LinkedHashMap<String, Object> result = mapper.Get(String.join(", ", loadfields), filters, tableName);
 
         ConvertToObject(result);
 
@@ -183,7 +185,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         if (loadfields.size() > 1) throw new Exception("There are more than one fields within Count expression!");
 
-        return mapper.Count(String.join(", ", loadfields),filters);
+        return mapper.Count(String.join(", ", loadfields),filters,tableName);
     }
 
     @Override
@@ -308,7 +310,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
             this.keyValue = "'" + this.keyValue + "'";
         }
 
-        return mapper.Delete(primaryKey.getName(),keyValue.toString()) != 0;
+        return mapper.Delete(primaryKey.getName(),keyValue.toString(),tableName) != 0;
     }
 
     @Override
@@ -341,7 +343,7 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
         if (diffMap.isEmpty()) return true;
 
-        return mapper.Modify(diffMap,primaryKey.getName(),keyValue) != 0;
+        return mapper.Modify(diffMap,primaryKey.getName(),keyValue,tableName) != 0;
     }
 
     @Override
@@ -369,9 +371,9 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
         Integer count;
 
         if (FullFields) {
-            count = mapper.InsertWithFullField(fieldNameList,valueList);
+            count = mapper.InsertWithFullField(fieldNameList,valueList,tableName);
         }else {
-            count = mapper.Insert(fieldNameList,valueList);
+            count = mapper.Insert(fieldNameList,valueList,tableName);
         }
 
         return count != 0;

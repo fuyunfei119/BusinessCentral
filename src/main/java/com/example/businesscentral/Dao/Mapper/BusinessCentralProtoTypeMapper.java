@@ -19,7 +19,7 @@ public interface BusinessCentralProtoTypeMapper {
                             "<if test='!(LoadFields.isEmpty())'>" +
                                 "${LoadFields} "+
                             "</if>" +
-                        "FROM Customer" +
+                        "FROM ${table}" +
                             "<if test='Filters.isEmpty()'></if>" +
                             "<if test='!(Filters.isEmpty())'>" +
                         "WHERE" +
@@ -37,7 +37,7 @@ public interface BusinessCentralProtoTypeMapper {
                             "<if test='!(LoadFields.isEmpty())'>" +
                                 "${LoadFields} "+
                             "</if>" +
-                        "FROM Customer" +
+                        "FROM ${table}" +
                             "<if test='Filters.isEmpty()'></if>" +
                             "<if test='!(Filters.isEmpty())'>" +
                         "WHERE" +
@@ -55,7 +55,7 @@ public interface BusinessCentralProtoTypeMapper {
                         "<if test='!(LoadFields.isEmpty())'>" +
                             "${LoadFields} "+
                         "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                         "<if test='Filters.isEmpty()'></if>" +
                         "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -73,7 +73,7 @@ public interface BusinessCentralProtoTypeMapper {
                         "<if test='!(LoadFields.isEmpty())'>" +
                             "${LoadFields} "+
                         "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                         "<if test='Filters.isEmpty()'></if>" +
                         "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -92,7 +92,7 @@ public interface BusinessCentralProtoTypeMapper {
                         "<if test='!(LoadFields.isEmpty())'>" +
                             "${LoadFields} "+
                         "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                         "<if test='Filters.isEmpty()'></if>" +
                         "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -111,7 +111,7 @@ public interface BusinessCentralProtoTypeMapper {
                         "<if test='!(LoadFields.isEmpty())'>" +
                             "${LoadFields} "+
                         "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                         "<if test='Filters.isEmpty()'></if>" +
                         "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -129,7 +129,7 @@ public interface BusinessCentralProtoTypeMapper {
                         "<if test='!(LoadFields.isEmpty())'>" +
                             " Count(${LoadFields}) "+
                         "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                         "<if test='Filters.isEmpty()'></if>" +
                         "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -141,23 +141,23 @@ public interface BusinessCentralProtoTypeMapper {
 
 
     @Select(FindSet)
-    List<LinkedHashMap<String,Object>> FindSet(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
+    List<LinkedHashMap<String,Object>> FindSet(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters, @Param("table") String tableName);
 
     @Select(IsEmpty)
-    Integer IsEmpty(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
+    Integer IsEmpty(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters, @Param("table") String tableName);
 
     @Select(FindFirst)
-    List<LinkedHashMap<String,Object>> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    List<LinkedHashMap<String,Object>> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters, @Param("table") String tableName);
 
     @Select(FindLast)
-    LinkedHashMap<String,Object> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters, @Param("table") String tableName);
 
     @Select(Find)
-    List<LinkedHashMap<String,Object>> Find(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters,@Param("Count") Integer Count);
+    List<LinkedHashMap<String,Object>> Find(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters,@Param("Count") Integer Count, @Param("table") String tableName);
 
     @Select(Get)
-    LinkedHashMap<String,Object> Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters, @Param("table") String tableName);
 
     @Select(Count)
-    Integer Count(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    Integer Count(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters, @Param("table") String tableName);
 }

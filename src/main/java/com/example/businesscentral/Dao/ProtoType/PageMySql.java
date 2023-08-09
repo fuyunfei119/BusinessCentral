@@ -19,12 +19,19 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
     private BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper;
     private List<String> filters = new ArrayList<>();
     private List<String> loadfilters = new ArrayList<>();
+    private String tableName;
 
     public PageMySql() {
     }
 
     public PageMySql(BusinessCentralProtoTypeMapper businessCentralProtoTypeMapper) {
         this.businessCentralProtoTypeMapper = businessCentralProtoTypeMapper;
+    }
+
+    @Override
+    public BusinessCentralPage<T, E> SetTable(String tableName) {
+        this.tableName = tableName;
+        return this;
     }
 
     @Override
@@ -71,26 +78,26 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
 
     @Override
     public List<LinkedHashMap<String, Object>> FindSet() {
-        return businessCentralProtoTypeMapper.FindSet(String.join(", ", loadfilters), filters);
+        return businessCentralProtoTypeMapper.FindSet(String.join(", ", loadfilters), filters,tableName);
     }
 
     @Override
     public List<LinkedHashMap<String, Object>> FindFirst(Boolean Prototype) {
-        return businessCentralProtoTypeMapper.FindFirst(String.join(", ", loadfilters), filters);
+        return businessCentralProtoTypeMapper.FindFirst(String.join(", ", loadfilters), filters,tableName);
     }
 
     @Override
     public LinkedHashMap<String, Object> FindLast(Boolean Prototype) {
-        return businessCentralProtoTypeMapper.FindLast(String.join(", ", loadfilters), filters);
+        return businessCentralProtoTypeMapper.FindLast(String.join(", ", loadfilters), filters,tableName);
     }
 
     @Override
     public List<LinkedHashMap<String, Object>> Find(Integer Count, Boolean Prototype) {
-        return businessCentralProtoTypeMapper.Find(String.join(", ", loadfilters), filters, Count);
+        return businessCentralProtoTypeMapper.Find(String.join(", ", loadfilters), filters, Count,tableName);
     }
 
     @Override
     public LinkedHashMap<String, Object> Get(Object ID, Boolean Prototype) {
-        return businessCentralProtoTypeMapper.Get(String.join(", ", loadfilters), filters);
+        return businessCentralProtoTypeMapper.Get(String.join(", ", loadfilters), filters,tableName);
     }
 }

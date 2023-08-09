@@ -39,6 +39,8 @@ public class OnAfterGetCurrRecordAop {
 
         TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
 
+        System.out.println(parameter);
+
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
         Class<?> beanClass = null;
@@ -77,7 +79,11 @@ public class OnAfterGetCurrRecordAop {
                     declaredField.setAccessible(true);
                     if (Enum.class.isAssignableFrom(declaredField.getType())) {
                         Class<?> enumType = declaredField.getType();
-                        Object enumValue = Enum.valueOf((Class<Enum>) enumType, entry.getValue().toString());
+
+                        Object enumValue = null;
+                        if (!ObjectUtils.isEmpty(entry.getValue())) {
+                            enumValue = Enum.valueOf((Class<Enum>) enumType, entry.getValue().toString());
+                        }
                         declaredField.set(newRecord, enumValue);
                     }else {
                         declaredField.set(newRecord,entry.getValue());

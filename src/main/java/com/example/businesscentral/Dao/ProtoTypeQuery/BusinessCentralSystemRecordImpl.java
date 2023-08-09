@@ -7,6 +7,7 @@ import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Dao.Request.ActionParamter;
 import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
+import com.example.businesscentral.Dao.Request.PageParameter;
 import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeQueryMapper;
@@ -363,7 +364,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             }
         }
 
-        return businessCentralProtoTypeQueryMapper.GetRecordById(recordID.toString(),"",PrimaryKey);
+        return businessCentralProtoTypeQueryMapper.GetRecordById(recordID.toString(),"",PrimaryKey,table.toString());
     }
 
     @Override
@@ -505,6 +506,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
         PageMySql pageMysql = applicationContext.getBean(PageMySql.class);
+        pageMysql.SetTable(table);
 
         List<String> fields = new ArrayList<>();
 
@@ -530,6 +532,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
         List<LinkedHashMap<String,Object>> linkedHashMapList = new ArrayList<>();
 
         List list = pageMysql.FindSet();
+
         for (Object o : list) {
             LinkedHashMap<String,Object> linkedHashMap;
             linkedHashMap = (LinkedHashMap<String, Object>) o;
@@ -578,6 +581,18 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                     declaredMethod.invoke(bean);
                 }
             }
+        }
+    }
+
+    @Override
+    public String GetTable(PageParameter pageName) throws Exception {
+
+        Object pageBean = applicationContext.getBean(pageName.getPageName());
+        String sourcetable = pageBean.getClass().getAnnotation(Page.class).SOURCETABLE();
+        if (StringUtils.hasLength(sourcetable)) {
+            return sourcetable;
+        }else {
+            throw new Exception("No valid sourcetable");
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.businesscentral.Dao;
 
 import com.example.businesscentral.Dao.Request.ActionParamter;
 import com.example.businesscentral.Dao.Request.CardGroup;
+import com.example.businesscentral.Dao.Request.PageParameter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -36,4 +37,5 @@ public interface BusinessCentralSystemRecord {
 
     void RaiseAction(ActionParamter paramter) throws InvocationTargetException, IllegalAccessException;
 
+    String GetTable(PageParameter pageName) throws Exception;
 }

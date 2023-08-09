@@ -2,6 +2,7 @@ package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Request.*;
+import com.example.businesscentral.Dao.Response.OnOpenPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class CustomerController {
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
     @PostMapping("/List/OnBeforeMounted")
-    public List<LinkedHashMap<String,Object>> onBeforeMounted(@RequestBody TableParameter table) {
+    public Object onBeforeMounted(@RequestBody TableParameter table) {
         return null;
     }
 
@@ -87,6 +88,11 @@ public class CustomerController {
     @PostMapping("/RaiseActions")
     public void RaiseActions(@RequestBody ActionParamter paramter) throws InvocationTargetException, IllegalAccessException {
         businessCentralSystemRecord.RaiseAction(paramter);
+    }
+
+    @PostMapping("/List/GetTable")
+    public String GetTable(@RequestBody PageParameter pageName) throws Exception {
+        return businessCentralSystemRecord.GetTable(pageName);
     }
 
     @PostMapping("/List/PageFieldValidate")

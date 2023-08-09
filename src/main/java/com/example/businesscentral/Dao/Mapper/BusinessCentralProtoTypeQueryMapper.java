@@ -19,7 +19,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
             "<if test='!(LoadFields.isEmpty())'>" +
             "${LoadFields} "+
             "</if>" +
-            "FROM Customer" +
+            "FROM ${tableName}" +
             "<if test='Filters.isEmpty()'></if>" +
             "<if test='!(Filters.isEmpty())'>" +
             "WHERE" +
@@ -35,7 +35,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE " +
@@ -49,7 +49,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -69,7 +69,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     " WHERE " +
                     "${Key} = '${recordID}'" +
                     " LIMIT 1" +
@@ -102,7 +102,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
     List<LinkedHashMap<String, Object>> FindSetByFilterAndSort(@Param("table") Object table,@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters,@Param("Sort") String sort);
 
     @Select(GetRecordById)
-    LinkedHashMap<String, Object> GetRecordById(@Param("recordID") String recordID,@Param("LoadFields") String LoadFields,@Param("Key") String primaryKey);
+    LinkedHashMap<String, Object> GetRecordById(@Param("recordID") String recordID,@Param("LoadFields") String LoadFields,@Param("Key") String primaryKey, @Param("table") String table);
 
     @Insert(InsertNewRecord)
     Integer InsertNewRecord(@Param("table") String tableName,@Param("fields") List<String> strings,@Param("values") Collection<Object> values);

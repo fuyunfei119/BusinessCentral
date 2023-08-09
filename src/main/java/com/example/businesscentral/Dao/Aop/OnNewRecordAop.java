@@ -43,7 +43,7 @@ public class OnNewRecordAop {
         NewRecord parameter = (NewRecord) joinPoint.getArgs()[0];
 
         Object pageBean = applicationContext.getBean(parameter.getPage());
-        Object tableBean = applicationContext.getBean(parameter.getTable());
+        Object tableBean = applicationContext.getBean(parameter.getTable().toLowerCase(Locale.ROOT));
 
         Class<?> pageBeanClass = pageBean.getClass();
         Class<?> tableBeanClass = tableBean.getClass();

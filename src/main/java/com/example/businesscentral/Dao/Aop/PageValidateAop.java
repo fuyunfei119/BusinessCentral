@@ -75,7 +75,17 @@ public class PageValidateAop {
 
         if (ObjectUtils.isEmpty(tableValidate)) {
             tableField.setAccessible(true);
-            tableField.set(record,parametes.getNewValue());
+
+            if (Enum.class.isAssignableFrom(tableField.getType())) {
+                Class<?> enumType = tableField.getType();
+
+                Object enumValue = null;
+                if (!ObjectUtils.isEmpty(parametes.getNewValue())) {
+                    enumValue = Enum.valueOf((Class<Enum>) enumType, parametes.getNewValue().toString());
+                }
+                tableField.set(record, enumValue);
+            }else
+                tableField.set(record,parametes.getNewValue());
 
             recordAfterTableValidate = record;
         }else {

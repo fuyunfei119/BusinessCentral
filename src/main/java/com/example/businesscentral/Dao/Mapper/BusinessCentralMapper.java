@@ -16,7 +16,7 @@ public interface BusinessCentralMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -34,7 +34,7 @@ public interface BusinessCentralMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -53,7 +53,7 @@ public interface BusinessCentralMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -71,7 +71,7 @@ public interface BusinessCentralMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -90,7 +90,7 @@ public interface BusinessCentralMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -109,7 +109,7 @@ public interface BusinessCentralMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     "${LoadFields} "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -127,7 +127,7 @@ public interface BusinessCentralMapper {
                     "<if test='!(LoadFields.isEmpty())'>" +
                     " Count(${LoadFields}) "+
                     "</if>" +
-                    "FROM Customer" +
+                    "FROM ${table}" +
                     "<if test='Filters.isEmpty()'></if>" +
                     "<if test='!(Filters.isEmpty())'>" +
                     "WHERE" +
@@ -139,7 +139,7 @@ public interface BusinessCentralMapper {
 
     final String Insert =
             "<script>" +
-                    "INSERT INTO Customer" +
+                    "INSERT INTO ${table}" +
                     "<foreach collection='Fields' item='Field' open='(' separator=',' close=')' >"+
                     "${Field}"+
                     "</foreach>"+
@@ -151,7 +151,7 @@ public interface BusinessCentralMapper {
 
     final String InsertWithFullField =
             "<script>" +
-                    "INSERT INTO Customer " +
+                    "INSERT INTO ${table} " +
                     "<foreach collection='Fields' item='Field' open='(' separator=',' close=')' >"+
                     "${Field}"+
                     "</foreach>" +
@@ -163,11 +163,11 @@ public interface BusinessCentralMapper {
                     "</script>";
 
     final String Delete =
-            "DELETE FROM Customer WHERE ${PK_Field} = ${PK_Value}";
+            "DELETE FROM ${table} WHERE ${PK_Field} = ${PK_Value}";
 
     final String Modify =
             "<script>"+
-                    "UPDATE Customer SET" +
+                    "UPDATE ${table} SET" +
                     "<foreach collection='DiffMap' index='Field' item='Value' separator=','>" +
                     "${Field} = #{Value}" +
                     "</foreach>" +
@@ -177,36 +177,36 @@ public interface BusinessCentralMapper {
 
 
     @Select(FindSet)
-    List<LinkedHashMap<String,Object>> FindSet(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
+    List<LinkedHashMap<String,Object>> FindSet(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters, @Param("table") String table);
 
     @Select(IsEmpty)
-    Integer IsEmpty(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters);
+    Integer IsEmpty(@Param("LoadFields") String LoadFields, @Param("Filters") List<String> Filters, @Param("table") String table);
 
     @Select(FindFirst)
-    LinkedHashMap<String,Object> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> FindFirst(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters, @Param("table") String table);
 
     @Select(FindLast)
-    LinkedHashMap<String,Object> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> FindLast(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters, @Param("table") String table);
 
     @Select(Find)
-    List<LinkedHashMap<String,Object>> Find(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters,@Param("Count") Integer Count);
+    List<LinkedHashMap<String,Object>> Find(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters,@Param("Count") Integer Count,@Param("table") String table);
 
     @Select(Get)
-    LinkedHashMap<String,Object> Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    LinkedHashMap<String,Object> Get(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters, @Param("table") String table);
 
     @Select(Count)
-    Integer Count(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters);
+    Integer Count(@Param("LoadFields") String LoadFields,@Param("Filters") List<String> Filters, @Param("table") String table);
 
     @Insert(Insert)
-    Integer Insert(@Param("Fields") List<String> Fields,@Param("Values") List<Object> Values);
+    Integer Insert(@Param("Fields") List<String> Fields,@Param("Values") List<Object> Values, @Param("table") String table);
 
     @Insert(InsertWithFullField)
-    Integer InsertWithFullField(@Param("Fields") List<String> Fields,@Param("FullValues") List<Object> FullValues);
+    Integer InsertWithFullField(@Param("Fields") List<String> Fields,@Param("FullValues") List<Object> FullValues, @Param("table") String table);
 
     @Delete(Delete)
-    Integer Delete(@Param("PK_Field") String PrimaryKey,@Param("PK_Value") Object PrimaryKeyValue);
+    Integer Delete(@Param("PK_Field") String PrimaryKey,@Param("PK_Value") Object PrimaryKeyValue, @Param("table") String table);
 
     @Update(Modify)
-    Integer Modify(@Param("DiffMap") Map<String, Object> DiffMap, @Param("PK_Field") String Field, @Param("PK_Value") Object Value);
+    Integer Modify(@Param("DiffMap") Map<String, Object> DiffMap, @Param("PK_Field") String Field, @Param("PK_Value") Object Value, @Param("table") String table);
 
 }
