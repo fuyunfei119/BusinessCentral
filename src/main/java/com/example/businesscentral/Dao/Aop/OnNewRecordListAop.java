@@ -1,12 +1,9 @@
 package com.example.businesscentral.Dao.Aop;
 
-import com.example.businesscentral.Dao.Annotation.OnFindRecord;
 import com.example.businesscentral.Dao.Annotation.OnInit;
 import com.example.businesscentral.Dao.Annotation.OnNewRecord;
-import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
-import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.NewRecord;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -18,15 +15,13 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
 @Aspect
 @Configuration
-public class OnNewRecordAop {
+public class OnNewRecordListAop {
 
     @Autowired
     private ApplicationContext applicationContext;

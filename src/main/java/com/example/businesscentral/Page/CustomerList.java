@@ -63,6 +63,7 @@ public class CustomerList {
 
     @OnOpenPage
     public void OnBeforeOnOpenPage() {
+//        System.out.println("Page => OnOpenPage Trigger Raised...");
     }
 
     @OnFindRecord
@@ -100,7 +101,6 @@ public class CustomerList {
 //        System.out.println("Page => OnInsertRecord Trigger Raised...");
         return Rec.GetRecord();
     }
-
 
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage() {

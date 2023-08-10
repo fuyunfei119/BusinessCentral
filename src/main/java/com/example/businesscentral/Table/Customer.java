@@ -1,10 +1,12 @@
 package com.example.businesscentral.Table;
 
 import com.example.businesscentral.Dao.Annotation.*;
+import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Enum.Account_Status_Enum;
 import com.example.businesscentral.Enum.Customer_Type_Enum;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
 import java.util.UUID;
@@ -137,4 +139,7 @@ public class Customer{
         Rec.setPoints(Integer.valueOf(newValue.toString()));
         return Rec;
     }
+
+    @Autowired
+    private CustomerRecord record;
 }

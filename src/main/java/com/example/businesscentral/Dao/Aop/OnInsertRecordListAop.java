@@ -1,9 +1,7 @@
 package com.example.businesscentral.Dao.Aop;
 
-import com.example.businesscentral.Dao.Annotation.OnInit;
 import com.example.businesscentral.Dao.Annotation.OnInsert;
 import com.example.businesscentral.Dao.Annotation.OnInsertRecord;
-import com.example.businesscentral.Dao.Annotation.OnNewRecord;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
@@ -24,7 +22,7 @@ import java.util.*;
 
 @Aspect
 @Configuration
-public class OnInsertRecordAop {
+public class OnInsertRecordListAop {
 
     @Autowired
     private ApplicationContext applicationContext;

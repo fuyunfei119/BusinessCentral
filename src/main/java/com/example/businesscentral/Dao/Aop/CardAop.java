@@ -89,7 +89,6 @@ public class CardAop {
 
                         CardField cardField = new CardField();
                         field.setAccessible(true);
-                        System.out.println(field.getType());
 
                         if (field.getType().isAssignableFrom(String.class)) {
                             cardField.setType(DataType.string);

@@ -2,7 +2,6 @@ package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Request.*;
-import com.example.businesscentral.Dao.Response.OnOpenPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,25 +17,48 @@ public class CustomerController {
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
     @PostMapping("/List/OnBeforeMounted")
-    public Object onBeforeMounted(@RequestBody TableParameter table) {
+    public Object onBeforeListMounted(@RequestBody TableParameter table) {
         return null;
     }
 
     @GetMapping("/List/OnMounted")
-    public List<LinkedHashMap<String,Object>> OnMounted(@RequestParam("list") String list) throws Exception {return null;}
+    public List<LinkedHashMap<String,Object>> OnListMounted(@RequestParam("list") String list) throws Exception {return null;}
 
     @PostMapping("/List/OnBeforeUpdate")
-    public List<LinkedHashMap<String,Object>> OnBeforeUpdate(@RequestBody TableParameter table) {
+    public List<LinkedHashMap<String,Object>> OnBeforeListUpdate(@RequestBody TableParameter table) {
         return null;
     }
 
     @PostMapping("/List/OnUpdated")
-    public LinkedHashMap<String,Object> OnUpdated(@RequestBody TableParameter table) {
+    public LinkedHashMap<String,Object> OnListUpdated(@RequestBody TableParameter table) {
         return null;
     }
 
     @PostMapping("/List/OnBeforeUnmount")
-    public List<LinkedHashMap<String,Object>> OnBeforeUnmount(@RequestBody TableParameter table) {
+    public List<LinkedHashMap<String,Object>> OnBeforeListUnmount(@RequestBody TableParameter table) {
+        return null;
+    }
+
+    @PostMapping("/Card/OnBeforeMounted")
+    public Object onBeforeCardMounted(@RequestBody TableParameter table) {
+        return null;
+    }
+
+    @GetMapping("/Card/OnMounted")
+    public List<LinkedHashMap<String,Object>> OnCardMounted(@RequestParam("list") String list) throws Exception {return null;}
+
+    @PostMapping("/Card/OnBeforeUpdate")
+    public List<LinkedHashMap<String,Object>> OnBeforeCardUpdate(@RequestBody TableParameter table) {
+        return null;
+    }
+
+    @PostMapping("/Card/OnUpdated")
+    public LinkedHashMap<String,Object> OnCardUpdated(@RequestBody TableParameter table) {
+        return null;
+    }
+
+    @PostMapping("/Card/OnBeforeUnmount")
+    public List<LinkedHashMap<String,Object>> OnBeforeCardUnmount(@RequestBody TableParameter table) {
         return null;
     }
 

@@ -7,9 +7,6 @@ import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.TableParameter;
-import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,12 +22,12 @@ import java.util.*;
 
 @Aspect
 @Configuration
-public class OnAfterGetRecordAop {
+public class OnAfterGetRecordListAop {
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Pointcut("execution(java.util.List<*> com.example.businesscentral.Controller.CustomerController.OnBeforeUpdate(..))")
+    @Pointcut("execution(java.util.List<*> com.example.businesscentral.Controller.CustomerController.OnBeforeListUpdate(..))")
     public void OnAfterGetRecordTrigger() {
     }
 

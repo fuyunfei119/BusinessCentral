@@ -3,12 +3,9 @@ package com.example.businesscentral.Dao.ProtoTypeQuery;
 import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.ProtoType.PageMySql;
-import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Dao.Request.ActionParamter;
-import com.example.businesscentral.Dao.Request.CardField;
-import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.PageParameter;
-import com.example.businesscentral.Dao.Scanner.BusinessCentralObjectScan;
+import com.example.businesscentral.Dao.Scanner.BusinessCentralTableScan;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Mapper.BusinessCentralProtoTypeQueryMapper;
 import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
@@ -24,10 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Date;
-import java.sql.Time;
 import java.util.*;
 
 @Repository
@@ -42,7 +36,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     @Override
     public List<LinkedHashMap<String, Object>> FindSetByTableName(String TableName) {
 
-        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(BusinessCentralObjectScan.class);
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(BusinessCentralTableScan.class);
 
         Set<Map.Entry<String, Object>> entries = applicationContext.getBeansWithAnnotation(Table.class).entrySet();
 
@@ -566,8 +560,6 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
     @Override
     public void RaiseAction(ActionParamter paramter) throws InvocationTargetException, IllegalAccessException {
-
-        System.out.println(paramter);
 
         String finalListName = Character.toLowerCase(paramter.getPage().charAt(0)) + paramter.getPage().substring(1);
 

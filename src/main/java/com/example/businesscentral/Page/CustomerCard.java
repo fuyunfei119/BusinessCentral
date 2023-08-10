@@ -92,4 +92,9 @@ public class CustomerCard {
             GROUP = "Accounting"
     )
     private Integer Points;
+
+    @OnOpenPage
+    public void OnBeforeOpenPage() {
+        System.out.println("Card => OnOpenPage Trigger Raised...");
+    }
 }

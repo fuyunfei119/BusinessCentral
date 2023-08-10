@@ -1,6 +1,5 @@
 package com.example.businesscentral.Dao.Aop;
 
-import com.example.businesscentral.Dao.Annotation.OnOpenPage;
 import com.example.businesscentral.Dao.Annotation.OnQueryClosePage;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.Enum.PageType;
@@ -18,12 +17,12 @@ import java.util.Collection;
 
 @Aspect
 @Configuration
-public class OnQueryClosePageAop {
+public class OnQueryClosePageListAop {
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Pointcut("execution(java.util.List<*> com.example.businesscentral.Controller.CustomerController.OnBeforeUnmount(..))")
+    @Pointcut("execution(java.util.List<*> com.example.businesscentral.Controller.CustomerController.OnBeforeListUnmount(..))")
     public void OnInitTrigger() {
     }
 
@@ -31,6 +30,8 @@ public class OnQueryClosePageAop {
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
         TableParameter table = (TableParameter) joinPoint.getArgs()[0];
+
+        System.out.println(table);
 
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 

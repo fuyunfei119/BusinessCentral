@@ -1,15 +1,11 @@
 package com.example.businesscentral.Dao.Aop;
 
 import com.example.businesscentral.Dao.Annotation.OnAfterGetCurrRecord;
-import com.example.businesscentral.Dao.Annotation.OnOpenPage;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.TableParameter;
-import com.example.businesscentral.Dao.Utils.BusinessCentralUtils;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,12 +21,12 @@ import java.util.*;
 
 @Aspect
 @Configuration
-public class OnAfterGetCurrRecordAop {
+public class OnAfterGetCurrRecordListAop {
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Pointcut("execution(java.util.* com.example.businesscentral.Controller.CustomerController.OnUpdated(..))")
+    @Pointcut("execution(java.util.* com.example.businesscentral.Controller.CustomerController.OnListUpdated(..))")
     public void OnAfterGetRecordTrigger() {
     }
 
@@ -38,8 +34,6 @@ public class OnAfterGetCurrRecordAop {
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
         TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
-
-        System.out.println(parameter);
 
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
