@@ -38,9 +38,6 @@ public class OnFindRecordAop {
 
         Object table = joinPoint.getArgs()[0];
 
-        System.out.println("==============>");
-        System.out.println(table);
-
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
         Class<?> beanClass = null;
