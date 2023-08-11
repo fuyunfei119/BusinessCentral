@@ -58,7 +58,7 @@ public class OnAfterGetCurrRecordCardAop {
         Object recordAfterOnAfterGetRecordMethod = null;
 
         for (Method declaredMethod : pageBean.getClass().getDeclaredMethods()) {
-            if (declaredMethod.isAnnotationPresent(OnAfterGetRecord.class)) {
+            if (declaredMethod.isAnnotationPresent(OnAfterGetCurrRecord.class)) {
                 recordAfterOnAfterGetRecordMethod = declaredMethod.invoke(newpageInstance,businessCentralRecord);
                 break;
             }
