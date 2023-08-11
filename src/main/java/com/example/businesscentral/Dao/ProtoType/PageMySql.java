@@ -82,22 +82,22 @@ public class PageMySql<T,E extends Enum<E>> implements BusinessCentralPage<T,E> 
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> FindFirst(Boolean Prototype) {
+    public List<LinkedHashMap<String, Object>> FindFirst() {
         return businessCentralProtoTypeMapper.FindFirst(String.join(", ", loadfilters), filters,tableName);
     }
 
     @Override
-    public LinkedHashMap<String, Object> FindLast(Boolean Prototype) {
+    public LinkedHashMap<String, Object> FindLast() {
         return businessCentralProtoTypeMapper.FindLast(String.join(", ", loadfilters), filters,tableName);
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> Find(Integer Count, Boolean Prototype) {
+    public List<LinkedHashMap<String, Object>> Find(Integer Count) {
         return businessCentralProtoTypeMapper.Find(String.join(", ", loadfilters), filters, Count,tableName);
     }
 
     @Override
-    public LinkedHashMap<String, Object> Get(Object ID, Boolean Prototype) {
+    public LinkedHashMap<String, Object> Get(Object ID) {
         return businessCentralProtoTypeMapper.Get(String.join(", ", loadfilters), filters,tableName);
     }
 }

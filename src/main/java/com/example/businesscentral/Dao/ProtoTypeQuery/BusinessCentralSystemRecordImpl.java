@@ -587,4 +587,12 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
             throw new Exception("No valid sourcetable");
         }
     }
+
+    @Override
+    public LinkedHashMap<String,Object> GetDataForCard(String cardID, String tableName, String recordID) {
+
+        PageMySql pageMySql = new PageMySql<>();
+        pageMySql.SetTable(tableName);
+        return pageMySql.Get(recordID);
+    }
 }

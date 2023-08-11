@@ -24,11 +24,11 @@ public interface BusinessCentralPage<T,E extends Enum<E>> {
 
     List<LinkedHashMap<String,Object>> FindSet();
 
-    List<LinkedHashMap<String,Object>> FindFirst(Boolean Prototype);
+    List<LinkedHashMap<String,Object>> FindFirst();
 
-    LinkedHashMap<String, Object> FindLast(Boolean Prototype);
+    LinkedHashMap<String, Object> FindLast();
 
-    List<LinkedHashMap<String, Object>> Find(Integer Count,Boolean Prototype);
+    List<LinkedHashMap<String, Object>> Find(Integer Count);
 
-    LinkedHashMap<String, Object> Get(Object ID, Boolean Prototype);
+    LinkedHashMap<String, Object> Get(Object ID);
 }

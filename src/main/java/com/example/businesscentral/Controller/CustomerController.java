@@ -44,21 +44,19 @@ public class CustomerController {
         return null;
     }
 
-    @GetMapping("/Card/OnMounted")
-    public List<LinkedHashMap<String,Object>> OnCardMounted(@RequestParam("list") String list) throws Exception {return null;}
+    @PostMapping("/Card/OnMounted")
+    public List<CardGroup> OnCardMounted(@RequestBody CardPageID CardPageID) throws Exception {return null;}
 
     @PostMapping("/Card/OnBeforeUpdate")
-    public List<LinkedHashMap<String,Object>> OnBeforeCardUpdate(@RequestBody TableParameter table) {
-        return null;
-    }
+    public List<CardGroup> OnBeforeCardUpdate(@RequestBody CardParameter table) {return null;}
 
     @PostMapping("/Card/OnUpdated")
-    public LinkedHashMap<String,Object> OnCardUpdated(@RequestBody TableParameter table) {
+    public List<CardGroup> OnCardUpdated(@RequestBody CardParameter table) {
         return null;
     }
 
     @PostMapping("/Card/OnBeforeUnmount")
-    public List<LinkedHashMap<String,Object>> OnBeforeCardUnmount(@RequestBody TableParameter table) {
+    public List<LinkedHashMap<String,Object>> OnBeforeCardUnmount(@RequestBody CardParameter table) {
         return null;
     }
 

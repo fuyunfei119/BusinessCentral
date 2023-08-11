@@ -1,70 +1,81 @@
 package com.example.businesscentral.Dao.Aop;
 
+import com.example.businesscentral.Dao.Annotation.OnAfterGetRecord;
+import com.example.businesscentral.Dao.Annotation.OnNextRecord;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.DataType;
+import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
-import com.example.businesscentral.Dao.Request.CardPageID;
+import com.example.businesscentral.Dao.Request.CardParameter;
+import com.example.businesscentral.Dao.Request.TableParameter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 @Aspect
 @Configuration
-public class CardAop {
+public class OnAfterGetRecordCardAop {
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Pointcut("execution(java.util.List<*> com.example.businesscentral.Controller.CustomerController.GetRecordById(..))")
-    public void beforeInitNewRecord() {
+    @Pointcut("execution(java.util.* com.example.businesscentral.Controller.CustomerController.OnBeforeCardUpdate(..))")
+    public void OnAfterGetRecordTrigger() {
     }
 
-    @Around("beforeInitNewRecord()")
+    @Around("OnAfterGetRecordTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        CardPageID parameter = (CardPageID) joinPoint.getArgs()[0];
-        String tableName = parameter.getTable();
-        String recordID = parameter.getRecordID();
-        String cardID = parameter.getCardID();
+        CardParameter parameter = (CardParameter) joinPoint.getArgs()[0];
 
-        Object tableBean = applicationContext.getBean(tableName);
-        Object cardBean = applicationContext.getBean(cardID);
+        Object pageBean = applicationContext.getBean(parameter.getPage());
+        Object tableBean = applicationContext.getBean(parameter.getTable());
 
-        Object newInstance = cardBean.getClass().getDeclaredConstructor().newInstance();
+        Object newpageInstance = pageBean.getClass().getDeclaredConstructor().newInstance();
+
 
         List<Class<?>> classList = new ArrayList<>();
         classList.add(tableBean.getClass());
         BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);
-        Object Record = businessCentralRecord.Get(recordID);
+        businessCentralRecord.Get(parameter.getRecordID());
+
+        Object recordAfterOnAfterGetRecordMethod = null;
+
+        for (Method declaredMethod : pageBean.getClass().getDeclaredMethods()) {
+            if (declaredMethod.isAnnotationPresent(OnAfterGetRecord.class)) {
+                recordAfterOnAfterGetRecordMethod = declaredMethod.invoke(newpageInstance,businessCentralRecord);
+                break;
+            }
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Object cardRecord = objectMapper.convertValue(Record, cardBean.getClass());
+        Object cardRecord = objectMapper.convertValue(recordAfterOnAfterGetRecordMethod, pageBean.getClass());
 
         List<String> GroupNames = new ArrayList<>();
         List<CardGroup> cardGroups = new ArrayList<>();
 
-        List<String> excludefields = Arrays.stream(cardBean.getClass().getDeclaredFields())
+        List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
 
-        List<Field> fields = Arrays.stream(cardBean.getClass().getDeclaredFields())
+        List<Field> fields = Arrays.stream(pageBean.getClass().getDeclaredFields())
                 .filter(field -> !field.isAnnotationPresent(Autowired.class)).toList();
 
         for (Field field : fields) {
@@ -80,7 +91,7 @@ public class CardAop {
 
             CardGroup cardGroup = new CardGroup();
             cardGroup.setGroupName(groupName);
-            LinkedHashMap<String,CardField> map = new LinkedHashMap<>();
+            LinkedHashMap<String, CardField> map = new LinkedHashMap<>();
 
             for (Field field : fields) {
                 if (field.isAnnotationPresent(PageField.class)) {

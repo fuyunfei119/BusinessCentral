@@ -38,4 +38,6 @@ public interface BusinessCentralSystemRecord {
     void RaiseAction(ActionParamter paramter) throws InvocationTargetException, IllegalAccessException;
 
     String GetTable(PageParameter pageName) throws Exception;
+
+    LinkedHashMap<String,Object> GetDataForCard(String cardID, String tableName, String recordID);
 }

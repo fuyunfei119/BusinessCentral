@@ -1,9 +1,14 @@
 package com.example.businesscentral.Page;
 
 import com.example.businesscentral.Dao.Annotation.*;
+import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Enum.Account_Status_Enum;
+import com.example.businesscentral.Table.Customer;
 import lombok.Data;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Page(SOURCETABLE = "Customer", TYPE = PageType.Card)
 @Data
@@ -97,4 +102,33 @@ public class CustomerCard {
     public void OnBeforeOpenPage() {
         System.out.println("Card => OnOpenPage Trigger Raised...");
     }
+
+    @OnFindRecord
+    public Customer OnBeforeOnFindRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+        System.out.println("Card => OnFindRecord Trigger Raised...");
+        return Rec.GetRecord();
+    }
+
+    @OnAfterGetRecord
+    public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        System.out.println("Card => OnAfterGetRecord Trigger Raised...");
+        return Rec.GetRecord();
+    }
+
+    @OnAfterGetCurrRecord
+    public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+        System.out.println("Card => OnAfterGetCurrRecord Trigger Raised...");
+        return Rec.GetRecord();
+    }
+
+    @OnQueryClosePage
+    public void OnBeforeOnQueryClosePage(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+        System.out.println("Card => OnQueryClosePage Trigger Raised...");
+    }
+
+    @OnClosePage
+    public void OnClosePage() {
+        System.out.println("Card => OnClosePage Trigger Raised...");
+    }
+
 }
