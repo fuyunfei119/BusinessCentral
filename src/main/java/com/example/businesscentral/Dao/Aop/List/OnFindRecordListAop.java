@@ -1,4 +1,4 @@
-package com.example.businesscentral.Dao.Aop;
+package com.example.businesscentral.Dao.Aop.List;
 
 import com.example.businesscentral.Dao.Annotation.OnFindRecord;
 import com.example.businesscentral.Dao.Annotation.Page;

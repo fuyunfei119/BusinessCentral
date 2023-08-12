@@ -7,9 +7,6 @@ import com.example.businesscentral.Enum.Account_Status_Enum;
 import com.example.businesscentral.Table.Customer;
 import lombok.Data;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
 @Page(SOURCETABLE = "Customer", TYPE = PageType.Card)
 @Data
 public class CustomerCard {
@@ -18,7 +15,7 @@ public class CustomerCard {
             VISIABLE = true,
             GROUP = "General"
     )
-    private String User_ID;
+    private String System_ID;
 
     @PageField(
             VISIABLE = true,
@@ -94,7 +91,8 @@ public class CustomerCard {
 
     @PageField(
             VISIABLE = true,
-            GROUP = "Accounting"
+            GROUP = "Accounting",
+            ON_VALIDATE = "OnValidatePoints"
     )
     private Integer Points;
 
@@ -121,6 +119,18 @@ public class CustomerCard {
         return Rec.GetRecord();
     }
 
+    @OnNewRecord
+    public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+        System.out.println("Card => OnNewRecord Trigger Raised...");
+        return Rec.GetRecord();
+    }
+
+    @OnInsertRecord
+    public Customer OnBeforeInsertRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+//        System.out.println("Card => OnInsertRecord Trigger Raised...");
+        return Rec.GetRecord();
+    }
+
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
         System.out.println("Card => OnQueryClosePage Trigger Raised...");
@@ -129,6 +139,11 @@ public class CustomerCard {
     @OnClosePage
     public void OnClosePage() {
         System.out.println("Card => OnClosePage Trigger Raised...");
+    }
+
+    private Customer OnValidatePoints(Object currentValue, Object newValue,BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+        System.out.println("Page => Point Page Validate Trigger Raised...");
+        return Rec.GetRecord();
     }
 
 }

@@ -20,7 +20,7 @@ public class Customer{
     @TableField(
 
     )
-    private String User_ID;
+    private String System_ID;
 
     @TableField(
             ON_VALIDATE = "",
@@ -100,7 +100,7 @@ public class Customer{
     private Customer OnInitTriggerMethod() {
 //        System.out.println("Table => Init Trigger Raised...");
 
-        this.User_ID = UUID.randomUUID().toString();
+        this.System_ID = UUID.randomUUID().toString();
         this.Account_Status = Account_Status_Enum.Active;
         this.Account_Creation_Date = new Date(System.currentTimeMillis());
         return this;

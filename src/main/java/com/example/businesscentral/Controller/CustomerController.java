@@ -2,6 +2,7 @@ package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Request.*;
+import com.example.businesscentral.Dao.Response.CardAfterGetCurrRecordResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,32 +18,22 @@ public class CustomerController {
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
     @PostMapping("/List/OnBeforeMounted")
-    public Object onBeforeListMounted(@RequestBody TableParameter table) {
-        return null;
-    }
+    public Object onBeforeListMounted(@RequestBody TableParameter table) {return null;}
 
     @GetMapping("/List/OnMounted")
     public List<LinkedHashMap<String,Object>> OnListMounted(@RequestParam("list") String list) throws Exception {return null;}
 
     @PostMapping("/List/OnBeforeUpdate")
-    public List<LinkedHashMap<String,Object>> OnBeforeListUpdate(@RequestBody TableParameter table) {
-        return null;
-    }
+    public List<LinkedHashMap<String,Object>> OnBeforeListUpdate(@RequestBody TableParameter table) {return null;}
 
     @PostMapping("/List/OnUpdated")
-    public LinkedHashMap<String,Object> OnListUpdated(@RequestBody TableParameter table) {
-        return null;
-    }
+    public LinkedHashMap<String,Object> OnListUpdated(@RequestBody TableParameter table) {return null;}
 
     @PostMapping("/List/OnBeforeUnmount")
-    public List<LinkedHashMap<String,Object>> OnBeforeListUnmount(@RequestBody TableParameter table) {
-        return null;
-    }
+    public List<LinkedHashMap<String,Object>> OnBeforeListUnmount(@RequestBody TableParameter table) {return null;}
 
     @PostMapping("/Card/OnBeforeMounted")
-    public Object onBeforeCardMounted(@RequestBody TableParameter table) {
-        return null;
-    }
+    public Object onBeforeCardMounted(@RequestBody TableParameter table) {return null;}
 
     @PostMapping("/Card/OnMounted")
     public List<CardGroup> OnCardMounted(@RequestBody CardPageID CardPageID) throws Exception {return null;}
@@ -51,9 +42,7 @@ public class CustomerController {
     public List<CardGroup> OnBeforeCardUpdate(@RequestBody CardParameter table) {return null;}
 
     @PostMapping("/Card/OnUpdated")
-    public List<CardGroup> OnCardUpdated(@RequestBody CardParameter table) {
-        return null;
-    }
+    public CardAfterGetCurrRecordResponse OnCardUpdated(@RequestBody CardParameter table) {return null;}
 
     @PostMapping("/Card/OnBeforeUnmount")
     public List<LinkedHashMap<String,Object>> OnBeforeCardUnmount(@RequestBody CardParameter table) {
@@ -91,9 +80,7 @@ public class CustomerController {
     }
 
     @PostMapping("/GetRecordById")
-    public List<?> GetRecordById(@RequestBody CardPageID cardPageID) throws Exception {
-        return null;
-    }
+    public List<?> GetRecordById(@RequestBody CardPageID cardPageID) throws Exception {return null;}
 
     @PostMapping("/InsertOrUpdateRecord")
     public void InsertOrUpdateRecord(@RequestBody Map<String,Object> objectMap) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -137,6 +124,15 @@ public class CustomerController {
     public Object GetFieldOptionForCard(@RequestBody CardFieldOption cardFieldOption) {
         return null;
     }
+
+    @PostMapping("/Card/UpdateRecord")
+    public List<CardGroup> UpdateRecordAfterCardValidate(@RequestBody CardParameter parameter) {return null;}
+
+    @PostMapping("/Card/InsertRecord")
+    public List<CardGroup> InsertNewRecordCard(@RequestBody CardParameter parameter) {return null;}
+
+    @PostMapping("/Card/ValidateRecordAfterNewRecord")
+    public List<CardGroup> ValidateRecordAfterNewRecord(@RequestBody CardParameter parameter) {return null;}
 
     @GetMapping("/test")
     public String testhelloworld() {

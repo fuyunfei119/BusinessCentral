@@ -1,4 +1,4 @@
-package com.example.businesscentral.Dao.Aop;
+package com.example.businesscentral.Dao.Aop.Card;
 
 import com.example.businesscentral.Dao.Annotation.OnAfterGetRecord;
 import com.example.businesscentral.Dao.Annotation.OnQueryClosePage;

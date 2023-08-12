@@ -22,7 +22,7 @@ public class CustomerList {
             VISIABLE = true,
             GROUP = "General"
     )
-    private String User_ID;
+    private String System_ID;
 
     @PageField(
             VISIABLE = true,

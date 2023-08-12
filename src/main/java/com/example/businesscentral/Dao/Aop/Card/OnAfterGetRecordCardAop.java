@@ -1,17 +1,13 @@
-package com.example.businesscentral.Dao.Aop;
+package com.example.businesscentral.Dao.Aop.Card;
 
-import com.example.businesscentral.Dao.Annotation.OnAfterGetCurrRecord;
 import com.example.businesscentral.Dao.Annotation.OnAfterGetRecord;
-import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.DataType;
-import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.CardParameter;
-import com.example.businesscentral.Dao.Request.TableParameter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -22,7 +18,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -30,16 +25,16 @@ import java.util.*;
 
 @Aspect
 @Configuration
-public class OnAfterGetCurrRecordCardAop {
+public class OnAfterGetRecordCardAop {
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Pointcut("execution(java.util.* com.example.businesscentral.Controller.CustomerController.OnCardUpdated(..))")
-    public void OnAfterGetCurrRecordTrigger() {
+    @Pointcut("execution(java.util.* com.example.businesscentral.Controller.CustomerController.OnBeforeCardUpdate(..))")
+    public void OnAfterGetRecordTrigger() {
     }
 
-    @Around("OnAfterGetCurrRecordTrigger()")
+    @Around("OnAfterGetRecordTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
         CardParameter parameter = (CardParameter) joinPoint.getArgs()[0];
@@ -58,7 +53,7 @@ public class OnAfterGetCurrRecordCardAop {
         Object recordAfterOnAfterGetRecordMethod = null;
 
         for (Method declaredMethod : pageBean.getClass().getDeclaredMethods()) {
-            if (declaredMethod.isAnnotationPresent(OnAfterGetCurrRecord.class)) {
+            if (declaredMethod.isAnnotationPresent(OnAfterGetRecord.class)) {
                 recordAfterOnAfterGetRecordMethod = declaredMethod.invoke(newpageInstance,businessCentralRecord);
                 break;
             }

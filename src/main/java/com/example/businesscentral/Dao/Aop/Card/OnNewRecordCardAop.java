@@ -1,10 +1,15 @@
-package com.example.businesscentral.Dao.Aop;
+package com.example.businesscentral.Dao.Aop.Card;
 
 import com.example.businesscentral.Dao.Annotation.OnInit;
 import com.example.businesscentral.Dao.Annotation.OnNewRecord;
+import com.example.businesscentral.Dao.Annotation.PageField;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
+import com.example.businesscentral.Dao.Enum.DataType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
+import com.example.businesscentral.Dao.Request.CardField;
+import com.example.businesscentral.Dao.Request.CardGroup;
+import com.example.businesscentral.Dao.Request.CardParameter;
 import com.example.businesscentral.Dao.Request.NewRecord;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,26 +21,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
 @Aspect
 @Configuration
-public class OnNewRecordListAop {
+public class OnNewRecordCardAop {
 
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
-    @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.OnNewRecord(..))")
+    @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.InsertNewRecordCard(..))")
     public void OnNewRecordTrigger() {
     }
 
     @Around("OnNewRecordTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        NewRecord parameter = (NewRecord) joinPoint.getArgs()[0];
+        CardParameter parameter = (CardParameter) joinPoint.getArgs()[0];
 
         Object pageBean = applicationContext.getBean(parameter.getPage());
         Object tableBean = applicationContext.getBean(parameter.getTable().toLowerCase(Locale.ROOT));
@@ -75,27 +81,60 @@ public class OnNewRecordListAop {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Object cardRecord = objectMapper.convertValue(invokePageObject, pageBean.getClass());
+
+        List<String> GroupNames = new ArrayList<>();
+        List<CardGroup> cardGroups = new ArrayList<>();
 
         List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
 
-        List<String> includefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
-                .filter(field -> !field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
+        List<Field> fields = Arrays.stream(pageBean.getClass().getDeclaredFields())
+                .filter(field -> !field.isAnnotationPresent(Autowired.class)).toList();
 
-        LinkedHashMap<String,Object> linkedHashMap = objectMapper.convertValue(invokePageObject,LinkedHashMap.class);
-
-        for (String excludefield : excludefields) {
-            excludefield = excludefield.replaceFirst(String.valueOf(excludefield.charAt(0)),String.valueOf(excludefield.charAt(0)).toUpperCase(Locale.ROOT));
-            linkedHashMap.remove(excludefield);
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(PageField.class)) {
+                PageField pageField1 = field.getAnnotation(PageField.class);
+                if (!GroupNames.contains(pageField1.GROUP())) {
+                    GroupNames.add(pageField1.GROUP());
+                }
+            }
         }
 
-        LinkedHashMap<String,Object> sortedLinkedHashMap = new LinkedHashMap<>();
-        for (String includefield : includefields) {
-            char firstChar = includefield.charAt(0);
-            String LowerCase = String.valueOf(firstChar).toLowerCase(Locale.ROOT);
-            sortedLinkedHashMap.put(includefield,linkedHashMap.get(includefield.replaceFirst(String.valueOf(includefield.charAt(0)),LowerCase)));
+        for (String groupName : GroupNames) {
+
+            CardGroup cardGroup = new CardGroup();
+            cardGroup.setGroupName(groupName);
+            LinkedHashMap<String, CardField> map = new LinkedHashMap<>();
+
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(PageField.class)) {
+                    PageField pageField1 = field.getAnnotation(PageField.class);
+                    if (groupName.equals(pageField1.GROUP())) {
+
+                        CardField cardField = new CardField();
+                        field.setAccessible(true);
+
+                        if (field.getType().isAssignableFrom(String.class)) {
+                            cardField.setType(DataType.string);
+                        }else if(field.getType().isAssignableFrom(Integer.class) ||field.getType().isAssignableFrom(Double.class) || field.getType().isAssignableFrom(Float.class)) {
+                            cardField.setType(DataType.number);
+                        }else if (field.getType().isAssignableFrom(Date.class) || field.getType().isAssignableFrom(java.sql.Date.class)) {
+                            cardField.setType(DataType.date);
+                        }else if (Enum.class.isAssignableFrom(field.getType())) {
+                            cardField.setType(DataType.enumeration);
+                        }
+
+                        cardField.setValue(field.get(cardRecord));
+                        map.put(field.getName(), cardField);
+                    }
+                }
+            }
+
+            cardGroup.setFields(map);
+            cardGroups.add(cardGroup);
         }
 
-        return sortedLinkedHashMap;
+        return cardGroups;
     }
 }

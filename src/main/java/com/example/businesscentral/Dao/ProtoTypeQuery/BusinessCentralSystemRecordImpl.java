@@ -36,18 +36,10 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     @Override
     public List<LinkedHashMap<String, Object>> FindSetByTableName(String TableName) {
 
-        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(BusinessCentralTableScan.class);
+        Object tableBean = applicationContext.getBean(TableName.toLowerCase(Locale.ROOT));
 
-        Set<Map.Entry<String, Object>> entries = applicationContext.getBeansWithAnnotation(Table.class).entrySet();
-
-        List<? extends Class<?>> collect = entries.stream()
-                .filter(bean -> bean.getKey().equalsIgnoreCase(TableName))
-                .map(bean -> bean.getValue().getClass())
-                .toList();
-
-        Class<?> aClass = collect.get(0);
-
-        List<String> list = Arrays.stream(aClass.getDeclaredFields())
+        List<String> list = Arrays.stream(tableBean.getClass().getDeclaredFields())
+                .filter(field -> !field.isAnnotationPresent(Autowired.class))
                 .map(field -> field.getName())
                 .toList();
 
@@ -171,15 +163,20 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
     @Override
     public List<LinkedHashMap<String, Object>> QueryContent(Map<String, Object> filters) {
+
         StringBuilder finalFilters = new StringBuilder();
 
         Object table = filters.get("table");
         String content = (String) filters.get("content");
         Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
 
+        List<Field> fields = Arrays.stream(bean.getClass().getDeclaredFields())
+                .filter(field -> !field.isAnnotationPresent(Autowired.class))
+                .toList();
+
         if (content.contains("*")) {
             if (content.startsWith("*") && content.endsWith("*")) {
-                for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                for (Field declaredField : fields) {
                     content = content.replace("*","");
                     finalFilters
                             .append(declaredField.getName())
@@ -190,7 +187,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                             .append(" OR ");
                 }
             } else if (content.startsWith("*")) {
-                for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                for (Field declaredField : fields) {
                     content = content.replace("*","");
                     finalFilters
                             .append(declaredField.getName())
@@ -200,7 +197,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                             .append("' OR ");
                 }
             } else if (content.endsWith("*")) {
-                for (Field declaredField : bean.getClass().getDeclaredFields()) {
+                for (Field declaredField : fields) {
                     content = content.replace("*","");
                     finalFilters
                             .append(declaredField.getName())
@@ -216,7 +213,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
             return businessCentralProtoTypeQueryMapper.FindSetBySearch(table, "", finalFilters.toString());
         }else {
-            for (Field declaredField : bean.getClass().getDeclaredFields()) {
+            for (Field declaredField : fields) {
                 finalFilters
                         .append(declaredField.getName())
                         .append(" LIKE ")
@@ -335,8 +332,6 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
                 .append(sortParam.get("field"))
                 .append(" ")
                 .append(sortParam.get("sort"));
-
-        System.out.println(finalSort.toString());
 
         return businessCentralProtoTypeQueryMapper.FindSetByFilterAndSort(table, "", finalfilters,finalSort.toString());
     }
