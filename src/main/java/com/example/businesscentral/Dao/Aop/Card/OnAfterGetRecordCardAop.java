@@ -44,7 +44,6 @@ public class OnAfterGetRecordCardAop {
 
         Object newpageInstance = pageBean.getClass().getDeclaredConstructor().newInstance();
 
-
         List<Class<?>> classList = new ArrayList<>();
         classList.add(tableBean.getClass());
         BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);

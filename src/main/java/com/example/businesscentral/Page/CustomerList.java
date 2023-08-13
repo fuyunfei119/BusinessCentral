@@ -7,6 +7,7 @@ import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Enum.Account_Status_Enum;
 import com.example.businesscentral.Enum.Customer_Type_Enum;
 import com.example.businesscentral.Table.Customer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -129,5 +130,6 @@ public class CustomerList {
     }
 
     @Autowired
+    @JsonIgnore
     private CustomerRecord record;
 }

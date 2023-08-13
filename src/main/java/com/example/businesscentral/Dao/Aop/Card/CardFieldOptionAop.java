@@ -39,8 +39,6 @@ public class CardFieldOptionAop {
 
         CardFieldOption parameter = (CardFieldOption) joinPoint.getArgs()[0];
 
-        System.out.println(parameter);
-
         Object tableBean = applicationContext.getBean(parameter.getTable());
 
         Class<?> tableBeanClass = tableBean.getClass();

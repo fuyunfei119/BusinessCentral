@@ -393,7 +393,9 @@ public class BusinessCentralRecordMySql<T,E extends Enum<E>> implements Business
 
     private void ConvertToObject(LinkedHashMap<String, Object> properties) throws IllegalAccessException {
 
-        for (Field field : this.entity.getClass().getDeclaredFields()) {
+        List<Field> fields = Arrays.stream(this.entity.getClass().getDeclaredFields()).filter(field -> !field.isAnnotationPresent(Autowired.class)).toList();
+
+        for (Field field : fields) {
 
             for (Map.Entry<String, Object> stringObjectEntry : properties.entrySet()) {
 

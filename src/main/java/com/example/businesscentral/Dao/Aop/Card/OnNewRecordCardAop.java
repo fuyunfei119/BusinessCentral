@@ -11,8 +11,11 @@ import com.example.businesscentral.Dao.Request.CardField;
 import com.example.businesscentral.Dao.Request.CardGroup;
 import com.example.businesscentral.Dao.Request.CardParameter;
 import com.example.businesscentral.Dao.Request.NewRecord;
+import com.example.businesscentral.Dao.Response.CardAfterGetCurrRecordResponse;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -34,12 +37,14 @@ public class OnNewRecordCardAop {
     @Autowired
     private BusinessCentralSystemRecord businessCentralSystemRecord;
 
-    @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.InsertNewRecordCard(..))")
+    @Pointcut("execution(* com.example.businesscentral.Controller.CustomerController.InitializeNewRecordCard(..))")
     public void OnNewRecordTrigger() {
     }
 
     @Around("OnNewRecordTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        CardAfterGetCurrRecordResponse cardAfterGetCurrRecordResponse = new CardAfterGetCurrRecordResponse();
 
         CardParameter parameter = (CardParameter) joinPoint.getArgs()[0];
 
@@ -79,8 +84,10 @@ public class OnNewRecordCardAop {
         onNewRecordMethod.setAccessible(true);
         Object invokePageObject = onNewRecordMethod.invoke(pageBean, businessCentralRecord);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Object cardRecord = objectMapper.convertValue(invokePageObject, pageBean.getClass());
 
         List<String> GroupNames = new ArrayList<>();
@@ -135,6 +142,11 @@ public class OnNewRecordCardAop {
             cardGroups.add(cardGroup);
         }
 
-        return cardGroups;
+        LinkedHashMap linkedHashMap = objectMapper.convertValue(invokePageObject, LinkedHashMap.class);
+
+        cardAfterGetCurrRecordResponse.setCardGroups(cardGroups);
+        cardAfterGetCurrRecordResponse.setRecord(linkedHashMap);
+
+        return cardAfterGetCurrRecordResponse;
     }
 }

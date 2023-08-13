@@ -45,7 +45,7 @@ public class CustomerController {
     public CardAfterGetCurrRecordResponse OnCardUpdated(@RequestBody CardParameter table) {return null;}
 
     @PostMapping("/Card/OnBeforeUnmount")
-    public List<LinkedHashMap<String,Object>> OnBeforeCardUnmount(@RequestBody CardParameter table) {
+    public Object OnBeforeCardUnmount(@RequestBody CardParameter table) {
         return null;
     }
 
@@ -128,11 +128,17 @@ public class CustomerController {
     @PostMapping("/Card/UpdateRecord")
     public List<CardGroup> UpdateRecordAfterCardValidate(@RequestBody CardParameter parameter) {return null;}
 
+    @PostMapping("/Card/InitializeRecord")
+    public CardAfterGetCurrRecordResponse InitializeNewRecordCard(@RequestBody CardParameter parameter) {return null;}
+
     @PostMapping("/Card/InsertRecord")
-    public List<CardGroup> InsertNewRecordCard(@RequestBody CardParameter parameter) {return null;}
+    public Object InsertNewRecord(@RequestBody CardParameter parameter) {return null;}
 
     @PostMapping("/Card/ValidateRecordAfterNewRecord")
-    public List<CardGroup> ValidateRecordAfterNewRecord(@RequestBody CardParameter parameter) {return null;}
+    public CardAfterGetCurrRecordResponse ValidateRecordAfterNewRecord(@RequestBody CardParameter parameter) {return null;}
+
+    @PostMapping("/Card/DeleteRecord")
+    public Object DeleteCardRecord(@RequestBody CardParameter parameter) {return null;}
 
     @GetMapping("/test")
     public String testhelloworld() {

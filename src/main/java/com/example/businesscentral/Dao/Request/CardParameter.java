@@ -11,8 +11,10 @@ public class CardParameter {
     private String table;
     private String page;
     private String recordID;
+    private Object record;
     private CardParameterUpToDate updatedField;
     private Object oldValue;
     private Object newValue;
     private String fieldName;
+    private Boolean isNewRecord;
 }

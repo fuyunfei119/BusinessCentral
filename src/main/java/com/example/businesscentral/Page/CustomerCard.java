@@ -98,30 +98,30 @@ public class CustomerCard {
 
     @OnOpenPage
     public void OnBeforeOpenPage() {
-        System.out.println("Card => OnOpenPage Trigger Raised...");
+//        System.out.println("Card => OnOpenPage Trigger Raised...");
     }
 
     @OnFindRecord
     public Customer OnBeforeOnFindRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
-        System.out.println("Card => OnFindRecord Trigger Raised...");
+//        System.out.println("Card => OnFindRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnAfterGetRecord
     public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        System.out.println("Card => OnAfterGetRecord Trigger Raised...");
+//        System.out.println("Card => OnAfterGetRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnAfterGetCurrRecord
     public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
-        System.out.println("Card => OnAfterGetCurrRecord Trigger Raised...");
+//        System.out.println("Card => OnAfterGetCurrRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnNewRecord
     public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
-        System.out.println("Card => OnNewRecord Trigger Raised...");
+//        System.out.println("Card => OnNewRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
@@ -133,16 +133,16 @@ public class CustomerCard {
 
     @OnQueryClosePage
     public void OnBeforeOnQueryClosePage(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
-        System.out.println("Card => OnQueryClosePage Trigger Raised...");
+//        System.out.println("Card => OnQueryClosePage Trigger Raised...");
     }
 
     @OnClosePage
     public void OnClosePage() {
-        System.out.println("Card => OnClosePage Trigger Raised...");
+//        System.out.println("Card => OnClosePage Trigger Raised...");
     }
 
     private Customer OnValidatePoints(Object currentValue, Object newValue,BusinessCentralRecord<Customer,Customer.Fields> Rec) {
-        System.out.println("Page => Point Page Validate Trigger Raised...");
+//        System.out.println("Page => Point Page Validate Trigger Raised...");
         return Rec.GetRecord();
     }
 

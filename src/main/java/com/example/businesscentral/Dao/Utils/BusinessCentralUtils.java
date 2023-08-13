@@ -1,6 +1,7 @@
 package com.example.businesscentral.Dao.Utils;
 
 import com.example.businesscentral.Dao.Annotation.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -209,8 +210,10 @@ public class BusinessCentralUtils {
         List<String> fieldNameList = new ArrayList<>();
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
-            field.setAccessible(true);
-            fieldNameList.add(field.getName());
+            if (!field.isAnnotationPresent(Autowired.class)) {
+                field.setAccessible(true);
+                fieldNameList.add(field.getName());
+            }
         }
         return fieldNameList;
     }
@@ -223,12 +226,14 @@ public class BusinessCentralUtils {
         List<Object> fieldValueList = new ArrayList<>();
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object fieldValue = field.get(object);
-                fieldValueList.add(fieldValue);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            if (!field.isAnnotationPresent(Autowired.class)) {
+                field.setAccessible(true);
+                try {
+                    Object fieldValue = field.get(object);
+                    fieldValueList.add(fieldValue);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return fieldValueList;

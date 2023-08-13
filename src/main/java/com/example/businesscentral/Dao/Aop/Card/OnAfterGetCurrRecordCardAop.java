@@ -38,7 +38,9 @@ public class OnAfterGetCurrRecordCardAop {
     @Around("OnAfterGetCurrRecordTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        System.out.println("=======================>");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         CardAfterGetCurrRecordResponse cardAfterGetCurrRecordResponse = new CardAfterGetCurrRecordResponse();
 
@@ -54,6 +56,8 @@ public class OnAfterGetCurrRecordCardAop {
         BusinessCentralRecord businessCentralRecord = new BusinessCentralRecordMySql(applicationContext,classList);
         Object fullRecord = businessCentralRecord.Get(parameter.getRecordID());
 
+        LinkedHashMap linkedHashMap = objectMapper.convertValue(fullRecord, LinkedHashMap.class);
+
         Object recordAfterOnAfterGetRecordMethod = null;
 
         for (Method declaredMethod : pageBean.getClass().getDeclaredMethods()) {
@@ -63,9 +67,6 @@ public class OnAfterGetCurrRecordCardAop {
             }
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Object cardRecord = objectMapper.convertValue(recordAfterOnAfterGetRecordMethod, pageBean.getClass());
 
         List<String> GroupNames = new ArrayList<>();
@@ -120,10 +121,8 @@ public class OnAfterGetCurrRecordCardAop {
             cardGroups.add(cardGroup);
         }
 
-        cardAfterGetCurrRecordResponse.setRecord(fullRecord);
+        cardAfterGetCurrRecordResponse.setRecord(linkedHashMap);
         cardAfterGetCurrRecordResponse.setCardGroups(cardGroups);
-
-        System.out.println(cardAfterGetCurrRecordResponse);
 
         return cardAfterGetCurrRecordResponse;
     }

@@ -4,6 +4,7 @@ import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Enum.Account_Status_Enum;
 import com.example.businesscentral.Enum.Customer_Type_Enum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,5 +142,6 @@ public class Customer{
     }
 
     @Autowired
+    @JsonIgnore
     private CustomerRecord record;
 }
