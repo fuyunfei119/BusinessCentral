@@ -36,7 +36,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     @Override
     public List<LinkedHashMap<String, Object>> FindSetByTableName(String TableName) {
 
-        Object tableBean = applicationContext.getBean(TableName.toLowerCase(Locale.ROOT));
+        Object tableBean = applicationContext.getBean(Character.toLowerCase(TableName.charAt(0)) + TableName.substring(1));
 
         List<String> list = Arrays.stream(tableBean.getClass().getDeclaredFields())
                 .filter(field -> !field.isAnnotationPresent(Autowired.class))
@@ -48,7 +48,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
     @Override
     public List<Object> FindSetByFields(Map<String, Object> filters) {
-        Object table = filters.get("table");
+        String table = filters.get("table").toString();
         Object filterName = filters.get("filterName");
 
         List<LinkedHashMap<String, Object>> linkedHashMaps = businessCentralProtoTypeQueryMapper.FindSetByFields(table, filterName);
@@ -68,8 +68,8 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
         List<String> finalfilters = new ArrayList<>();
 
-        Object table = filters.get("table");
-        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
+        String table = filters.get("table").toString();
+        Object bean = applicationContext.getBean(Character.toLowerCase(table.charAt(0)) + table.substring(1));
 
         Map<String, Object> conditions = (Map<String, Object>) filters.get("filters");
 
@@ -166,9 +166,9 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
         StringBuilder finalFilters = new StringBuilder();
 
-        Object table = filters.get("table");
+        String table = filters.get("table").toString();
         String content = (String) filters.get("content");
-        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
+        Object bean = applicationContext.getBean(Character.toLowerCase(table.charAt(0)) + table.substring(1));
 
         List<Field> fields = Arrays.stream(bean.getClass().getDeclaredFields())
                 .filter(field -> !field.isAnnotationPresent(Autowired.class))
@@ -234,8 +234,8 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
         List<String> finalfilters = new ArrayList<>();
 
-        Object table = filters.get("table");
-        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
+        String table = filters.get("table").toString();
+        Object bean = applicationContext.getBean(Character.toLowerCase(table.charAt(0)) + table.substring(1));
 
         Map<String, Object> conditions = (Map<String, Object>) filters.get("filters");
 
@@ -339,11 +339,11 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     @Override
     public LinkedHashMap<String, Object> GetRecordById(Map<String, Object> filters) {
 
-        Object table = filters.get("table");
+        String table = filters.get("table").toString();
         Object recordID = filters.get("RecordID");
         String PrimaryKey = "";
 
-        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
+        Object bean = applicationContext.getBean(Character.toLowerCase(table.charAt(0)) + table.substring(1));
         for (Field declaredField : bean.getClass().getDeclaredFields()) {
             if (declaredField.isAnnotationPresent(Keys.class)) {
                 Keys annotation = declaredField.getAnnotation(Keys.class);
@@ -360,8 +360,8 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
     @Transactional
     public LinkedHashMap<String, Object> InsertNewRecord(Map<String,Object> objectMap) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        Object table = objectMap.get("table");
-        Object bean = applicationContext.getBean(table.toString().toLowerCase(Locale.ROOT));
+        String table = objectMap.get("table").toString();
+        Object bean = applicationContext.getBean(Character.toLowerCase(table.charAt(0)) + table.substring(1));
 
         LinkedHashMap<String,Object> record = (LinkedHashMap<String, Object>) objectMap.get("record");
         LinkedHashMap<String,Object> newRecord = new LinkedHashMap<>();
@@ -480,7 +480,7 @@ public class BusinessCentralSystemRecordImpl implements BusinessCentralSystemRec
 
         String table = (String) filter.get("table");
 
-        Object bean = applicationContext.getBean(table.toLowerCase(Locale.ROOT));
+        Object bean = applicationContext.getBean(Character.toLowerCase(table.charAt(0)) + table.substring(1));
 
         for (Field declaredField : bean.getClass().getDeclaredFields()) {
             fields.add(declaredField.getName());

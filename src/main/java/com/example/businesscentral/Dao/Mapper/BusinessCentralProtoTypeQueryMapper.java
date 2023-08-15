@@ -19,7 +19,7 @@ public interface BusinessCentralProtoTypeQueryMapper {
             "<if test='!(LoadFields.isEmpty())'>" +
             "${LoadFields} "+
             "</if>" +
-            "FROM ${tableName}" +
+            "FROM ${table}" +
             "<if test='Filters.isEmpty()'></if>" +
             "<if test='!(Filters.isEmpty())'>" +
             "WHERE" +

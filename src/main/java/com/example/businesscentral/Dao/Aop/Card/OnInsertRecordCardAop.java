@@ -45,7 +45,7 @@ public class OnInsertRecordCardAop {
 
         CardParameter parameter = (CardParameter) joinPoint.getArgs()[0];
 
-        System.out.println(parameter);
+
 
         return joinPoint.proceed();
     }

@@ -9,7 +9,7 @@ spring:
     init:
       mode: always
       platform: mysql
-      schema-locations: classpath:sql/customer.sql
+      schema-locations: classpath:sql/customer.sql,classpath:sql/order.sql
 
 mybatis:
   configuration:
