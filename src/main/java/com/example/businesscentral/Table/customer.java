@@ -15,7 +15,7 @@ import java.util.UUID;
 @Table
 @Data
 @FieldNameConstants(asEnum = true)
-public class Customer{
+public class customer {
 
     @Keys(PRIMARY_KEY = true,AUTO_INCREMENT = true)
     @TableField(
@@ -60,12 +60,12 @@ public class Customer{
     @TableField(
 
     )
-    private java.sql.Date Account_Creation_Date;
+    private java.util.Date Account_Creation_Date;
 
     @TableField(
 
     )
-    private java.sql.Date Last_Login_Date;
+    private java.util.Date Last_Login_Date;
 
     @TableField(
 
@@ -98,7 +98,7 @@ public class Customer{
     private Customer_Type_Enum Customer_Type;
 
     @OnInit
-    private Customer OnInitTriggerMethod() {
+    private customer OnInitTriggerMethod() {
 //        System.out.println("Table => Init Trigger Raised...");
 
         this.System_ID = UUID.randomUUID().toString();
@@ -108,34 +108,34 @@ public class Customer{
     }
 
     @OnInsert
-    private Customer OnInsertTriggerMethod(Customer Rec) {
+    private customer OnInsertTriggerMethod(customer Rec) {
 //        System.out.println("Table => Insert Trigger Raised...");
         return Rec;
     }
 
     @OnModify
-    private Customer OnModifyTriggerMethod(Customer Rec) {
+    private customer OnModifyTriggerMethod(customer Rec) {
 //        System.out.println("Table => Modify Trigger Raised...");
         return Rec;
     }
 
     @OnDelete
-    private Customer OnDeleteTriggerMethod(Customer Rec) {
+    private customer OnDeleteTriggerMethod(customer Rec) {
 //        System.out.println("Table => Delete Trigger Raised...");
         return Rec;
     }
 
-    private Customer OnValidatePhoneNumberTriggerMethod(Object newValue, Customer Rec) {
+    private customer OnValidatePhoneNumberTriggerMethod(Object newValue, customer Rec) {
         System.out.println("Table => Validate Trigger Raised...");
         return Rec;
     }
 
-    private Customer OnValidateCustomerType(Object newValue,Customer Rec) {
+    private customer OnValidateCustomerType(Object newValue, customer Rec) {
         System.out.println("Table => Validate Trigger Raised...");
         return Rec;
     }
 
-    private Customer OnValidatePoint(Object currentValue, Object newValue, Customer Rec) {
+    private customer OnValidatePoint(Object currentValue, Object newValue, customer Rec) {
         System.out.println("Table => Point Validate Trigger Raised...");
         Rec.setPoints(Integer.valueOf(newValue.toString()));
         return Rec;

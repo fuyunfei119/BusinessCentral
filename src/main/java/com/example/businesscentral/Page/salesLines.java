@@ -4,18 +4,16 @@ import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Enum.Sales_Order_Status_Enum;
-import com.example.businesscentral.Table.Customer;
-import com.example.businesscentral.Table.SalesOrder;
+import com.example.businesscentral.Table.salesOrder;
 import lombok.Data;
-import lombok.experimental.FieldNameConstants;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Page(SOURCETABLE = "SalesOrder", TYPE = PageType.List)
+@Page(SOURCETABLE = "salesOrder", TYPE = PageType.List)
 @Data
-public class SalesLines {
+public class salesLines {
 
     @PageField(
             VISIABLE = true,
@@ -83,7 +81,7 @@ public class SalesLines {
     }
 
     @OnAfterGetRecord
-    public SalesOrder OnBeforeOnAfterGetRecord(BusinessCentralRecord<SalesOrder,SalesOrder.Fields> Rec) throws Exception {
+    public salesOrder OnBeforeOnAfterGetRecord(BusinessCentralRecord<salesOrder, salesOrder.Fields> Rec) throws Exception {
 //        System.out.println("Page => OnAfterGetRecord Trigger Raised...");
         return Rec.GetRecord();
     }
@@ -95,19 +93,19 @@ public class SalesLines {
     }
 
     @OnAfterGetCurrRecord
-    public SalesOrder OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<SalesOrder,SalesOrder.Fields> Rec) throws Exception {
+    public salesOrder OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<salesOrder, salesOrder.Fields> Rec) throws Exception {
 //        System.out.println("Page => OnAfterGetCurrRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnNewRecord
-    public SalesOrder OnBeforeNewRecord(BusinessCentralRecord<SalesOrder,SalesOrder.Fields> Rec) throws Exception {
+    public salesOrder OnBeforeNewRecord(BusinessCentralRecord<salesOrder, salesOrder.Fields> Rec) throws Exception {
 //        System.out.println("Page => OnNewRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnInsertRecord
-    public SalesOrder OnBeforeInsertRecord(BusinessCentralRecord<SalesOrder,SalesOrder.Fields> Rec) throws Exception {
+    public salesOrder OnBeforeInsertRecord(BusinessCentralRecord<salesOrder, salesOrder.Fields> Rec) throws Exception {
 //        System.out.println("Page => OnInsertRecord Trigger Raised...");
         return Rec.GetRecord();
     }

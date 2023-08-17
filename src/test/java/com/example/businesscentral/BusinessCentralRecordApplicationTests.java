@@ -1,7 +1,7 @@
 package com.example.businesscentral;
 
 import com.example.businesscentral.Dao.Mapper.BusinessCentralGeneric;
-import com.example.businesscentral.Table.Customer;
+import com.example.businesscentral.Table.customer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +12,7 @@ import java.util.List;
 class BusinessCentralRecordApplicationTests {
 
     @Autowired
-    private BusinessCentralGeneric<Customer> businessCentralGeneric;
+    private BusinessCentralGeneric<customer> businessCentralGeneric;
 
     @Test
     void contextLoads() {
@@ -20,7 +20,7 @@ class BusinessCentralRecordApplicationTests {
 
     @Test
     void GenericTest() {
-        List<Customer> customers = businessCentralGeneric.FindSet();
+        List<customer> customers = businessCentralGeneric.FindSet();
 
         System.out.println(customers);
     }

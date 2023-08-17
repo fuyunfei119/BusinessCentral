@@ -19,6 +19,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Aspect
@@ -41,7 +42,7 @@ public class OnPageValidateListAop {
 
         PageValidate parametes = (PageValidate) joinPoint.getArgs()[0];
 
-        Object tableBean = applicationContext.getBean(parametes.getTable().toLowerCase(Locale.ROOT));
+        Object tableBean = applicationContext.getBean(parametes.getTable());
 
         Object pageBean = applicationContext.getBean(parametes.getPage());
 
@@ -79,7 +80,18 @@ public class OnPageValidateListAop {
                     enumValue = Enum.valueOf((Class<Enum>) enumType, parametes.getNewValue().toString());
                 }
                 tableField.set(record, enumValue);
-            }else
+            }
+            else if (Date.class.isAssignableFrom(tableField.getType()) || java.sql.Date.class.isAssignableFrom(tableField.getType()) ) {
+                if (!ObjectUtils.isEmpty(parametes.getNewValue())) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    tableField.set(record, dateFormat.parse(parametes.getNewValue().toString()));
+                }
+            } else if (Double.class.isAssignableFrom(tableField.getType())) {
+                if (!ObjectUtils.isEmpty(parametes.getNewValue())) {
+                    tableField.set(record, Double.valueOf(parametes.getNewValue().toString()));
+                }
+            }
+            else
                 tableField.set(record,parametes.getNewValue());
 
             recordAfterTableValidate = record;
@@ -127,8 +139,6 @@ public class OnPageValidateListAop {
         }else {
             recordAfterPageValidate = objectMapper.convertValue(recordAfterDatabaseModify, pageBean.getClass());
         }
-
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();

@@ -1,7 +1,6 @@
 package com.example.businesscentral.Table;
 
 import com.example.businesscentral.Dao.Annotation.*;
-import com.example.businesscentral.Enum.Account_Status_Enum;
 import com.example.businesscentral.Enum.Sales_Order_Status_Enum;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
@@ -12,7 +11,7 @@ import java.util.UUID;
 @Table
 @Data
 @FieldNameConstants(asEnum = true)
-public class SalesOrder {
+public class salesOrder {
 
     @Keys(PRIMARY_KEY = true,AUTO_INCREMENT = true)
     @TableField(
@@ -61,7 +60,7 @@ public class SalesOrder {
     private Double Price;
 
     @OnInit
-    private SalesOrder OnInitTriggerMethod() {
+    private salesOrder OnInitTriggerMethod() {
 //        System.out.println("Table => Init Trigger Raised...");
 
         this.System_ID = UUID.randomUUID().toString();
@@ -69,19 +68,19 @@ public class SalesOrder {
     }
 
     @OnInsert
-    private SalesOrder OnInsertTriggerMethod(SalesOrder Rec) {
+    private salesOrder OnInsertTriggerMethod(salesOrder Rec) {
 //        System.out.println("Table => Insert Trigger Raised...");
         return Rec;
     }
 
     @OnModify
-    private SalesOrder OnModifyTriggerMethod(SalesOrder Rec) {
+    private salesOrder OnModifyTriggerMethod(salesOrder Rec) {
 //        System.out.println("Table => Modify Trigger Raised...");
         return Rec;
     }
 
     @OnDelete
-    private SalesOrder OnDeleteTriggerMethod(SalesOrder Rec) {
+    private salesOrder OnDeleteTriggerMethod(salesOrder Rec) {
 //        System.out.println("Table => Delete Trigger Raised...");
         return Rec;
     }

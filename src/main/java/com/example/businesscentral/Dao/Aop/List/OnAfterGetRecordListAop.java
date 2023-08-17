@@ -18,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Aspect
@@ -51,7 +52,7 @@ public class OnAfterGetRecordListAop {
                         Record = declaredField.getType();
                     }
                 }
-                Instance = applicationContext.getBean(parameter.getTable().toLowerCase(Locale.ROOT));
+                Instance = applicationContext.getBean(parameter.getTable());
             }
         }
 
@@ -111,7 +112,18 @@ public class OnAfterGetRecordListAop {
                         enumValue = Enum.valueOf((Class<Enum>) enumType, entry.getValue().toString());
                     }
                     declaredField.set(newRecord, enumValue);
-                }else {
+                }
+                else if (Date.class.isAssignableFrom(declaredField.getType()) || java.sql.Date.class.isAssignableFrom(declaredField.getType()) ) {
+                    if (!ObjectUtils.isEmpty(entry.getValue())) {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        declaredField.set(newRecord, dateFormat.parse(entry.getValue().toString()));
+                    }
+                } else if (Double.class.isAssignableFrom(declaredField.getType())) {
+                    if (!ObjectUtils.isEmpty(entry.getValue())) {
+                        declaredField.set(newRecord, Double.valueOf(entry.getValue().toString()));
+                    }
+                }
+                else {
                     declaredField.set(newRecord,entry.getValue());
                 }
             }

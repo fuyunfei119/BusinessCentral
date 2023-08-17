@@ -1,7 +1,7 @@
 package com.example.businesscentral.Controller;
 
 import com.example.businesscentral.CodeUnits.CustomerManagement;
-import com.example.businesscentral.Table.Customer;
+import com.example.businesscentral.Table.customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +20,7 @@ public class CodeUnitsTestController {
     }
 
     @GetMapping("testcustomer")
-    public List<Customer> testcustomer() throws IllegalAccessException {
+    public List<customer> testcustomer() throws IllegalAccessException {
         return customerManagement.test();
     }
 

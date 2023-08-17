@@ -6,7 +6,7 @@ import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Enum.Account_Status_Enum;
 import com.example.businesscentral.Enum.Customer_Type_Enum;
-import com.example.businesscentral.Table.Customer;
+import com.example.businesscentral.Table.customer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Page(SOURCETABLE = "Customer", TYPE = PageType.List)
+@Page(SOURCETABLE = "customer", TYPE = PageType.List)
 @Data
-public class CustomerList {
+public class customerList {
 
     @PageField(
             VISIABLE = true,
@@ -74,7 +74,7 @@ public class CustomerList {
     }
 
     @OnAfterGetRecord
-    public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+    public customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<customer, customer.Fields> Rec) throws Exception {
 //        System.out.println("Page => OnAfterGetRecord Trigger Raised...");
         return Rec.GetRecord();
     }
@@ -86,19 +86,19 @@ public class CustomerList {
     }
 
     @OnAfterGetCurrRecord
-    public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+    public customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<customer, customer.Fields> Rec) throws Exception {
 //        System.out.println("Page => OnAfterGetCurrRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnNewRecord
-    public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+    public customer OnBeforeNewRecord(BusinessCentralRecord<customer, customer.Fields> Rec) throws Exception {
 //        System.out.println("Page => OnNewRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnInsertRecord
-    public Customer OnBeforeInsertRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+    public customer OnBeforeInsertRecord(BusinessCentralRecord<customer, customer.Fields> Rec) throws Exception {
 //        System.out.println("Page => OnInsertRecord Trigger Raised...");
         return Rec.GetRecord();
     }
@@ -119,12 +119,12 @@ public class CustomerList {
         record.FindSet();
         while (record.HasNext()) {
             record.Next();
-            record.Validate(Customer.Fields.Account_Status,"Closed",false);
+            record.Validate(customer.Fields.Account_Status,"Closed",false);
             record.Modify(true);
         }
     }
 
-    private Customer OnValidatePoints(Object currentValue, Object newValue,BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+    private customer OnValidatePoints(Object currentValue, Object newValue, BusinessCentralRecord<customer, customer.Fields> Rec) {
 //        System.out.println("Page => Point Page Validate Trigger Raised...");
         return Rec.GetRecord();
     }

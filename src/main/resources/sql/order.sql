@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS SalesOrder;
-CREATE TABLE SalesOrder (
+DROP TABLE IF EXISTS salesOrder;
+CREATE TABLE salesOrder (
     System_ID VARCHAR(50) PRIMARY KEY,
     Customer_ID VARCHAR(50),
     Order_Date DATE,
@@ -11,7 +11,7 @@ CREATE TABLE SalesOrder (
     Price DECIMAL(10, 2)
 );
 
-INSERT INTO SalesOrder (System_ID, Customer_ID, Order_Date, Total_Amount, Order_Status, Item_ID, Product_Name, Quantity, Price) VALUES
+INSERT INTO salesOrder (System_ID, Customer_ID, Order_Date, Total_Amount, Order_Status, Item_ID, Product_Name, Quantity, Price) VALUES
     ('722f6397-6b66-4ee2-a17c-6b857f6b6a0f', 'f9f27b13-e7ef-4057-b2ce-dd9a181612b5', '2022-02-01', 250.00, 'Shipped', '4d67d8c5-40e9-435b-96f0-5e48403ff5f7', 'Product A', 2, 50.00),
     ('da4b35d3-825a-47e5-9072-7b29e4b15ab4', 'adf13a27-c4bd-415e-aa34-63173457a504', '2022-02-02', 150.00, 'Delivered', '1a7f967c-69ea-4a6e-8e7b-4c1daaa3d28d', 'Product B', 1, 100.00),
     ('1ea4c4b6-891f-4e98-994f-b5342a493e6f', 'c84712d4-2e0f-4f7a-9f44-c41908c49185', '2022-02-03', 100.00, 'Canceled', 'c8d7ec60-1e11-45f5-860e-86e152ae97c1', 'Product C', 3, 30.00),

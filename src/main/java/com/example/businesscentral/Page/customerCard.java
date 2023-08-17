@@ -4,12 +4,14 @@ import com.example.businesscentral.Dao.Annotation.*;
 import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Enum.Account_Status_Enum;
-import com.example.businesscentral.Table.Customer;
+import com.example.businesscentral.Table.customer;
 import lombok.Data;
 
-@Page(SOURCETABLE = "Customer", TYPE = PageType.Card)
+import java.util.Date;
+
+@Page(SOURCETABLE = "customer", TYPE = PageType.Card)
 @Data
-public class CustomerCard {
+public class customerCard {
 
     @PageField(
             VISIABLE = true,
@@ -57,13 +59,13 @@ public class CustomerCard {
             VISIABLE = true,
             GROUP = "Accounting"
     )
-    private java.sql.Date Account_Creation_Date;
+    private Date Account_Creation_Date;
 
     @PageField(
             VISIABLE = true,
             GROUP = "System"
     )
-    private java.sql.Date Last_Login_Date;
+    private Date Last_Login_Date;
 
     @PageField(
             VISIABLE = true,
@@ -102,37 +104,37 @@ public class CustomerCard {
     }
 
     @OnFindRecord
-    public Customer OnBeforeOnFindRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+    public customer OnBeforeOnFindRecord(BusinessCentralRecord<customer, customer.Fields> Rec) {
 //        System.out.println("Card => OnFindRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnAfterGetRecord
-    public Customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+    public customer OnBeforeOnAfterGetRecord(BusinessCentralRecord<customer, customer.Fields> Rec) throws Exception {
 //        System.out.println("Card => OnAfterGetRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnAfterGetCurrRecord
-    public Customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+    public customer OnBeforeOnAfterCurrRecRecord(BusinessCentralRecord<customer, customer.Fields> Rec) throws Exception {
 //        System.out.println("Card => OnAfterGetCurrRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnNewRecord
-    public Customer OnBeforeNewRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+    public customer OnBeforeNewRecord(BusinessCentralRecord<customer, customer.Fields> Rec) {
 //        System.out.println("Card => OnNewRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnInsertRecord
-    public Customer OnBeforeInsertRecord(BusinessCentralRecord<Customer,Customer.Fields> Rec) throws Exception {
+    public customer OnBeforeInsertRecord(BusinessCentralRecord<customer, customer.Fields> Rec) throws Exception {
 //        System.out.println("Card => OnInsertRecord Trigger Raised...");
         return Rec.GetRecord();
     }
 
     @OnQueryClosePage
-    public void OnBeforeOnQueryClosePage(BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+    public void OnBeforeOnQueryClosePage(BusinessCentralRecord<customer, customer.Fields> Rec) {
 //        System.out.println("Card => OnQueryClosePage Trigger Raised...");
     }
 
@@ -141,7 +143,7 @@ public class CustomerCard {
 //        System.out.println("Card => OnClosePage Trigger Raised...");
     }
 
-    private Customer OnValidatePoints(Object currentValue, Object newValue,BusinessCentralRecord<Customer,Customer.Fields> Rec) {
+    private customer OnValidatePoints(Object currentValue, Object newValue, BusinessCentralRecord<customer, customer.Fields> Rec) {
 //        System.out.println("Page => Point Page Validate Trigger Raised...");
         return Rec.GetRecord();
     }

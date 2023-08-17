@@ -40,7 +40,7 @@ public class OnOpenPageCardAop {
         TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
         OnOpenPageResponse onOpenPageResponse = new OnOpenPageResponse();
 
-        Object tableBean = applicationContext.getBean(parameter.getTable().toLowerCase());
+        Object tableBean = applicationContext.getBean(parameter.getTable());
         Object cardBean = null;
 
         Collection<Object> pageBeans = applicationContext.getBeansWithAnnotation(Page.class).values();

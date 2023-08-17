@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS Customer;
-CREATE TABLE Customer (
+DROP TABLE IF EXISTS customer;
+CREATE TABLE customer (
     System_ID VARCHAR(50) PRIMARY KEY,
     First_Name VARCHAR(50),
     Last_Name VARCHAR(50),
@@ -17,7 +17,7 @@ CREATE TABLE Customer (
     Last_Updated_Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO Customer (System_ID,First_Name, Last_Name, Email_Address, Phone_Number, Billing_Address, Shipping_Address, Account_Creation_Date, Last_Login_Date, Account_Status, Payment_Information, Order_History, Points, Customer_Type) VALUES
+INSERT INTO customer (System_ID,First_Name, Last_Name, Email_Address, Phone_Number, Billing_Address, Shipping_Address, Account_Creation_Date, Last_Login_Date, Account_Status, Payment_Information, Order_History, Points, Customer_Type) VALUES
     ('f9f27b13-e7ef-4057-b2ce-dd9a181612b5','John', 'Doe', 'john.doe@example.com', '555-1234', '123 Main St, Anytown USA', '123 Main St, Anytown USA', '2022-01-01', '2022-03-15', 'Active', 'Credit Card', 'Order #12345, Order #12346', 100, 'Retail'),
     ('adf13a27-c4bd-415e-aa34-63173457a504','Jane', 'Doe', 'jane.doe@example.com', '555-5678', '456 Elm St, Anytown USA', '456 Elm St, Anytown USA', '2022-01-02', '2022-03-15', 'Active', 'PayPal', 'Order #12347, Order #12348', 150, 'Retail'),
     ('c84712d4-2e0f-4f7a-9f44-c41908c49185','Bob', 'Smith', 'bob.smith@example.com', '555-9012', '789 Oak St, Anytown USA', '789 Oak St, Anytown USA', '2022-01-03', '2022-03-14', 'Suspended', 'Credit Card', 'Order #12349, Order #12350', 75, 'Retail'),
