@@ -137,6 +137,7 @@ public class OnPageValidateListAop {
             pageValidate.setAccessible(true);
             recordAfterPageValidate = pageValidate.invoke(pageBean, parametes.getCurrentValue(), FieldNewValue, businessCentralRecord);
         }else {
+            declaredField.setAccessible(true);
             recordAfterPageValidate = objectMapper.convertValue(recordAfterDatabaseModify, pageBean.getClass());
         }
 

@@ -19,7 +19,7 @@ public class salesLines {
             VISIABLE = true,
             GROUP = ""
     )
-    private System System_ID;
+    private String System_ID;
 
     @PageField(
             VISIABLE = true,

@@ -31,6 +31,9 @@ public class OnQueryClosePageListAop {
 
         TableParameter table = (TableParameter) joinPoint.getArgs()[0];
 
+        System.out.println(table.getTable());
+        System.out.println(table.getPage());
+
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
         Class<?> beanClass = null;

@@ -177,6 +177,10 @@ public class OnAfterGetRecordListAop {
             sortedList.add(sortedLinkedHashMap);
         }
 
+        for (LinkedHashMap<String, Object> linkedHashMap : sortedList) {
+            System.out.println(linkedHashMap);
+        }
+
         return sortedList;
     }
 }
