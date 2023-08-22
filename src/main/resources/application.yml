@@ -11,6 +11,9 @@ spring:
       platform: mysql
       schema-locations: classpath:sql/customer.sql,classpath:sql/order.sql
 
+  jackson:
+
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true

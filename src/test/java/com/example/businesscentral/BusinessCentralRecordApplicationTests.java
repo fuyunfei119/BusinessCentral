@@ -21,8 +21,6 @@ class BusinessCentralRecordApplicationTests {
     @Test
     void GenericTest() {
         List<customer> customers = businessCentralGeneric.FindSet();
-
-        System.out.println(customers);
     }
 
 }

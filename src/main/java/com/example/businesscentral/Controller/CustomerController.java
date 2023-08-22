@@ -24,10 +24,10 @@ public class CustomerController {
     public List<LinkedHashMap<String,Object>> OnListMounted(@RequestParam("list") String list) throws Exception {return null;}
 
     @PostMapping("/List/OnBeforeUpdate")
-    public List<LinkedHashMap<String,Object>> OnBeforeListUpdate(@RequestBody TableParameter table) {return null;}
+    public Object OnBeforeListUpdate(@RequestBody TableParameter table) {return null;}
 
     @PostMapping("/List/OnUpdated")
-    public LinkedHashMap<String,Object> OnListUpdated(@RequestBody TableParameter table) {return null;}
+    public Object OnListUpdated(@RequestBody TableParameter table) {return null;}
 
     @PostMapping("/List/OnBeforeUnmount")
     public List<LinkedHashMap<String,Object>> OnBeforeListUnmount(@RequestBody TableParameter table) {return null;}

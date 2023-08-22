@@ -41,8 +41,6 @@ public class OnQueryClosePageCardAop {
 
         CardParameter parameter = (CardParameter) joinPoint.getArgs()[0];
 
-        System.out.println(parameter.getIsNewRecord());
-
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE)

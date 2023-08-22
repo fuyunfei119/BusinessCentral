@@ -7,6 +7,10 @@ import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.TableParameter;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,16 +32,21 @@ public class OnAfterGetRecordListAop {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Pointcut("execution(java.util.List<*> com.example.businesscentral.Controller.CustomerController.OnBeforeListUpdate(..))")
+    @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.OnBeforeListUpdate(..))")
     public void OnAfterGetRecordTrigger() {
     }
 
     @Around("OnAfterGetRecordTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
         TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
 
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
+        Object pageBean = applicationContext.getBean(parameter.getPage());
 
         Class<?> beanClass = null;
         Object Instance = null;
@@ -134,12 +143,15 @@ public class OnAfterGetRecordListAop {
 
             Object invoke = OnAfterGetRecordMethod.invoke(newInstance,businessCentralRecord);
 
+            System.out.println(invoke.getClass());
+            Object convertValue = objectMapper.convertValue(invoke, pageBean.getClass());
+
             LinkedHashMap<String,Object> result = new LinkedHashMap<>();
 
-            for (Field declaredField : invoke.getClass().getDeclaredFields()) {
+            for (Field declaredField : convertValue.getClass().getDeclaredFields()) {
                 declaredField.setAccessible(true);
-                if (!ObjectUtils.isEmpty(declaredField.get(invoke))) {
-                    result.put(declaredField.getName(),declaredField.get(invoke));
+                if (!ObjectUtils.isEmpty(declaredField.get(convertValue))) {
+                    result.put(declaredField.getName(),declaredField.get(convertValue));
                 }
             }
 
@@ -152,35 +164,6 @@ public class OnAfterGetRecordListAop {
             results.add(result);
         }
 
-        Object pageBean = applicationContext.getBean(parameter.getPage());
-
-        List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
-
-        List<String> includefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
-                .filter(field -> !field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
-
-        List<LinkedHashMap<String,Object>> sortedList = new ArrayList<>();
-
-        for (LinkedHashMap<String, Object> result : results) {
-            for (String excludefield : excludefields) {
-                excludefield = excludefield.replaceFirst(String.valueOf(excludefield.charAt(0)),String.valueOf(excludefield.charAt(0)).toUpperCase(Locale.ROOT));
-                result.remove(excludefield);
-            }
-
-            LinkedHashMap<String,Object> sortedLinkedHashMap = new LinkedHashMap<>();
-
-            for (String includefield : includefields) {
-                sortedLinkedHashMap.put(includefield,result.get(includefield));
-            }
-
-            sortedList.add(sortedLinkedHashMap);
-        }
-
-        for (LinkedHashMap<String, Object> linkedHashMap : sortedList) {
-            System.out.println(linkedHashMap);
-        }
-
-        return sortedList;
+        return results;
     }
 }

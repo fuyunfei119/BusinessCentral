@@ -7,7 +7,9 @@ import com.example.businesscentral.Dao.RecordData.CustomerRecord;
 import com.example.businesscentral.Enum.Account_Status_Enum;
 import com.example.businesscentral.Enum.Customer_Type_Enum;
 import com.example.businesscentral.Table.customer;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 

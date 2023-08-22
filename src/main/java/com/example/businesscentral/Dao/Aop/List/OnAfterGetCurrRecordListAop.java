@@ -6,6 +6,10 @@ import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.TableParameter;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,7 +31,7 @@ public class OnAfterGetCurrRecordListAop {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Pointcut("execution(java.util.* com.example.businesscentral.Controller.CustomerController.OnListUpdated(..))")
+    @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.OnListUpdated(..))")
     public void OnAfterGetRecordTrigger() {
     }
 
@@ -111,23 +115,13 @@ public class OnAfterGetCurrRecordListAop {
 
                 Object pageBean = applicationContext.getBean(parameter.getPage());
 
-                List<String> excludefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
-                        .filter(field -> field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-                List<String> includefields = Arrays.stream(pageBean.getClass().getDeclaredFields())
-                        .filter(field -> !field.isAnnotationPresent(Autowired.class)).map(field -> field.getName()).toList();
+                Object convertValue = objectMapper.convertValue(result, pageBean.getClass());
 
-                for (String excludefield : excludefields) {
-                    excludefield = excludefield.replaceFirst(String.valueOf(excludefield.charAt(0)),String.valueOf(excludefield.charAt(0)).toUpperCase(Locale.ROOT));
-                    result.remove(excludefield);
-                }
-
-                LinkedHashMap<String,Object> sortedLinkedHashMap = new LinkedHashMap<>();
-                for (String includefield : includefields) {
-                    sortedLinkedHashMap.put(includefield,result.get(includefield));
-                }
-
-                return sortedLinkedHashMap;
+                return convertValue;
             }
         }
 
