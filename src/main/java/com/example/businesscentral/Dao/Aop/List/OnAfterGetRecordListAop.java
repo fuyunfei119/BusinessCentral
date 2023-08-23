@@ -143,7 +143,6 @@ public class OnAfterGetRecordListAop {
 
             Object invoke = OnAfterGetRecordMethod.invoke(newInstance,businessCentralRecord);
 
-            System.out.println(invoke.getClass());
             Object convertValue = objectMapper.convertValue(invoke, pageBean.getClass());
 
             LinkedHashMap<String,Object> result = new LinkedHashMap<>();

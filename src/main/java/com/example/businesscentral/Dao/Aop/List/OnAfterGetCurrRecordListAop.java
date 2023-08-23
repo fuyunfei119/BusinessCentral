@@ -6,10 +6,7 @@ import com.example.businesscentral.Dao.BusinessCentralRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.TableParameter;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -30,6 +27,8 @@ public class OnAfterGetCurrRecordListAop {
 
     @Autowired
     private ApplicationContext applicationContext;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Pointcut("execution(java.*.* com.example.businesscentral.Controller.CustomerController.OnListUpdated(..))")
     public void OnAfterGetRecordTrigger() {
@@ -39,6 +38,8 @@ public class OnAfterGetCurrRecordListAop {
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
         TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
+
+        System.out.println(parameter);
 
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
@@ -102,26 +103,21 @@ public class OnAfterGetCurrRecordListAop {
 
                 businessCentralRecord.SetRecord(newRecord);
 
+                Object pageBean = applicationContext.getBean(parameter.getPage());
                 Object invoke = declaredMethod.invoke(newInstance,businessCentralRecord);
+
+                Object convertValue = objectMapper.convertValue(invoke, pageBean.getClass());
 
                 LinkedHashMap<String,Object> result = new LinkedHashMap<>();
 
-                for (Field declaredField : invoke.getClass().getDeclaredFields()) {
+                for (Field declaredField : convertValue.getClass().getDeclaredFields()) {
                     declaredField.setAccessible(true);
-                    if (!ObjectUtils.isEmpty(declaredField.get(invoke))) {
-                        result.put(declaredField.getName(),declaredField.get(invoke));
+                    if (!ObjectUtils.isEmpty(declaredField.get(convertValue))) {
+                        result.put(declaredField.getName(),declaredField.get(convertValue));
                     }
                 }
 
-                Object pageBean = applicationContext.getBean(parameter.getPage());
-
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
-                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-                Object convertValue = objectMapper.convertValue(result, pageBean.getClass());
-
-                return convertValue;
+                return result;
             }
         }
 

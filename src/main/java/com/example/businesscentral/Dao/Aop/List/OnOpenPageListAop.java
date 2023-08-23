@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 @Aspect
 @Configuration
@@ -30,6 +31,7 @@ public class OnOpenPageListAop {
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
         TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
+
         OnOpenPageResponse onOpenPageResponse = new OnOpenPageResponse();
 
         Object pageBean = applicationContext.getBean(parameter.getPage());

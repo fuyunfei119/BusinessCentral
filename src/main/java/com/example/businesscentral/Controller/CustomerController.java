@@ -6,7 +6,9 @@ import com.example.businesscentral.Dao.Response.CardAfterGetCurrRecordResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +26,10 @@ public class CustomerController {
     public List<LinkedHashMap<String,Object>> OnListMounted(@RequestParam("list") String list) throws Exception {return null;}
 
     @PostMapping("/List/OnBeforeUpdate")
-    public Object OnBeforeListUpdate(@RequestBody TableParameter table) {return null;}
+    public List<LinkedHashMap<String,Object>> OnBeforeListUpdate(@RequestBody TableParameter table) {return null;}
 
     @PostMapping("/List/OnUpdated")
-    public Object OnListUpdated(@RequestBody TableParameter table) {return null;}
+    public LinkedHashMap<String,Object> OnListUpdated(@RequestBody TableParameter table) {return null;}
 
     @PostMapping("/List/OnBeforeUnmount")
     public List<LinkedHashMap<String,Object>> OnBeforeListUnmount(@RequestBody TableParameter table) {return null;}
@@ -89,6 +91,7 @@ public class CustomerController {
 
     @PostMapping("/GetActions")
     public List<String> GetActions(@RequestBody ActionParamter ListName) {
+        System.out.println(ListName);
         return businessCentralSystemRecord.GetPageActions(ListName);
     }
 
