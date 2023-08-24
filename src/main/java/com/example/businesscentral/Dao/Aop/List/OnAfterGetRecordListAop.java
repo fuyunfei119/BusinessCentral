@@ -8,7 +8,6 @@ import com.example.businesscentral.Dao.Enum.PageType;
 import com.example.businesscentral.Dao.Impl.BusinessCentralRecordMySql;
 import com.example.businesscentral.Dao.Request.TableParameter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -124,7 +123,7 @@ public class OnAfterGetRecordListAop {
                 }
                 else if (Date.class.isAssignableFrom(declaredField.getType()) || java.sql.Date.class.isAssignableFrom(declaredField.getType()) ) {
                     if (!ObjectUtils.isEmpty(entry.getValue())) {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-SS");
                         declaredField.set(newRecord, dateFormat.parse(entry.getValue().toString()));
                     }
                 } else if (Double.class.isAssignableFrom(declaredField.getType())) {

@@ -60,7 +60,7 @@ public class customer {
     @TableField(
 
     )
-    private java.util.Date Account_Creation_Date;
+    private Date Account_Creation_Date;
 
     @TableField(
 

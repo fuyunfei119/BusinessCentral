@@ -59,7 +59,7 @@ public class customerCard {
             VISIABLE = true,
             GROUP = "Accounting"
     )
-    private Date Account_Creation_Date;
+    private java.sql.Date Account_Creation_Date;
 
     @PageField(
             VISIABLE = true,

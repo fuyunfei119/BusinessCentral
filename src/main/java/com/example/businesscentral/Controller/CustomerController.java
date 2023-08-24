@@ -22,8 +22,8 @@ public class CustomerController {
     @PostMapping("/List/OnBeforeMounted")
     public Object onBeforeListMounted(@RequestBody TableParameter table) {return null;}
 
-    @GetMapping("/List/OnMounted")
-    public List<LinkedHashMap<String,Object>> OnListMounted(@RequestParam("list") String list) throws Exception {return null;}
+    @PostMapping("/List/OnMounted")
+    public List<LinkedHashMap<String,Object>> OnListMounted(@RequestBody TableParameter table) throws Exception {return null;}
 
     @PostMapping("/List/OnBeforeUpdate")
     public List<LinkedHashMap<String,Object>> OnBeforeListUpdate(@RequestBody TableParameter table) {return null;}

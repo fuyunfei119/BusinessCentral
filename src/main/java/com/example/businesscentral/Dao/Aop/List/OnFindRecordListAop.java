@@ -4,6 +4,7 @@ import com.example.businesscentral.Dao.Annotation.OnFindRecord;
 import com.example.businesscentral.Dao.Annotation.Page;
 import com.example.businesscentral.Dao.BusinessCentralSystemRecord;
 import com.example.businesscentral.Dao.Enum.PageType;
+import com.example.businesscentral.Dao.Request.TableParameter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -33,7 +34,7 @@ public class OnFindRecordListAop {
     @Around("OnOpenPageTrigger()")
     public Object OnInitNewRecord(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        Object table = joinPoint.getArgs()[0];
+        TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
 
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
@@ -41,7 +42,7 @@ public class OnFindRecordListAop {
 
         for (Object bean : beans) {
             Page annotation = bean.getClass().getAnnotation(Page.class);
-            if (annotation.SOURCETABLE().equals(table) && annotation.TYPE().equals(PageType.List)) {
+            if (annotation.SOURCETABLE().equals(parameter.getTable()) && annotation.TYPE().equals(PageType.List)) {
                 beanClass = bean.getClass();
             }
         }
@@ -54,9 +55,11 @@ public class OnFindRecordListAop {
 
             if (declaredMethod.isAnnotationPresent(OnFindRecord.class)) {
 
-                List<LinkedHashMap<String, Object>> records = businessCentralSystemRecord.GetDataForListPage(table.toString());
+                List<LinkedHashMap<String, Object>> records = businessCentralSystemRecord.GetDataForListPage(parameter.getTable());
 
-                return declaredMethod.invoke(newInstance,records);
+                Object invoke = declaredMethod.invoke(newInstance, records);
+
+                return invoke;
             }
         }
 

@@ -4,5 +4,6 @@ public enum DataType {
     number,
     string,
     date,
+    timestamp,
     enumeration
 }

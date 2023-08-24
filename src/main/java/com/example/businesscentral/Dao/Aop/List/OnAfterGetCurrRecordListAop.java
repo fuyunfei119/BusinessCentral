@@ -39,8 +39,6 @@ public class OnAfterGetCurrRecordListAop {
 
         TableParameter parameter = (TableParameter) joinPoint.getArgs()[0];
 
-        System.out.println(parameter);
-
         Collection<Object> beans = applicationContext.getBeansWithAnnotation(Page.class).values();
 
         Class<?> beanClass = null;

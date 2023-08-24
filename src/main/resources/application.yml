@@ -11,6 +11,10 @@ spring:
       platform: mysql
       schema-locations: classpath:sql/customer.sql,classpath:sql/order.sql
 
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true

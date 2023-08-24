@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Aspect
@@ -109,6 +110,8 @@ public class OnAfterGetCurrRecordCardAop {
                             cardField.setType(DataType.date);
                         }else if (Enum.class.isAssignableFrom(field.getType())) {
                             cardField.setType(DataType.enumeration);
+                        }else if (Timestamp.class.isAssignableFrom(field.getType())) {
+                            cardField.setType(DataType.timestamp);
                         }
 
                         cardField.setValue(field.get(cardRecord));

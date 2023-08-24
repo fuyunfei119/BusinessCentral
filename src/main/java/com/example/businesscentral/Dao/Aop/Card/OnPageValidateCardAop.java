@@ -25,6 +25,10 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 
 @Aspect
@@ -47,12 +51,14 @@ public class OnPageValidateCardAop {
 
         CardParameter parametes = (CardParameter) joinPoint.getArgs()[0];
 
+        System.out.println(parametes);
+
         Object tableBean = applicationContext.getBean(parametes.getTable());
         Object pageBean = applicationContext.getBean(parametes.getPage());
 
-        Field tableField = ReflectionUtils.findField(tableBean.getClass(), parametes.getUpdatedField().getField());
+        Field tableField = ReflectionUtils.findField(tableBean.getClass(), parametes.getFieldName());
 
-        Field pageField = ReflectionUtils.findField(pageBean.getClass(), parametes.getUpdatedField().getField());
+        Field pageField = ReflectionUtils.findField(pageBean.getClass(), parametes.getFieldName());
 
         TableField tableFieldAnnotation = tableField.getAnnotation(TableField.class);
 
@@ -75,16 +81,21 @@ public class OnPageValidateCardAop {
         if (ObjectUtils.isEmpty(tableValidate)) {
             tableField.setAccessible(true);
 
+            System.out.println(tableField.getType());
+
             if (Enum.class.isAssignableFrom(tableField.getType())) {
                 Class<?> enumType = tableField.getType();
 
                 Object enumValue = null;
-                if (!ObjectUtils.isEmpty(parametes.getUpdatedField().getValue())) {
-                    enumValue = Enum.valueOf((Class<Enum>) enumType, parametes.getUpdatedField().getValue().toString());
+                if (!ObjectUtils.isEmpty(parametes.getNewValue())) {
+                    enumValue = Enum.valueOf((Class<Enum>) enumType, parametes.getNewValue().toString());
                 }
                 tableField.set(record, enumValue);
+            }else if (Date.class.isAssignableFrom(tableField.getType())) {
+
+                tableField.set(record, java.sql.Date.valueOf((String) parametes.getNewValue()));
             }else
-                tableField.set(record,parametes.getUpdatedField().getValue());
+                tableField.set(record,parametes.getNewValue());
 
             recordAfterTableValidate = record;
         }else {
@@ -93,7 +104,7 @@ public class OnPageValidateCardAop {
             recordAfterTableValidate = tableValidate.invoke(
                     record,
                     parametes.getOldValue(),
-                    parametes.getUpdatedField().getValue(),
+                    parametes.getNewValue(),
                     record
             );
         }
@@ -103,7 +114,7 @@ public class OnPageValidateCardAop {
 
         Object recordAfterDatabaseModify = businessCentralRecord.GetRecord();
 
-        Field declaredField = recordAfterDatabaseModify.getClass().getDeclaredField(parametes.getUpdatedField().getField());
+        Field declaredField = recordAfterDatabaseModify.getClass().getDeclaredField(parametes.getFieldName());
         declaredField.setAccessible(true);
         Object FieldNewValue = declaredField.get(recordAfterDatabaseModify);
 
